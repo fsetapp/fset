@@ -22,10 +22,8 @@ config :fset, FsetWeb.Endpoint,
   check_origin: false,
   watchers: [
     node: [
-      "node_modules/webpack/bin/webpack.js",
-      "--mode",
-      "development",
-      "--watch-stdin",
+      "node_modules/.bin/npm-run-all",
+      "watch",
       cd: Path.expand("../assets", __DIR__)
     ]
   ]
