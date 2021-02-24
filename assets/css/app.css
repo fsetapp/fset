@@ -1,1 +1,12 @@
 @import "./tailwind.css";
+@import "./theme-vars.css";
+
+@import "./tree.css";
+@import "./vendor/fbox.min.css";
+
+body {
+  @apply text-gray-300 bg-gray-900;
+}
+[hidden] {
+  display: none;
+}

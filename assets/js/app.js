@@ -5,3 +5,6 @@
 //     import socket from "./socket"
 //
 import "phoenix_html"
+import * as Fmodel from "./fmodel.js"
+
+Fmodel.start()
