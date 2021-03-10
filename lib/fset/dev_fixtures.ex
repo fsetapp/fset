@@ -3,8 +3,9 @@ defmodule Fset.DevFixtures do
     [
       %{
         id: 1,
-        name: "unclaimed_project",
+        key: "unclaimed_project",
         files: files(),
+        order: ["file_1", "file_2"],
         entry_points: [%{id: 1, key: "model_1"}],
         current_file: 2
       }
@@ -15,7 +16,9 @@ defmodule Fset.DevFixtures do
     [
       %{
         id: 1,
+        key: "file_1",
         project_id: 1,
+        order: ["model_1"],
         fmodels: [
           %{
             id: 1,
@@ -27,7 +30,9 @@ defmodule Fset.DevFixtures do
       },
       %{
         id: 2,
+        key: "file_2",
         project_id: 1,
+        order: ["model_2", "model_1"],
         fmodels: [
           %{
             id: 2,

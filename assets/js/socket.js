@@ -52,7 +52,9 @@ let channel = socket.channel(`project:${window.projectName}`, {})
 channel.join()
   .receive("ok", resp => {
     console.log("Joined successfully", resp)
-    document.dispatchEvent(new CustomEvent("remote_connected", { detail: { project: resp } }))
+
+    document.querySelector("sch-listener")
+      .dispatchEvent(new CustomEvent("remote-connected", { detail: { project: resp } }))
   })
   .receive("error", resp => { console.log("Unable to join", resp) })
 

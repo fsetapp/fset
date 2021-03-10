@@ -1,4 +1,17 @@
-[role="tree"] {
+#fmodel [role="tree"] {
+  --tree-bg-color: var(--gray-900);
+  --tree-color: var(--gray-300);
+
+  --item-root-bg-color: var(--matte-black);
+  --item-selected-bg-color: midnightblue;
+  --item-selected-border-color: var(--blue-500);
+  --item-selected-header-bg-color: var(--gray-700);
+
+  --type-color: var(--pink-400);
+  --ref-color: var(--indigo-400);
+}
+
+#project [role="tree"] {
   --tree-bg-color: var(--gray-900);
   --tree-color: var(--gray-300);
 

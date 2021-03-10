@@ -5,6 +5,6 @@
   --blue-500: rgba(59, 130, 246, 1);
   --pink-400: rgba(244, 114, 182, 1);
   --indigo-400: rgba(129, 140, 248, 1);
-
+  --matte-black: rgba(14, 19, 31, 1);
   color-scheme: dark;
 }
