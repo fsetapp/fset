@@ -7,7 +7,10 @@
     <%= csrf_meta_tag() %>
     <title>Fsetapp</title>
     <link rel="stylesheet" href="<%= Routes.static_path(@conn, "/css/app.css") %>"/>
-    <script>window.projectName = "<%= assigns[:project][:name] %>";</script>
+    <script>
+      window.projectName = "<%= get_in(assigns, [:project, :key]) %>";
+      window.userToken = "<%= @user_token %>";
+    </script>
     <script defer type="module" src="<%= Routes.static_path(@conn, "/js/app.js") %>"></script>
   </head>
   <body>

@@ -10,6 +10,7 @@ defmodule FsetWeb.Router do
     plug :protect_from_forgery
     plug :put_secure_browser_headers
     plug :fetch_current_user
+    plug :put_user_token
   end
 
   pipeline :api do
@@ -73,6 +74,8 @@ defmodule FsetWeb.Router do
     get "/users/confirm", UserConfirmationController, :new
     post "/users/confirm", UserConfirmationController, :create
     get "/users/confirm/:token", UserConfirmationController, :confirm
+
+    get "404.html", ErrorController, :notfound
 
     get "/:projectname", ProjectController, :show
     post "/projects", ProjectController, :create

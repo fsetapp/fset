@@ -4,4 +4,4 @@ import "@github/tab-container-element"
 import { channel } from "./socket"
 import * as Fmodel from "./fmodel.js"
 
-Fmodel.start({ channel })
+if (channel) Fmodel.start({ channel })
