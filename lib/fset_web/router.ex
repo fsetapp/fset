@@ -75,8 +75,9 @@ defmodule FsetWeb.Router do
     post "/users/confirm", UserConfirmationController, :create
     get "/users/confirm/:token", UserConfirmationController, :confirm
 
-    get "404.html", ErrorController, :notfound
+    get "/404.html", ErrorController, :notfound
 
+    get "/:username/:projectname", ProjectController, :show
     get "/:projectname", ProjectController, :show
     post "/projects", ProjectController, :create
   end

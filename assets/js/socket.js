@@ -1,10 +1,10 @@
 import phoenix from "phoenix"
 const { Socket } = phoenix
 
-let socket = new Socket("/socket", { params: { token: window.userToken } })
+let socket = new Socket("/socket", { params: { token: window.userToken, projectname: window.projectName } })
 let channel = socket.channel(`project:${window.projectName}`, {})
 
-if (window.userToken) {
+if (window.userToken || window.projectName) {
   let socketNotOpened = true
   socket.onOpen(e => socketNotOpened = false)
   socket.onClose(e => {

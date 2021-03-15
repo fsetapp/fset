@@ -8,8 +8,13 @@
     <title>Fsetapp</title>
     <link rel="stylesheet" href="<%= Routes.static_path(@conn, "/css/app.css") %>"/>
     <script>
-      window.projectName = "<%= get_in(assigns, [:project, :key]) %>";
-      window.userToken = "<%= @user_token %>";
+      <%= if assigns[:project] do %>
+        window.projectName = "<%= @project.key %>";
+      <% end %>
+
+      <%= if assigns[:user_token] do %>
+        window.userToken = "<%= @user_token %>";
+      <% end %>
     </script>
     <script defer type="module" src="<%= Routes.static_path(@conn, "/js/app.js") %>"></script>
   </head>

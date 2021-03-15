@@ -7,6 +7,8 @@
     </div>
   <% end %>
 
+  <%= hidden_input f, :project_id, value: assigns[:project_id] %>
+
   <%= label f, :email %>
   <%= email_input f, :email, required: true %>
   <%= error_tag f, :email %>

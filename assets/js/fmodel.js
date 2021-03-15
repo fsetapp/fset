@@ -1,6 +1,5 @@
 import { initModelView, initFileView, update, Project } from "./vendor/fbox.min.js"
 
-
 var projectStore = Project.createProjectStore()
 
 export const start = ({ channel }) => {
@@ -17,14 +16,16 @@ export const start = ({ channel }) => {
     }
     handleRemoteConnected(e) {
       let project = e.detail.project
-
       Project.projectToStore(project, projectStore)
-      let current_file = project.files.find(f => f.id == project.current_file)
-      let fileStore = Project.getFileStore(projectStore, current_file.key)
-
-      fileStore._models = Project.anchorsModels(projectStore, fileStore)
       initFileView({ store: projectStore, target: "[id='project']" })
-      initModelView({ store: fileStore, target: "[id='fmodel']", metaSelector: "sch-meta" })
+
+      let fileStore
+      let current_file = project.files.find(f => f.id == project.current_file)
+      if (current_file) {
+        fileStore = Project.getFileStore(projectStore, current_file.key)
+        fileStore._models = Project.anchorsModels(projectStore, fileStore)
+        initModelView({ store: fileStore, target: "[id='fmodel']", metaSelector: "sch-meta" })
+      }
     }
     handleTreeCommand(e) {
       Project.handleProjectContext(projectStore, e.target, e.detail.file, e.detail.command)

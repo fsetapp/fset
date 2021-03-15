@@ -3,6 +3,7 @@ defmodule FsetWeb.UserRegistrationController do
 
   alias Fset.Accounts
   alias Fset.Accounts.User
+  alias Fset.Projects
   alias FsetWeb.UserAuth
 
   def new(conn, _params) do
@@ -18,6 +19,9 @@ defmodule FsetWeb.UserRegistrationController do
             user,
             &Routes.user_confirmation_url(conn, :confirm, &1)
           )
+
+        if user_project_id = user_params["project_id"],
+          do: Projects.add_member(user_project_id, user.id)
 
         conn
         |> put_flash(:info, "User created successfully.")
