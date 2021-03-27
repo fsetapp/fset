@@ -3,7 +3,7 @@ defmodule Fset.Projects.Project do
   import Ecto.Changeset
 
   schema "projects" do
-    field :uuid, Ecto.UUID, autogenerate: true
+    field :anchor, Ecto.UUID, autogenerate: true
     field :key, :string
     field :order, {:array, :string}
     field :description, :string

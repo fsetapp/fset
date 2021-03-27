@@ -1,4 +1,5 @@
 #fmodel [role="tree"] {
+  --tree-min-width: 374px;
   --tree-bg-color: var(--gray-900);
   --tree-color: var(--gray-300);
 
@@ -12,6 +13,7 @@
 }
 
 #project [role="tree"] {
+  --tree-min-width: 187px;
   --tree-bg-color: var(--gray-900);
   --tree-color: var(--gray-300);
 

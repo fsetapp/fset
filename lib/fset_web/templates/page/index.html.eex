@@ -1,1 +1,1 @@
-<%= button("Get started", to: Routes.project_path(@conn, :create)) %>
+<%= button("Create Project", to: Routes.project_path(@conn, :create)) %>

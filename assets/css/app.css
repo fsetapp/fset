@@ -10,3 +10,6 @@ body {
 [hidden] {
   display: none;
 }
+sch-meta {
+  @apply text-xs;
+}

@@ -1,6 +1,7 @@
-import { initModelView, initFileView, update, Project } from "./vendor/fbox.min.js"
+import { initModelView, initFileView, isModelChangedCmd, update, Project } from "./vendor/fbox.min.js"
 
 var projectStore = Project.createProjectStore()
+var projectBaseStore
 
 export const start = ({ channel }) => {
   customElements.define("sch-listener", class extends HTMLElement {
@@ -17,26 +18,40 @@ export const start = ({ channel }) => {
     handleRemoteConnected(e) {
       let project = e.detail.project
       Project.projectToStore(project, projectStore)
-      initFileView({ store: projectStore, target: "[id='project']" })
+
+      let currentFile = project.files.find(f => f.anchor == project.current_file) || projectStore.fields[project.order[0]]
+      initFileView({ store: projectStore, target: "[id='project']", currentFile })
 
       let fileStore
-      let current_file = project.files.find(f => f.id == project.current_file)
-      if (current_file) {
-        fileStore = Project.getFileStore(projectStore, current_file.key)
+      if (currentFile) {
+        fileStore = Project.getFileStore(projectStore, currentFile.key)
         fileStore._models = Project.anchorsModels(projectStore, fileStore)
         initModelView({ store: fileStore, target: "[id='fmodel']", metaSelector: "sch-meta" })
       }
+      projectBaseStore = JSON.parse(JSON.stringify(projectStore))
     }
     handleTreeCommand(e) {
       Project.handleProjectContext(projectStore, e.target, e.detail.file, e.detail.command)
+      setTimeout(() => {
+        Project.handleProjectRemote(projectStore, projectBaseStore, e.detail.command, (diff) => {
+          channel.push("push_project", diff)
+            .receive("ok", (updated_project) => {
+              // Project.projectToStore(updated_project, projectBaseStore)
+              projectBaseStore = JSON.parse(JSON.stringify(projectStore))
+              // console.log("updated porject", updated_project)
+            })
+            .receive("error", (reasons) => console.log("update project failed", reasons))
+            .receive("timeout", () => console.log("Networking issue..."))
+        })
+      })
     }
     handleSchUpdate(e) {
       let { detail, target } = e
       let fileStore = Project.getFileStore(projectStore, e.detail.file)
-      if (fileStore)
-        update({ store: fileStore, detail, target })
-
-      channel.push("save_project", fileStore)
+      if (fileStore) {
+        let updated_sch = update({ store: fileStore, detail, target })
+        channel.push("push_sch_meta", updated_sch)
+      }
     }
   })
 }
