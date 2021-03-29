@@ -14,8 +14,9 @@ defmodule FsetWeb.MainChannel do
     end
   end
 
-  def handle_in("push_sch_meta", _sch_meta, socket) do
-    {:noreply, socket}
+  def handle_in("push_sch_meta", sch_meta, socket) do
+    reply = Projects.persist_metadata(sch_meta, socket.assigns.project)
+    {:reply, reply, socket}
   end
 
   def handle_in("push_project", diff, socket) do

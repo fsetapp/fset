@@ -1,4 +1,4 @@
-import { initModelView, initFileView, isModelChangedCmd, update, Project } from "./vendor/fbox.min.js"
+import { initModelView, initFileView, update, Project } from "./vendor/fbox.min.js"
 
 var projectStore = Project.createProjectStore()
 var projectBaseStore
@@ -20,7 +20,7 @@ export const start = ({ channel }) => {
       Project.projectToStore(project, projectStore)
 
       let currentFile = project.files.find(f => f.anchor == project.current_file) || projectStore.fields[project.order[0]]
-      initFileView({ store: projectStore, target: "[id='project']", currentFile })
+      initFileView({ store: projectStore, target: "[id='project']" })
 
       let fileStore
       if (currentFile) {
@@ -34,6 +34,7 @@ export const start = ({ channel }) => {
       Project.handleProjectContext(projectStore, e.target, e.detail.file, e.detail.command)
       setTimeout(() => {
         Project.handleProjectRemote(projectStore, projectBaseStore, e.detail.command, (diff) => {
+          if (!window.pushProject) return
           channel.push("push_project", diff)
             .receive("ok", (updated_project) => {
               // Project.projectToStore(updated_project, projectBaseStore)
@@ -48,9 +49,17 @@ export const start = ({ channel }) => {
     handleSchUpdate(e) {
       let { detail, target } = e
       let fileStore = Project.getFileStore(projectStore, e.detail.file)
-      if (fileStore) {
+
+      // fileStore which does not have .render is a fresh fileStore without component initialization.
+      // That means this handler being going on is stale. `handleSchUpdate` only work with fileStore
+      // initialized with modelView component
+      if (fileStore?.render) {
         let updated_sch = update({ store: fileStore, detail, target })
-        channel.push("push_sch_meta", updated_sch)
+
+        if (updated_sch)
+          channel.push("push_sch_meta", { $anchor: updated_sch.$anchor, metadata: updated_sch.metadata })
+            .receive("ok", (updated_metadata) => {
+            })
       }
     }
   })

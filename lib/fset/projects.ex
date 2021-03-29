@@ -39,8 +39,24 @@ defmodule Fset.Projects do
       end
 
     case Repo.one(project_query) do
-      nil -> {:error, :not_found}
-      project -> {:ok, project}
+      nil ->
+        {:error, :not_found}
+
+      project ->
+        allmeta =
+          Repo.all(from m in Fmodels.SchMeta, where: m.project_id == ^project.id)
+          |> Enum.reduce(%{}, fn m, acc ->
+            Map.put(
+              acc,
+              m.anchor,
+              m
+              |> Map.from_struct()
+              |> Map.take([:anchor, :title, :description, :required, :rw])
+              |> Map.merge(m.metadata)
+            )
+          end)
+
+        {:ok, %{project | allmeta: allmeta}}
     end
   end
 
@@ -49,6 +65,35 @@ defmodule Fset.Projects do
     params = Map.put_new(params, :key, default_key)
 
     Repo.insert!(Project.create_changeset(%Project{}, params))
+  end
+
+  def persist_metadata(sch, %Fmodels.Project{id: _} = project) do
+    metadata = Map.get(sch, "metadata", %{})
+
+    to_update_sch_meta =
+      %{}
+      |> put_from!(:anchor, {sch, "$anchor"})
+      |> put_from(:title, {metadata, "title"})
+      |> put_from(:description, {metadata, "description"})
+      |> put_from(:rw, {metadata, "rw"}, fn val -> String.to_atom(val) end)
+      |> put_from(:required, {metadata, "required"})
+      |> Map.put(:metadata, Map.drop(metadata, ["title", "description", "rw", "required"]))
+      |> Map.put(:project_id, project.id)
+
+    sch_meta_change = Ecto.Changeset.change(%Fmodels.SchMeta{}, to_update_sch_meta)
+
+    Ecto.Multi.new()
+    |> Ecto.Multi.insert(:update_sch_metas, sch_meta_change,
+      conflict_target: [:anchor],
+      on_conflict: {:replace, [:title, :description, :rw, :required, :metadata]}
+    )
+    |> Repo.transaction()
+    |> (fn {:ok, %{update_sch_metas: sch_meta}} ->
+          {:ok,
+           sch_meta
+           |> Map.from_struct()
+           |> Map.take([:anchor, :title, :description, :required, :rw, :metadata])}
+        end).()
   end
 
   def persist_diff(diff, %Fmodels.Project{id: _} = project) do
@@ -164,7 +209,7 @@ defmodule Fset.Projects do
   def to_project_sch(%Fmodels.Project{} = project) do
     project
     |> Map.from_struct()
-    |> Map.take([:key, :order, :anchor])
+    |> Map.take([:key, :order, :anchor, :allmeta])
     |> Map.put(:files, Enum.map(project.files, &to_file_sch/1))
   end
 

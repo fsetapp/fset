@@ -6,7 +6,9 @@ defmodule Fset.Fmodels.Project do
     field :key, :string
     field :order, {:array, :string}
     field :description, :string
+
     field :current_file_id, :integer, virtual: true
+    field :allmeta, :map, virtual: true
 
     has_many :files, Fset.Fmodels.File
   end
