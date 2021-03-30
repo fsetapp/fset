@@ -3,10 +3,12 @@
 
 @import "./tree.css";
 @import "./vendor/fbox.min.css";
+@import "./kbd.css";
 
-body {
-  @apply text-gray-300 bg-gray-900;
+.bg-black {
+  background-color: var(--matte-black);
 }
+
 [hidden] {
   display: none;
 }

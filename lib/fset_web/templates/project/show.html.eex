@@ -1,33 +1,47 @@
-<sch-listener>
-  <div style="display: flex;">
-    <section class="help text-sm" style="flex: 1;">
-      <tab-container>
-        <div role="tablist">
-          <button type="button" role="tab" aria-selected="true">Project</button>
-          <button type="button" role="tab" tabindex="-1">Account</button>
-          <button type="button" role="tab" tabindex="-1">Help</button>
-        </div>
-        <div role="tabpanel" id="project">
-          Project
-        </div>
-        <div role="tabpanel" hidden>
-        <ul>
-          <%= if @current_user do %>
-            <li><%= @current_user.email %></li>
-            <li><%= link "Settings", to: Routes.user_settings_path(@conn, :edit) %></li>
-            <li><%= link "Log out", to: Routes.user_session_path(@conn, :delete), method: :delete %></li>
-          <% else %>
-            <%= render FsetWeb.UserRegistrationView, "new.html", conn: @conn, changeset: @signup_changeset, project_id: @project.anchor %>
-          <% end %>
-        </ul>
-        </div>
-        <div role="tabpanel" hidden>
-          <%= render "_help.html" %>
-        </div>
-      </tab-container>
-    </section>
-    <section id="fmodel" style="flex: 2;"></section>
-    <sch-meta style="flex: 1;" tabindex="-1">
-    </sch-meta>
+<header id="toolbar" class="m-px bg-gray-900 flex flex-shrink-0">
+  <div class="flex-1">
+    <button name="import" class="py-5 px-4 border border-gray-700 rounded">
+      import
+    </button>
+    <button name="export" class="py-5 px-4 border border-gray-700 rounded">
+      export
+    </button>
   </div>
+  <div style="flex: 2;">
+    <button >mark as main</button>
+  </div>
+  <div class="flex-1">
+</header>
+
+<sch-listener class="flex overflow-hidden flex-grow">
+  <section class="m-px flex-1 text-sm flex">
+    <tab-container class="flex flex-col flex-grow">
+      <div class="flex flex-shrink-0" role="tablist">
+        <button type="button" role="tab" aria-selected="true">Project</button>
+        <button type="button" role="tab" tabindex="-1">Account</button>
+        <button type="button" role="tab" tabindex="-1">Help</button>
+      </div>
+      <div role="tabpanel" class="overflow-auto" id="project">
+        Project
+      </div>
+      <div role="tabpanel" class="overflow-auto" hidden>
+      <ul>
+        <%= if @current_user do %>
+          <li><%= @current_user.email %></li>
+          <li><%= link "Settings", to: Routes.user_settings_path(@conn, :edit) %></li>
+          <li><%= link "Log out", to: Routes.user_session_path(@conn, :delete), method: :delete %></li>
+        <% else %>
+          <%= render FsetWeb.UserRegistrationView, "new.html", conn: @conn, changeset: @signup_changeset, project_id: @project.anchor %>
+        <% end %>
+      </ul>
+      </div>
+      <div role="tabpanel" class="overflow-auto" hidden>
+        <%= render "_help.html" %>
+      </div>
+    </tab-container>
+  </section>
+  <section id="fmodel" class="m-px" style="flex: 2;">
+  </section>
+  <sch-meta class="m-px flex-1" tabindex="-1">
+  </sch-meta>
 </sch-listener>

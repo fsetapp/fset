@@ -1,0 +1,32 @@
+kbd {
+  display: inline-block;
+  border: 1px solid gray;
+  margin: .25rem 0;
+  padding: .25rem .5rem;
+  border-radius: .25rem;
+  font-family: inherit;
+  font-size: .75rem;
+  line-height: 1;
+  box-shadow: 2px 2px 0 darkred;
+}
+
+dd {
+  margin: 0;
+}
+.help {
+  color: rgba(209, 213, 219, 1);
+}
+.help dl {
+  display: flex;
+  align-items: baseline;
+  border-top: 1px dotted rgba(107, 114, 128, .75);
+}
+.help h2 {
+  text-decoration: underline;
+  margin-bottom: 0;
+}
+.help dd,
+.help dt {
+  margin: .5rem .5rem .5rem 0;
+  flex: 1;
+}

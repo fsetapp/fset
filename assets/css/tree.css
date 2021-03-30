@@ -10,6 +10,7 @@
 
   --type-color: var(--pink-400);
   --ref-color: var(--indigo-400);
+  height: 100%;
 }
 
 #project [role="tree"] {
@@ -23,4 +24,5 @@
 
   --type-color: var(--pink-400);
   --ref-color: var(--indigo-400);
+  height: 100%;
 }
