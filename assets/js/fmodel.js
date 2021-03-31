@@ -32,9 +32,9 @@ export const start = ({ channel }) => {
     }
     handleTreeCommand(e) {
       Project.handleProjectContext(projectStore, e.target, e.detail.file, e.detail.command)
+
       setTimeout(() => {
         Project.handleProjectRemote(projectStore, projectBaseStore, e.detail.command, (diff) => {
-          if (!window.pushProject) return
           channel.push("push_project", diff)
             .receive("ok", (updated_project) => {
               // Project.projectToStore(updated_project, projectBaseStore)
