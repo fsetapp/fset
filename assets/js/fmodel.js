@@ -22,7 +22,7 @@ export const start = ({ channel }) => {
       let currentFile = project.files.find(f => f.anchor == project.current_file) || projectStore.fields[project.order[0]]
       initFileView({ store: projectStore, target: "[id='project']" })
 
-      let fileStore, fmodelTree
+      let fileStore
       if (currentFile) {
         fileStore = Project.getFileStore(projectStore, currentFile.key)
         fileStore._models = Project.anchorsModels(projectStore, fileStore)
