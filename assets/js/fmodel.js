@@ -22,7 +22,7 @@ export const start = ({ channel }) => {
       let currentFile = project.files.find(f => f.anchor == project.current_file) || projectStore.fields[project.order[0]]
       initFileView({ store: projectStore, target: "[id='project']" })
 
-      let fileStore
+      let fileStore, fmodelTree
       if (currentFile) {
         fileStore = Project.getFileStore(projectStore, currentFile.key)
         fileStore._models = Project.anchorsModels(projectStore, fileStore)
@@ -31,7 +31,7 @@ export const start = ({ channel }) => {
       projectBaseStore = JSON.parse(JSON.stringify(projectStore))
     }
     handleTreeCommand(e) {
-      Project.handleProjectContext(projectStore, e.target, e.detail.file, e.detail.command)
+      Project.handleProjectContext(projectStore, e.detail.target, e.detail.command)
 
       setTimeout(() => {
         Project.handleProjectRemote(projectStore, projectBaseStore, e.detail.command, (diff) => {
@@ -61,6 +61,20 @@ export const start = ({ channel }) => {
             .receive("ok", (updated_metadata) => {
             })
       }
+    }
+  })
+
+  customElements.define("action-listener", class extends HTMLElement {
+    connectedCallback() {
+      this.addEventListener("click", this.handleAction)
+    }
+    disconnectedCallback() {
+      this.removeEventListener("click", this.handleAction)
+    }
+    handleAction(e) {
+      if (e.target.name == "mark_as_main")
+        document.querySelector("[id='fmodel'] [role='tree']")
+          .dispatchEvent(new KeyboardEvent("keydown", { key: "m" }))
     }
   })
 }

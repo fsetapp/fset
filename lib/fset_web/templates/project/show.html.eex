@@ -1,17 +1,20 @@
-<header id="toolbar" class="m-px bg-gray-900 flex flex-shrink-0">
-  <div class="flex-1">
-    <button name="import" class="py-5 px-4 border border-gray-700 rounded">
-      import
-    </button>
-    <button name="export" class="py-5 px-4 border border-gray-700 rounded">
-      export
-    </button>
-  </div>
-  <div style="flex: 2;">
-    <button >mark as main</button>
-  </div>
-  <div class="flex-1">
-</header>
+<action-listener>
+  <header id="toolbar" class="m-px bg-gray-900 flex flex-shrink-0">
+    <div class="flex-1">
+      <button name="import" class="py-5 px-4 border border-gray-700 rounded">
+        import
+      </button>
+      <button name="export" class="py-5 px-4 border border-gray-700 rounded">
+        export
+      </button>
+    </div>
+    <div style="flex: 2;">
+      <button name="mark_as_main" data-tree-action="mark_as_main">mark as main</button>
+      <button name="delete" data-tree-action="delete">Delete</button>
+    </div>
+    <div class="flex-1">
+  </header>
+</action-listener>
 
 <sch-listener class="flex overflow-hidden flex-grow">
   <section class="m-px flex-1 text-sm flex">
