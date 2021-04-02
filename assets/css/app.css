@@ -8,6 +8,9 @@
 .bg-black {
   background-color: var(--matte-black);
 }
+.bg-gray-meta {
+  background-color: var(--gray-meta);
+}
 
 [hidden] {
   display: none;

@@ -1,16 +1,50 @@
 <action-listener>
-  <header id="toolbar" class="m-px bg-gray-900 flex flex-shrink-0">
-    <div class="flex-1">
-      <button name="import" class="py-5 px-4 border border-gray-700 rounded">
-        import
+  <header id="toolbar" class="m-px py-1 bg-gray-900 flex flex-shrink-0">
+    <div class="flex flex-1">
+      <span class="ml-5"></span>
+      <button name="import" class="px-2 py-1 text-gray-400 font-light flex flex-col items-center text-sm hover:bg-gray-800 rounded">
+        <%= FsetWeb.IconView.import(class: "w-6 h-6 text-gray-400") %>
+        Import
       </button>
-      <button name="export" class="py-5 px-4 border border-gray-700 rounded">
-        export
+      <button name="export" class="px-2 py-1 text-gray-400 font-light flex flex-col items-center text-sm hover:bg-gray-800 rounded">
+        <%= FsetWeb.IconView.export(class: "w-6 h-6 text-gray-400") %>
+        Export
       </button>
     </div>
-    <div style="flex: 2;">
-      <button name="mark_as_main" data-tree-action="mark_as_main">mark as main</button>
-      <button name="delete" data-tree-action="delete">Delete</button>
+    <div class="text-xs font-light text-gray-400 flex justify-center w-full" style="flex: 2;">
+      <button name="move_up" data-tree-action="move_up" class="flex flex-col items-center justify-center px-2 py-1 hover:bg-gray-800 rounded">
+        <%= FsetWeb.IconView.move_up(class: "w-4 h-4 text-gray-300") %>
+        Move up
+      </button>
+      <button name="move_down" data-tree-action="move_down" class="flex flex-col items-center justify-center px-2 py-1 hover:bg-gray-800 rounded">
+        <%= FsetWeb.IconView.move_down(class: "w-4 h-4 text-gray-300") %>
+        Move Down
+      </button>
+      <span class="mx-4"></span>
+      <button name="cut" data-tree-action="cut" class="flex flex-col items-center justify-center px-2 py-1 hover:bg-gray-800 rounded">
+        <%= FsetWeb.IconView.cut(class: "w-4 h-4 text-gray-300") %>
+        Cut
+      </button>
+      <button name="copy" data-tree-action="copy" class="flex flex-col items-center justify-center px-2 py-1 hover:bg-gray-800 rounded">
+        <%= FsetWeb.IconView.copy(class: "w-4 h-4 text-gray-300") %>
+        Copy
+      </button>
+      <button name="paste" data-tree-action="paste" class="flex flex-col items-center justify-center px-2 py-1 hover:bg-gray-800 rounded">
+        <%= FsetWeb.IconView.paste(class: "w-4 h-4 text-gray-300") %>
+        Paste
+      </button>
+      <button name="clone" data-tree-action="clone" class="flex flex-col items-center justify-center px-2 py-1 hover:bg-gray-800 rounded">
+        <%= FsetWeb.IconView.clone(class: "w-4 h-4 text-gray-300") %>
+        Clone
+      </button>
+      <button name="delete" data-tree-action="delete" class="flex flex-col items-center justify-center px-2 py-1 hover:bg-gray-800 rounded">
+        <%= FsetWeb.IconView.delete(class: "w-4 h-4 text-gray-300") %>
+        Delete
+      </button>
+      <span class="flex-1"></span>
+      <button name="mark_as_main" data-tree-action="mark_as_main" class="mr-4 p-2 text-gray-100 border-indigo-900 text-indigo-400 self-center">
+        Mark as entrypoint
+      </button>
     </div>
     <div class="flex-1">
   </header>
@@ -19,24 +53,57 @@
 <sch-listener class="flex overflow-hidden flex-grow">
   <section class="m-px flex-1 text-sm flex">
     <tab-container class="flex flex-col flex-grow">
-      <div class="flex flex-shrink-0" role="tablist">
-        <button type="button" role="tab" aria-selected="true">Project</button>
-        <button type="button" role="tab" tabindex="-1">Account</button>
-        <button type="button" role="tab" tabindex="-1">Help</button>
+      <div class="flex flex-shrink-0 px-2 space-x-2 py-1 bg-gray-meta border border-gray-800 mb-px" role="tablist">
+        <button type="button" role="tab" aria-selected="true"><%= FsetWeb.IconView.collection(class: "w-5 h-5 text-gray-300") %></button>
+        <%= if !@current_user do %>
+          <button type="button" role="tab" tabindex="-1" class="px-2 border rounded border-indigo-600 bg-indigo-800 hover:bg-indigo-900 text-white text-sm font-thin">claim</button>
+        <% end %>
+        <span class="flex-1"></span>
+        <button type="button" role="tab" tabindex="-1"><%= FsetWeb.IconView.import(class: "w-5 h-5 text-gray-300") %></button>
+        <button type="button" role="tab" tabindex="-1"><%= FsetWeb.IconView.export(class: "w-5 h-5 text-gray-300") %></button>
+        <button type="button" role="tab" tabindex="-1" class="textxs px-1 rounded border border-gray-700" style="box-shadow: 2px 2px 0 black">KBD</button>
       </div>
       <div role="tabpanel" class="overflow-auto" id="project">
         Project
       </div>
+      <%= if !@current_user do %>
+        <div role="tabpanel" class="overflow-auto" hidden>
+          <ul>
+            <%= if @current_user do %>
+              <li><%= @current_user.email %></li>
+              <li><%= link "Settings", to: Routes.user_settings_path(@conn, :edit) %></li>
+              <li><%= link "Log out", to: Routes.user_session_path(@conn, :delete), method: :delete %></li>
+            <% else %>
+              <%= form_for @signup_changeset, Routes.user_registration_path(@conn, :create), fn f -> %>
+                <%= if @signup_changeset.action do %>
+                  <div class="alert alert-danger">
+                    <p>Oops, something went wrong! Please check the errors below.</p>
+                  </div>
+                <% end %>
+
+                <%= hidden_input f, :project_id, value: @project.anchor %>
+
+                <%= label f, :email %>
+                <%= email_input f, :email, required: true %>
+                <%= error_tag f, :email %>
+
+                <%= label f, :password %>
+                <%= password_input f, :password, required: true %>
+                <%= error_tag f, :password %>
+
+                <div>
+                  <%= submit "Claim" %>
+                </div>
+              <% end %>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
       <div role="tabpanel" class="overflow-auto" hidden>
-      <ul>
-        <%= if @current_user do %>
-          <li><%= @current_user.email %></li>
-          <li><%= link "Settings", to: Routes.user_settings_path(@conn, :edit) %></li>
-          <li><%= link "Log out", to: Routes.user_session_path(@conn, :delete), method: :delete %></li>
-        <% else %>
-          <%= render FsetWeb.UserRegistrationView, "new.html", conn: @conn, changeset: @signup_changeset, project_id: @project.anchor %>
-        <% end %>
-      </ul>
+        Import
+      </div>
+      <div role="tabpanel" class="overflow-auto" hidden>
+        Export
       </div>
       <div role="tabpanel" class="overflow-auto" hidden>
         <%= render "_help.html" %>

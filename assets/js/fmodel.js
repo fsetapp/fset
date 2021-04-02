@@ -45,6 +45,8 @@ export const start = ({ channel }) => {
             .receive("timeout", () => console.log("Networking issue..."))
         })
       })
+
+      document.activeAriaTree = e.detail.target.closest("[role='tree']")
     }
     handleSchUpdate(e) {
       let { detail, target } = e
@@ -72,9 +74,20 @@ export const start = ({ channel }) => {
       this.removeEventListener("click", this.handleAction)
     }
     handleAction(e) {
-      if (e.target.name == "mark_as_main")
-        document.querySelector("[id='fmodel'] [role='tree']")
-          .dispatchEvent(new KeyboardEvent("keydown", { key: "m" }))
+      if (!document.activeAriaTree) return
+      switch (e.target.closest("[data-tree-action]").dataset.treeAction) {
+        case "mark_as_main": this.keydown({ key: "m" }); break
+        case "move_up": this.keydown({ key: "ArrowUp", altKey: true }); break
+        case "move_down": this.keydown({ key: "ArrowDown", altKey: true }); break
+        case "clone": this.keydown({ key: "ArrowDown", shiftKey: true, altKey: true }); break
+        case "copy": this.keydown({ key: "c", metaKey: true }); break
+        case "cut": this.keydown({ key: "x", metaKey: true }); break
+        case "paste": this.keydown({ key: "v", metaKey: true }); break
+        case "delete": this.keydown({ key: "Delete" }); break
+      }
+    }
+    keydown({ key, altKey, ctrlKey, metaKey, shiftKey }) {
+      document.activeAriaTree.dispatchEvent(new KeyboardEvent("keydown", { key, altKey, ctrlKey, metaKey, shiftKey }))
     }
   })
 }
