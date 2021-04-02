@@ -126,7 +126,7 @@ defmodule Fset.Projects do
       multi
       |> Ecto.Multi.update(:update_project, Ecto.Changeset.change(project, project_attrs))
       |> Ecto.Multi.insert_all(:update_files, Fmodels.File, files,
-        conflict_target: [:key, :project_id],
+        conflict_target: [:anchor],
         on_conflict: {:replace, [:key, :order]}
       )
       |> Ecto.Multi.insert_all(:update_fmodels, Fmodels.Fmodel, fmodels,
