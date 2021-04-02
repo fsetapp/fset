@@ -7,6 +7,7 @@
     <%= csrf_meta_tag() %>
     <title>Fsetapp</title>
     <link rel="stylesheet" href="<%= Routes.static_path(@conn, "/css/app.css") %>"/>
+    <link rel="icon" href="/images/fset-ico.svg" sizes="any" type="image/svg+xml">
     <script>
       <%= if assigns[:project] do %>
         window.projectName = "<%= @project.key %>";
