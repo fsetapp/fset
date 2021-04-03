@@ -89,6 +89,14 @@ defmodule FsetWeb.IconView do
     svg_tag("delete", path, opts)
   end
 
+  def add(opts \\ []) do
+    path = ~E"""
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+    """
+
+    svg_tag("add", path, opts)
+  end
+
   defp svg_tag(title, path, opts) do
     ~E"""
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="<%= opts[:viewbox] || '0 0 24 24' %>" class="<%= opts[:class] || 'w-6 h-6' %>" stroke="currentColor">

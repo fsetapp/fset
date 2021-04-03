@@ -96,6 +96,7 @@ export const start = ({ channel }) => {
         case "cut": this.keydown({ key: "x", metaKey: true }); break
         case "paste": this.keydown({ key: "v", metaKey: true }); break
         case "delete": this.keydown({ key: "Delete" }); break
+        case "add_item": this.keydown({ key: "+", shiftKey: true }); break
       }
     }
     keydown({ key, altKey, ctrlKey, metaKey, shiftKey }) {
