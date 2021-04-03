@@ -3,16 +3,30 @@ import { initModelView, initFileView, update, Project } from "./vendor/fbox.min.
 var projectStore = Project.createProjectStore()
 var projectBaseStore
 
+const buffer = function (func, wait, scope) {
+  var timer = null;
+  return function () {
+    if (timer) clearTimeout(timer)
+    var args = arguments
+    timer = setTimeout(function () {
+      timer = null
+      func.apply(scope, args)
+    }, wait)
+  }
+}
+
 export const start = ({ channel }) => {
   customElements.define("sch-listener", class extends HTMLElement {
     connectedCallback() {
       this.addEventListener("remote-connected", this.handleRemoteConnected)
       this.addEventListener("tree-command", this.handleTreeCommand)
+      this.addEventListener("tree-command", buffer(this.handleProjectRemote, 1000))
       this.addEventListener("sch-update", this.handleSchUpdate)
     }
     disconnectedCallback() {
       this.removeEventListener("remote-connected", this.handleRemoteConnected)
       this.removeEventListener("tree-command", this.handleTreeCommand)
+      this.removeEventListener("tree-command", buffer(this.handleProjectRemote, 1000))
       this.removeEventListener("sch-update", this.handleSchUpdate)
     }
     handleRemoteConnected(e) {
@@ -32,21 +46,19 @@ export const start = ({ channel }) => {
     }
     handleTreeCommand(e) {
       Project.handleProjectContext(projectStore, e.detail.target, e.detail.command)
-
-      setTimeout(() => {
-        Project.handleProjectRemote(projectStore, projectBaseStore, e.detail.command, (diff) => {
-          channel.push("push_project", diff)
-            .receive("ok", (updated_project) => {
-              // Project.projectToStore(updated_project, projectBaseStore)
-              projectBaseStore = JSON.parse(JSON.stringify(projectStore))
-              // console.log("updated porject", updated_project)
-            })
-            .receive("error", (reasons) => console.log("update project failed", reasons))
-            .receive("timeout", () => console.log("Networking issue..."))
-        })
-      })
-
       document.activeAriaTree = e.detail.target.closest("[role='tree']")
+    }
+    handleProjectRemote(e) {
+      Project.handleProjectRemote(projectStore, projectBaseStore, e.detail.command, (diff) => {
+        channel.push("push_project", diff)
+          .receive("ok", (updated_project) => {
+            // Project.projectToStore(updated_project, projectBaseStore)
+            projectBaseStore = JSON.parse(JSON.stringify(projectStore))
+            // console.log("updated porject", updated_project)
+          })
+          .receive("error", (reasons) => console.log("update project failed", reasons))
+          .receive("timeout", () => console.log("Networking issue..."))
+      })
     }
     handleSchUpdate(e) {
       let { detail, target } = e
