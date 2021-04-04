@@ -26,3 +26,9 @@
   --ref-color: var(--indigo-400);
   height: 100%;
 }
+
+sch-meta > .meta-def {
+  padding: 1rem 0;
+  word-break: break-all;
+  --meta-def-color: var(--indigo-400);
+}
