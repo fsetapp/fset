@@ -1,4 +1,4 @@
-import { initModelView, initFileView, update, Project } from "./vendor/fbox.min.js"
+import { initModelView, initFileView, update, Project, Diff } from "./vendor/fbox.min.js"
 
 var projectStore = Project.createProjectStore()
 var projectBaseStore
@@ -20,13 +20,13 @@ export const start = ({ channel }) => {
     connectedCallback() {
       this.addEventListener("remote-connected", this.handleRemoteConnected)
       this.addEventListener("tree-command", this.handleTreeCommand)
-      this.addEventListener("tree-command", buffer(this.handleProjectRemote, 1000))
+      this.addEventListener("tree-command", buffer(this.handleProjectRemote.bind(this), 250))
       this.addEventListener("sch-update", this.handleSchUpdate)
     }
     disconnectedCallback() {
       this.removeEventListener("remote-connected", this.handleRemoteConnected)
       this.removeEventListener("tree-command", this.handleTreeCommand)
-      this.removeEventListener("tree-command", buffer(this.handleProjectRemote, 1000))
+      this.removeEventListener("tree-command", buffer(this.handleProjectRemote.bind(this), 250))
       this.removeEventListener("sch-update", this.handleSchUpdate)
     }
     handleRemoteConnected(e) {
@@ -45,20 +45,30 @@ export const start = ({ channel }) => {
       projectBaseStore = JSON.parse(JSON.stringify(projectStore))
     }
     handleTreeCommand(e) {
-      Project.handleProjectContext(projectStore, e.detail.target, e.detail.command)
+      Project.handleProjectContext(projectStore, e.detail.target, e.detail.command, this.runDiff)
       document.activeAriaTree = e.detail.target.closest("[role='tree']")
     }
     handleProjectRemote(e) {
-      Project.handleProjectRemote(projectStore, projectBaseStore, e.detail.command, (diff) => {
+      Project.handleProjectRemote(projectStore, e.detail.command, (diff) => {
         channel.push("push_project", diff)
           .receive("ok", (updated_project) => {
             // Project.projectToStore(updated_project, projectBaseStore)
+
+            delete projectStore._diff
             projectBaseStore = JSON.parse(JSON.stringify(projectStore))
+            this.runDiff()
+            let projectTree = document.querySelector("[id='project'] [role='tree']")
+            projectTree._render(projectStore)
+            let fmodelTree = document.querySelector("[id='fmodel'] [role='tree']")
+            fmodelTree._render()
             // console.log("updated porject", updated_project)
           })
           .receive("error", (reasons) => console.log("update project failed", reasons))
           .receive("timeout", () => console.log("Networking issue..."))
       })
+    }
+    runDiff() {
+      return Diff.diff(projectStore, projectBaseStore)
     }
     handleSchUpdate(e) {
       let { detail, target } = e

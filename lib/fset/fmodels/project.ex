@@ -11,5 +11,6 @@ defmodule Fset.Fmodels.Project do
     field :allmeta, :map, virtual: true
 
     has_many :files, Fset.Fmodels.File
+    timestamps()
   end
 end

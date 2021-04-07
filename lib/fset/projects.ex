@@ -68,18 +68,7 @@ defmodule Fset.Projects do
   end
 
   def persist_metadata(sch, %Fmodels.Project{id: _} = project) do
-    metadata = Map.get(sch, "metadata", %{})
-
-    to_update_sch_meta =
-      %{}
-      |> put_from!(:anchor, {sch, "$anchor"})
-      |> put_from(:title, {metadata, "title"})
-      |> put_from(:description, {metadata, "description"})
-      |> put_from(:rw, {metadata, "rw"}, fn val -> String.to_atom(val) end)
-      |> put_from(:required, {metadata, "required"})
-      |> Map.put(:metadata, Map.drop(metadata, ["title", "description", "rw", "required"]))
-      |> Map.put(:project_id, project.id)
-
+    to_update_sch_meta = Map.put(from_sch_meta(sch), :project_id, project.id)
     sch_meta_change = Ecto.Changeset.change(%Fmodels.SchMeta{}, to_update_sch_meta)
 
     Ecto.Multi.new()
@@ -108,7 +97,10 @@ defmodule Fset.Projects do
 
   # Currently support "type", "key", "order" changes.
   defp update_changed_diff({multi, project}, %{"changed" => changed}) do
-    project_attrs = from_project_sch(changed[@project_diff])
+    project_attrs =
+      changed[@project_diff]
+      |> from_project_sch()
+      |> put_timestamp()
 
     files =
       Enum.map(changed[@file_diff] || [], fn {_key, file_sch} ->
@@ -261,6 +253,18 @@ defmodule Fset.Projects do
     |> Map.put(:sch, Map.drop(fmodel_sch, ["$anchor", "type", "key", "is_entry"]))
   end
 
+  defp from_sch_meta(sch) when is_map(sch) do
+    metadata = Map.get(sch, "metadata", %{})
+
+    %{}
+    |> put_from!(:anchor, {sch, "$anchor"})
+    |> put_from(:title, {metadata, "title"})
+    |> put_from(:description, {metadata, "description"})
+    |> put_from(:rw, {metadata, "rw"}, fn val -> String.to_atom(val) end)
+    |> put_from(:required, {metadata, "required"})
+    |> Map.put(:metadata, Map.drop(metadata, ["title", "description", "rw", "required"]))
+  end
+
   defp put_from(map, putkey, {from_map, getkey}, f \\ fn a -> a end) do
     case Map.get(from_map, getkey) do
       nil -> map
@@ -296,7 +300,7 @@ defmodule Fset.Projects do
         fmodel = Map.put(fmodel, :file_id, file.id)
         [fmodel | acc]
       else
-        Repo.rollback(fmodel)
+        raise "fild_id not found for #{fmodel}"
       end
     end)
   end
