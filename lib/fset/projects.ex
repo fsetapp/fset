@@ -3,6 +3,7 @@ defmodule Fset.Projects do
   alias Fset.Repo
   alias Fset.Projects.{Project, Role, User}
   alias Fset.Fmodels
+  alias Fset.Sch
 
   @project_diff "project"
   @file_diff "files"
@@ -137,7 +138,7 @@ defmodule Fset.Projects do
         |> put_timestamp()
       end)
 
-    insert_fmodels_after_file = fn
+    fmodels = fn
       %{insert_files: {_n, inserted_files}} ->
         new_files =
           Enum.reduce(inserted_files, project.files, fn file, acc ->
@@ -156,6 +157,47 @@ defmodule Fset.Projects do
         |> put_required_file_id(project)
     end
 
+    sch_metas = fn %{insert_fmodels: {_, inserted_fmodels}} ->
+      Enum.flat_map(inserted_fmodels, fn inserted_fmodel ->
+        sch =
+          inserted_fmodel.sch
+          |> Map.put("type", inserted_fmodel.type)
+          |> Map.put("key", inserted_fmodel.key)
+          |> Map.put("$anchor", inserted_fmodel.anchor)
+          |> Map.put("isEntry", inserted_fmodel.is_entry)
+
+        {_fmodel_sch, acc} =
+          Sch.walk(sch, [], fn a, _m, acc_ ->
+            {flat, nest} =
+              Map.split(Map.get(a, "metadata", %{}), ["title", "description", "rw", "required"])
+
+            metadata =
+              Map.take(nest, [
+                "min",
+                "max",
+                "pattern",
+                "default",
+                "multipleOf",
+                "unique"
+              ])
+
+            sch_meta =
+              %{}
+              |> Map.put(:anchor, a["$anchor"])
+              |> Map.put(:title, flat["title"])
+              |> Map.put(:description, flat["description"])
+              |> Map.put(:rw, String.to_existing_atom(flat["rw"] || "rw"))
+              |> Map.put(:required, flat["required"])
+              |> Map.put(:metadata, metadata)
+              |> Map.put(:project_id, project.id)
+
+            {:cont, {a, [sch_meta | acc_]}}
+          end)
+
+        acc
+      end)
+    end
+
     multi =
       multi
       |> Ecto.Multi.insert_all(:insert_files, Fmodels.File, files,
@@ -163,9 +205,14 @@ defmodule Fset.Projects do
         on_conflict: {:replace, [:key, :order]},
         returning: true
       )
-      |> Ecto.Multi.insert_all(:insert_fmodels, Fmodels.Fmodel, insert_fmodels_after_file,
+      |> Ecto.Multi.insert_all(:insert_fmodels, Fmodels.Fmodel, fmodels,
         conflict_target: [:anchor],
-        on_conflict: {:replace, [:key, :type, :is_entry, :sch]}
+        on_conflict: {:replace, [:key, :type, :is_entry, :sch]},
+        returning: true
+      )
+      |> Ecto.Multi.insert_all(:insert_sch_metas, Fmodels.SchMeta, sch_metas,
+        conflict_target: [:anchor],
+        on_conflict: {:replace, [:title, :description, :rw, :required, :metadata]}
       )
 
     {multi, project}
@@ -187,12 +234,32 @@ defmodule Fset.Projects do
       end)
 
     delete_fmodels_query =
-      from f in Fmodels.Fmodel,
-        where: f.anchor in ^fmodels_anchors
+      from f in Fmodels.Fmodel, where: f.anchor in ^fmodels_anchors, select: f
+
+    delete_sch_metas_query = fn %{delete_fmodels: {_, delete_fmodels}} ->
+      sch_metas_anchors =
+        Enum.flat_map(delete_fmodels, fn delete_fmodel ->
+          sch =
+            delete_fmodel.sch
+            |> Map.put("$anchor", delete_fmodel.anchor)
+            |> Map.put("type", delete_fmodel.type)
+
+          {_fmodel_sch, acc} =
+            Sch.walk(sch, [], fn a, _m, acc_ ->
+              {:cont, {a, [a["$anchor"] | acc_]}}
+            end)
+
+          acc
+        end)
+
+      from m in Fmodels.SchMeta,
+        where: m.anchor in ^sch_metas_anchors and m.project_id == ^project.id
+    end
 
     multi =
       multi
       |> Ecto.Multi.delete_all(:delete_fmodels, delete_fmodels_query)
+      |> Ecto.Multi.delete_all(:delete_sch_metas, delete_sch_metas_query)
       |> Ecto.Multi.delete_all(:delete_files, delete_files_query)
 
     {multi, project}
