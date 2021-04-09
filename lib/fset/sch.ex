@@ -8,7 +8,7 @@ defmodule Fset.Sch do
     end
   end
 
-  def walk_(sch, f, acc, meta) do
+  defp walk_(sch, f, acc, meta) do
     cond do
       sch["type"] in ["record"] ->
         sch["order"]

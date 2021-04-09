@@ -316,8 +316,8 @@ defmodule Fset.Projects do
     |> put_from!(:anchor, {fmodel_sch, "$anchor"})
     |> put_from(:type, {fmodel_sch, "type"})
     |> put_from(:key, {fmodel_sch, "key"})
-    |> put_from(:is_entry, {fmodel_sch, "is_entry"})
-    |> Map.put(:sch, Map.drop(fmodel_sch, ["$anchor", "type", "key", "is_entry"]))
+    |> put_from(:is_entry, {fmodel_sch, "isEntry"})
+    |> Map.put(:sch, Map.drop(fmodel_sch, ["$anchor", "type", "key", "isEntry"]))
   end
 
   defp from_sch_meta(sch) when is_map(sch) do
