@@ -53,8 +53,6 @@ export const start = ({ channel }) => {
         channel.push("push_project", diff)
           .receive("ok", (updated_project) => {
             // Project.projectToStore(updated_project, projectBaseStore)
-
-            delete projectStore._diff
             projectBaseStore = JSON.parse(JSON.stringify(projectStore))
             this.runDiff()
             let projectTree = document.querySelector("[id='project'] [role='tree']")

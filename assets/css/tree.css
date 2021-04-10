@@ -8,6 +8,7 @@
   --item-selected-border-color: var(--blue-500);
   --item-selected-header-bg-color: var(--gray-700);
 
+  --key-color: var(--gray-300);
   --type-color: var(--pink-400);
   --ref-color: var(--indigo-400);
   height: 100%;
@@ -22,6 +23,7 @@
   --item-selected-border-color: var(--blue-500);
   --item-selected-header-bg-color: var(--gray-700);
 
+  --key-color: var(--gray-300);
   --type-color: var(--pink-400);
   --ref-color: var(--indigo-400);
   height: 100%;
