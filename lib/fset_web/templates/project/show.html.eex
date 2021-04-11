@@ -1,6 +1,6 @@
 <action-listener>
   <header id="toolbar" class="m-px py-1 bg-gray-900 flex flex-shrink-0">
-    <div class="flex flex-1 items-center">
+    <div class="flex flex-1 items-center overflow-hidden">
       <%= img_tag Routes.static_path(@conn, "/images/fset-ico.svg"), class: "mx-3 w-8 h-8" %>
       <%= if @current_user do %>
         <%= @current_user %>
@@ -8,7 +8,7 @@
         <span class="text-gray-400">public</span>
       <% end %>
       <span class="text-gray-500 mx-2">/</span>
-      <%= @project.key %>
+      <span class="overflow-x-scroll"><%= @project.key %></span>
 
     </div>
     <div class="text-xs font-light text-gray-400 flex justify-center w-full" style="flex: 2;">
