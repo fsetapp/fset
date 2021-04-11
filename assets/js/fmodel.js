@@ -1,4 +1,4 @@
-import { initModelView, initFileView, update, Project, Diff } from "./vendor/fbox.min.js"
+import { FmodelTree, ProjectTree, SchMetaForm, Project, Diff } from "./vendor/fbox.min.js"
 
 var projectStore = Project.createProjectStore()
 var projectBaseStore
@@ -34,31 +34,35 @@ export const start = ({ channel }) => {
       Project.projectToStore(project, projectStore)
 
       let currentFile = project.files.find(f => f.anchor == project.current_file) || projectStore.fields[project.order[0]]
-      initFileView({ store: projectStore, target: "[id='project']" })
+      ProjectTree({ store: projectStore, target: "[id='project']" })
 
       let fileStore
       if (currentFile) {
         fileStore = Project.getFileStore(projectStore, currentFile.key)
         fileStore._models = Project.anchorsModels(projectStore, fileStore)
-        initModelView({ store: fileStore, target: "[id='fmodel']", metaSelector: "sch-meta" })
+        FmodelTree({ store: fileStore, target: "[id='fmodel']", metaSelector: "sch-meta" })
+        SchMetaForm({ store: fileStore, target: "[id='fsch']", treeTarget: "[id='fmodel']" })
       }
       projectBaseStore = JSON.parse(JSON.stringify(projectStore))
     }
     handleTreeCommand(e) {
-      Project.handleProjectContext(projectStore, e.detail.target, e.detail.command, this.runDiff)
+      Project.controller(projectStore, e.detail.target, e.detail.command, this.runDiff)
       document.activeAriaTree = e.detail.target.closest("[role='tree']")
     }
     handleProjectRemote(e) {
-      Project.handleProjectRemote(projectStore, e.detail.command, (diff) => {
+      Project.taggedDiff(projectStore, e.detail.command, (diff) => {
         channel.push("push_project", diff)
           .receive("ok", (updated_project) => {
+            let file = e.detail.target.closest("[data-tag='file']")
+            let filename = file?.key
+            let fileStore = Project.getFileStore(projectStore, filename)
+
             // Project.projectToStore(updated_project, projectBaseStore)
-            projectBaseStore = JSON.parse(JSON.stringify(projectStore))
+            // projectBaseStore = JSON.parse(JSON.stringify(projectStore))
             this.runDiff()
-            let projectTree = document.querySelector("[id='project'] [role='tree']")
-            projectTree._render(projectStore)
-            let fmodelTree = document.querySelector("[id='fmodel'] [role='tree']")
-            fmodelTree._render()
+
+            projectStore.render()
+            fileStore.render()
             // console.log("updated porject", updated_project)
           })
           .receive("error", (reasons) => console.log("update project failed", reasons))
@@ -71,18 +75,12 @@ export const start = ({ channel }) => {
     handleSchUpdate(e) {
       let { detail, target } = e
       let fileStore = Project.getFileStore(projectStore, e.detail.file)
+      let updated_sch = Project.SchMeta.update({ store: fileStore, detail })
 
-      // fileStore which does not have .render is a fresh fileStore without component initialization.
-      // That means this handler being going on is stale. `handleSchUpdate` only work with fileStore
-      // initialized with modelView component
-      if (fileStore?.render) {
-        let updated_sch = update({ store: fileStore, detail, target })
-
-        if (updated_sch)
-          channel.push("push_sch_meta", { $anchor: updated_sch.$anchor, metadata: updated_sch.metadata })
-            .receive("ok", (updated_metadata) => {
-            })
-      }
+      if (updated_sch)
+        channel.push("push_sch_meta", { $anchor: updated_sch.$anchor, metadata: updated_sch.metadata })
+          .receive("ok", (updated_metadata) => {
+          })
     }
   })
 

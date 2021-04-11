@@ -126,7 +126,7 @@
   </section>
   <section id="fmodel" class="m-px bg-gray-900" style="flex: 2;">
   </section>
-  <sch-meta class="m-px flex-1" tabindex="-1">
+  <sch-meta id ="fsch" class="m-px flex-1" tabindex="-1">
   </sch-meta>
 </sch-listener>
 
