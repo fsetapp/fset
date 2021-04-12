@@ -93,7 +93,7 @@ export const start = ({ channel }) => {
     }
     handleAction(e) {
       if (!document.activeAriaTree) return
-      switch (e.target.closest("[data-tree-action]").dataset.treeAction) {
+      switch (e.target.closest("[data-tree-action]")?.dataset?.treeAction) {
         case "mark_as_main": this.keydown({ key: "m" }); break
         case "move_up": this.keydown({ key: "ArrowUp", altKey: true }); break
         case "move_down": this.keydown({ key: "ArrowDown", altKey: true }); break
