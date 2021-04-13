@@ -11,7 +11,11 @@
   --key-color: var(--gray-300);
   --type-color: var(--pink-400);
   --ref-color: var(--indigo-400);
-  height: 100%;
+
+  --diff-new-color: rgba(144, 238, 144, .5);
+  --diff-removed-color: rgba(255, 0, 0, .5);
+  --diff-moved-color: rgba(59, 130, 246, .5);
+  --diff-changed-color: rgba(255, 140, 0, .5);
 }
 
 #project [role="tree"] {
@@ -26,7 +30,11 @@
   --key-color: var(--gray-300);
   --type-color: var(--pink-400);
   --ref-color: var(--indigo-400);
-  height: 100%;
+
+  --diff-new-color: rgba(144, 238, 144, .5);
+  --diff-removed-color: rgba(255, 0, 0, .5);
+  --diff-moved-color: rgba(59, 130, 246, .5);
+  --diff-changed-color: rgba(255, 140, 0, .5);
 }
 
 sch-meta > .meta-def {
