@@ -5,7 +5,7 @@ defmodule FsetWeb.MainChannel do
   def join("project:" <> project_name, _params, socket) do
     case Projects.get_project(project_name) do
       {:ok, project} ->
-        send(self(), {:build_ids_lookup_table, project.anchor})
+        send(self(), {:build_ids_lookup_table, project.key})
 
         {:ok, Projects.to_project_sch(project), assign(socket, :project, %{project | files: []})}
 
@@ -15,37 +15,48 @@ defmodule FsetWeb.MainChannel do
   end
 
   def handle_in("push_sch_meta", sch_meta, socket) do
-    reply = Projects.persist_metadata(sch_meta, socket.assigns.project)
+    %{project: project, current_user: _user_id} = socket.assigns
+    reply = Projects.persist_metadata(sch_meta, project)
     {:reply, reply, socket}
   end
 
   def handle_in("push_project", diff, socket) do
-    {:ok, _project} = Projects.persist_diff(diff, socket.assigns.project)
-    {:ok, project} = Projects.get_project(socket.assigns.project.anchor)
+    %{project: project, current_user: user_id} = socket.assigns
+    {:ok, _project} = Projects.persist_diff(diff, project)
+    {:ok, project} = Projects.get_project(project.key, user_id)
 
-    send(self(), {:build_ids_lookup_table, socket.assigns.project.anchor})
+    send(self(), {:build_ids_lookup_table, project.key})
 
     {:reply, {:ok, Projects.to_project_sch(project)}, socket}
   end
 
-  def handle_info({:build_ids_lookup_table, project_anchor}, socket) do
-    {:ok, project} = Projects.get_project(project_anchor)
+  def handle_info({:build_ids_lookup_table, project_key}, socket) do
+    case Projects.get_project(project_key) do
+      {:ok, project} ->
+        map_fmodel = fn m ->
+          m
+          |> Map.from_struct()
+          |> Map.take([:id, :anchor])
+        end
 
-    map_fmodel = fn m ->
-      m
-      |> Map.from_struct()
-      |> Map.take([:id, :anchor])
+        map_file = fn f ->
+          f
+          |> Map.from_struct()
+          |> Map.take([:id, :anchor])
+          |> Map.put(:fmodels, Enum.map(f.fmodels, map_fmodel))
+        end
+
+        project = %{project | files: Enum.map(project.files, map_file)}
+
+        {:noreply, assign(socket, :project, project)}
+
+      _ ->
+        {:noreply, socket}
     end
-
-    map_file = fn f ->
-      f
-      |> Map.from_struct()
-      |> Map.take([:id, :anchor])
-      |> Map.put(:fmodels, Enum.map(f.fmodels, map_fmodel))
-    end
-
-    project = %{project | files: Enum.map(project.files, map_file)}
-
-    {:noreply, assign(socket, :project, project)}
   end
+
+  # You will know it when you want it
+  # def terminate({_, trace}, _socket) do
+  #   IO.inspect(trace, label: "terminate trace")
+  # end
 end

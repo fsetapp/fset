@@ -2,8 +2,8 @@
   <header id="toolbar" class="m-px py-1 bg-gray-900 flex flex-shrink-0">
     <div class="flex flex-1 items-center overflow-hidden">
       <%= img_tag Routes.static_path(@conn, "/images/fset-ico.svg"), class: "mx-3 w-8 h-8" %>
-      <%= if @current_user do %>
-        <%= @current_user %>
+      <%= if assigns[:username] do %>
+        <%= link assigns[:username], to: Routes.profile_path(@conn, :show, assigns[:username]) %>
       <% else %>
         <span class="text-gray-400">public</span>
       <% end %>
@@ -69,46 +69,40 @@
     <tab-container class="flex flex-col flex-grow">
       <div class="flex flex-shrink-0 px-2 space-x-2 py-1 bg-gray-meta border border-gray-800 mb-px" role="tablist">
         <button type="button" role="tab" aria-selected="true"><%= FsetWeb.IconView.collection(class: "w-5 h-5 text-gray-300") %></button>
-        <%= if !@current_user do %>
+        <%= if assigns[:project_users] == [] do %>
           <button type="button" role="tab" tabindex="-1" class="px-2 border rounded border-indigo-600 bg-indigo-800 hover:bg-indigo-900 text-white text-xs font-thin">claim project</button>
         <% end %>
         <span class="flex-1"></span>
         <button type="button" role="tab" tabindex="-1"><%= FsetWeb.IconView.import(class: "w-5 h-5 text-gray-300") %></button>
         <button type="button" role="tab" tabindex="-1"><%= FsetWeb.IconView.export(class: "w-5 h-5 text-gray-300") %></button>
-        <button type="button" role="tab" tabindex="-1" class="text-xs px-1 rounded border border-gray-700" style="box-shadow: 2px 2px 0 black"><%= "<kbd>" %></button>
+        <button type="button" role="tab" tabindex="-1" class="text-xs px-1 rounded border border-gray-700"><%= "<kbd>" %></button>
       </div>
-      <div role="tabpanel" class="overflow-hidden" id="project">
+      <div role="tabpanel" id="project" class="flex-grow overflow-hidden" tabindex="-1" >
         Project
       </div>
-      <%= if !@current_user do %>
+      <%= if assigns[:project_users] == [] do %>
         <div role="tabpanel" class="overflow-hidden" hidden>
           <ul>
-            <%= if @current_user do %>
-              <li><%= @current_user.email %></li>
-              <li><%= link "Settings", to: Routes.user_settings_path(@conn, :edit) %></li>
-              <li><%= link "Log out", to: Routes.user_session_path(@conn, :delete), method: :delete %></li>
-            <% else %>
-              <%= form_for @signup_changeset, Routes.user_registration_path(@conn, :create), fn f -> %>
-                <%= if @signup_changeset.action do %>
-                  <div class="alert alert-danger">
-                    <p>Oops, something went wrong! Please check the errors below.</p>
-                  </div>
-                <% end %>
-
-                <%= hidden_input f, :project_id, value: @project.anchor %>
-
-                <%= label f, :email %>
-                <%= email_input f, :email, required: true %>
-                <%= error_tag f, :email %>
-
-                <%= label f, :password %>
-                <%= password_input f, :password, required: true %>
-                <%= error_tag f, :password %>
-
-                <div>
-                  <%= submit "Claim" %>
+            <%= form_for @signup_changeset, Routes.user_registration_path(@conn, :create), fn f -> %>
+              <%= if @signup_changeset.action do %>
+                <div class="alert alert-danger">
+                  <p>Oops, something went wrong! Please check the errors below.</p>
                 </div>
               <% end %>
+
+              <%= hidden_input f, :project_key, value: @project.key %>
+
+              <%= label f, :email %>
+              <%= email_input f, :email, required: true %>
+              <%= error_tag f, :email %>
+
+              <%= label f, :password %>
+              <%= password_input f, :password, required: true %>
+              <%= error_tag f, :password %>
+
+              <div>
+                <%= submit "Claim" %>
+              </div>
             <% end %>
           </ul>
         </div>
@@ -117,7 +111,11 @@
         Import
       </div>
       <div role="tabpanel" class="overflow-hidden" hidden>
-        Export
+        <%= if @current_user do %>
+          <%= button("Open", to: Routes.export_path(@conn, :inline, @current_user.email, @project.key), target: "_blank") %>
+          <%= button("Download", to: Routes.export_path(@conn, :download, @current_user.email, @project.key), target: "_blank") %>
+        <% end %>
+
       </div>
       <div role="tabpanel" class="overflow-hidden" hidden>
         <%= render "_help.html" %>

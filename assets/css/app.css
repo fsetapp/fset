@@ -2,6 +2,7 @@
 @import "./theme-vars.css";
 
 @import "./tree.css";
+@import "./tab.css";
 @import "./vendor/fbox.min.css";
 @import "./kbd.css";
 
@@ -17,4 +18,11 @@
 }
 sch-meta {
   @apply text-xs;
+}
+
+.root-item {
+  margin: 0;
+}
+.root-item > [role='group'] {
+  margin-bottom: .5rem;
 }

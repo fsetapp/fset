@@ -19,8 +19,6 @@ if (window.userToken || window.projectName) {
 if (window.projectName) {
   channel.join()
     .receive("ok", resp => {
-      console.log("Joined successfully", resp)
-
       document.querySelector("sch-listener")
         .dispatchEvent(new CustomEvent("remote-connected", { detail: { project: resp } }))
     })

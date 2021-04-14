@@ -11,6 +11,6 @@ defmodule Fset.Fmodels.SchMeta do
     # type specific meta
     field :metadata, :map
 
-    belongs_to :project, Fset.Fmodels.Project
+    belongs_to :project, Fset.Projects.Project
   end
 end

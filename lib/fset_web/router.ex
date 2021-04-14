@@ -77,8 +77,12 @@ defmodule FsetWeb.Router do
 
     get "/404.html", ErrorController, :notfound
 
-    get "/:username/:projectname", ProjectController, :show
-    get "/:projectname", ProjectController, :show
+    post "/:username/:projectname/export", ExportController, :inline
+    post "/:username/:projectname/export_download", ExportController, :download
+
     post "/projects", ProjectController, :create
+    get "/public/:projectname", ProjectController, :show
+    get "/:username/:projectname", ProjectController, :show
+    get "/:username", ProfileController, :show
   end
 end

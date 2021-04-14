@@ -8,6 +8,10 @@ defmodule Fset.Projects.Project do
     field :order, {:array, :string}
     field :description, :string
 
+    field :current_file_id, :integer, virtual: true
+    field :allmeta, :map, virtual: true
+
+    has_many :files, Fset.Fmodels.File
     many_to_many :users, Fset.Projects.User, join_through: Fset.Projects.Role
 
     timestamps()

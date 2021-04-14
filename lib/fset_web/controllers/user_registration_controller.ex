@@ -20,8 +20,8 @@ defmodule FsetWeb.UserRegistrationController do
             &Routes.user_confirmation_url(conn, :confirm, &1)
           )
 
-        if user_project_id = user_params["project_id"],
-          do: Projects.add_member(user_project_id, user.id)
+        if project_key = user_params["project_key"],
+          do: claim_project(user, project_key)
 
         conn
         |> put_flash(:info, "User created successfully.")
@@ -29,6 +29,14 @@ defmodule FsetWeb.UserRegistrationController do
 
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "new.html", changeset: changeset)
+    end
+  end
+
+  defp claim_project(user, project_key) do
+    {:ok, project} = Projects.get_project(project_key)
+
+    if project.users == [] do
+      Projects.add_member(project_key, user.id)
     end
   end
 end

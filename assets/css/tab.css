@@ -1,0 +1,7 @@
+[role='tab'][aria-selected='true'] {
+  outline: none;
+  @apply rounded ring-1 ring-gray-600;
+}
+[role='tab'][aria-selected='true']:focus {
+  @apply rounded ring-1 ring-gray-500;
+}

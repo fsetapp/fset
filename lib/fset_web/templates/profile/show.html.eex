@@ -1,0 +1,9 @@
+<%= if @current_user do %>
+  user profile <%= @current_user.username %>
+  <%= for project <- @projects do %>
+    <%= link project.key, to: Routes.project_path(@conn, :show, @current_user.username, project.key) %>
+  <% end %>
+  <%= button("Create Project", to: Routes.project_path(@conn, :create)) %>
+<% else %>
+  user profile <%= @user.username %>
+<% end %>

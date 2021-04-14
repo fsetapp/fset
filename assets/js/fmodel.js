@@ -50,6 +50,8 @@ export const start = ({ channel }) => {
       document.activeAriaTree = e.detail.target.closest("[role='tree']")
     }
     handleProjectRemote(e) {
+      if (!window.userToken) return
+
       Project.taggedDiff(projectStore, e.detail.command, (diff) => {
         channel.push("push_project", diff)
           .receive("ok", (updated_project) => {
@@ -66,6 +68,7 @@ export const start = ({ channel }) => {
             // console.log("updated porject", updated_project)
           })
           .receive("error", (reasons) => console.log("update project failed", reasons))
+          .receive("noop", (a) => a)
           .receive("timeout", () => console.log("Networking issue..."))
       })
     }
@@ -77,6 +80,7 @@ export const start = ({ channel }) => {
       let fileStore = Project.getFileStore(projectStore, e.detail.file)
       let updated_sch = Project.SchMeta.update({ store: fileStore, detail })
 
+      if (!window.userToken) return
       if (updated_sch)
         channel.push("push_sch_meta", { $anchor: updated_sch.$anchor, metadata: updated_sch.metadata })
           .receive("ok", (updated_metadata) => {

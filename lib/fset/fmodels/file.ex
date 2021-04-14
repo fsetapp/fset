@@ -7,7 +7,7 @@ defmodule Fset.Fmodels.File do
     field :order, {:array, :string}
 
     has_many :fmodels, Fset.Fmodels.Fmodel
-    belongs_to :project, Fset.Fmodels.Project
+    belongs_to :project, Fset.Projects.Project
 
     timestamps()
   end
