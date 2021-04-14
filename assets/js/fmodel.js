@@ -57,14 +57,16 @@ export const start = ({ channel }) => {
           .receive("ok", (updated_project) => {
             let file = e.detail.target.closest("[data-tag='file']")
             let filename = file?.key
-            let fileStore = Project.getFileStore(projectStore, filename)
 
             // Project.projectToStore(updated_project, projectBaseStore)
             // projectBaseStore = JSON.parse(JSON.stringify(projectStore))
             this.runDiff()
 
             projectStore.render()
-            fileStore.render()
+            if (filename) {
+              let fileStore = Project.getFileStore(projectStore, filename)
+              fileStore.render && fileStore.render()
+            }
             // console.log("updated porject", updated_project)
           })
           .receive("error", (reasons) => console.log("update project failed", reasons))
