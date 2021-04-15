@@ -320,22 +320,28 @@ defmodule Fset.Fmodels do
   end
 
   def to_project_sch(%Project{} = project) do
-    project
-    |> Map.from_struct()
-    |> Map.take([:key, :order, :anchor, :allmeta])
-    |> Map.put(:files, Enum.map(project.files, &to_file_sch/1))
+    %{}
+    |> Map.put("$anchor", project.anchor)
+    |> Map.put("key", project.key)
+    |> Map.put("order", project.order)
+    |> Map.put("schMetas", project.allmeta)
+    |> Map.put("currentFileKey", Enum.find_value(project.files, fn f -> f.key end))
+    |> Map.put("fields", Map.new(project.files, &{&1.key, to_file_sch(&1)}))
   end
 
   defp to_file_sch(%File{} = file) do
-    file
-    |> Map.from_struct()
-    |> Map.take([:key, :order, :anchor])
-    |> Map.put(:fmodels, Enum.map(file.fmodels, &to_fmodel_sch/1))
+    %{}
+    |> Map.put("$anchor", file.anchor)
+    |> Map.put("key", file.key)
+    |> Map.put("order", file.order)
+    |> Map.put("fields", Map.new(file.fmodels, &{&1.key, to_fmodel_sch(&1)}))
   end
 
   defp to_fmodel_sch(%Fmodel{} = fmodel) do
-    fmodel
-    |> Map.from_struct()
-    |> Map.take([:type, :key, :sch, :is_entry, :anchor])
+    fmodel.sch
+    |> Map.put("$anchor", fmodel.anchor)
+    |> Map.put("key", fmodel.key)
+    |> Map.put("type", fmodel.type)
+    |> Map.put("isEntry", fmodel.is_entry)
   end
 end

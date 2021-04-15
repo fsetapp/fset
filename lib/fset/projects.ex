@@ -19,8 +19,8 @@ defmodule Fset.Projects do
     end
   end
 
-  def add_member(project_id, user_id, opts \\ []) do
-    {:ok, project} = get_project(project_id)
+  def add_member(project_key, user_id, opts \\ []) do
+    {:ok, project} = get_project(project_key)
 
     attrs = %{user_id: user_id, project_id: project.id, role: opts[:role] || :admin}
     changeset = Role.changeset(%Role{}, attrs)

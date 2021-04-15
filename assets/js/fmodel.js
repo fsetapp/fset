@@ -32,13 +32,10 @@ export const start = ({ channel }) => {
     handleRemoteConnected(e) {
       let project = e.detail.project
       Project.projectToStore(project, projectStore)
-
-      let currentFile = project.files.find(f => f.anchor == project.current_file) || projectStore.fields[project.order[0]]
       ProjectTree({ store: projectStore, target: "[id='project']" })
 
-      let fileStore
-      if (currentFile) {
-        fileStore = Project.getFileStore(projectStore, currentFile.key)
+      let fileStore = Project.getFileStore(projectStore, project.currentFileKey)
+      if (fileStore) {
         fileStore._models = Project.anchorsModels(projectStore, fileStore)
         FmodelTree({ store: fileStore, target: "[id='fmodel']", metaSelector: "sch-meta" })
         SchMetaForm({ store: fileStore, target: "[id='fsch']", treeTarget: "[id='fmodel']" })

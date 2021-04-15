@@ -25,7 +25,7 @@ defmodule FsetWeb.ProjectController do
         with {:ok, project} <- Projects.get_project(projectname),
              %{username: uname} <- find_project_user.(project, username) do
           render(conn, "show.html",
-            project: Projects.to_project_sch(project),
+            project: project,
             signup_changeset: changeset,
             project_users: project.users,
             username: uname
@@ -35,7 +35,7 @@ defmodule FsetWeb.ProjectController do
       _user ->
         with {:ok, project} <- Projects.get_project(projectname),
              %{username: uname} <- find_project_user.(project, username) do
-          render(conn, "show.html", project: Projects.to_project_sch(project), username: uname)
+          render(conn, "show.html", project: project, username: uname)
         end
     end
   end
