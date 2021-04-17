@@ -323,9 +323,10 @@ defmodule Fset.Fmodels do
     %{}
     |> Map.put("$anchor", project.anchor)
     |> Map.put("key", project.key)
-    |> Map.put("order", project.order)
     |> Map.put("schMetas", project.allmeta)
-    |> Map.put("currentFileKey", Enum.find_value(project.files, fn f -> f.key end))
+    |> Map.put("currentFileKey", hd(project.order))
+    |> Map.put("type", "record")
+    |> Map.put("order", project.order)
     |> Map.put("fields", Map.new(project.files, &{&1.key, to_file_sch(&1)}))
   end
 
@@ -333,6 +334,7 @@ defmodule Fset.Fmodels do
     %{}
     |> Map.put("$anchor", file.anchor)
     |> Map.put("key", file.key)
+    |> Map.put("type", "record")
     |> Map.put("order", file.order)
     |> Map.put("fields", Map.new(file.fmodels, &{&1.key, to_fmodel_sch(&1)}))
   end

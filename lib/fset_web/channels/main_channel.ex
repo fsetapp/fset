@@ -15,19 +15,29 @@ defmodule FsetWeb.MainChannel do
   end
 
   def handle_in("push_sch_meta", sch_meta, socket) do
-    %{project: project, current_user: _user_id} = socket.assigns
-    reply = Projects.persist_metadata(sch_meta, project)
-    {:reply, reply, socket}
+    %{project: project, current_user: user_id} = socket.assigns
+
+    if authorized(project, user_id) do
+      reply = Projects.persist_metadata(sch_meta, project)
+      {:reply, reply, socket}
+    else
+      {:noreply, socket}
+    end
   end
 
   def handle_in("push_project", diff, socket) do
     %{project: project, current_user: user_id} = socket.assigns
-    {:ok, _project} = Projects.persist_diff(diff, project)
-    {:ok, project} = Projects.get_project(project.key, user_id)
 
-    send(self(), {:build_ids_lookup_table, project.key})
+    if authorized(project, user_id) do
+      {:ok, _project} = Projects.persist_diff(diff, project)
+      {:ok, project} = Projects.get_project(project.key, user_id)
 
-    {:reply, {:ok, Projects.to_project_sch(project)}, socket}
+      send(self(), {:build_ids_lookup_table, project.key})
+
+      {:reply, {:ok, Projects.to_project_sch(project)}, socket}
+    else
+      {:noreply, socket}
+    end
   end
 
   def handle_info({:build_ids_lookup_table, project_key}, socket) do
@@ -53,6 +63,10 @@ defmodule FsetWeb.MainChannel do
       _ ->
         {:noreply, socket}
     end
+  end
+
+  defp authorized(project, user_id) do
+    user_id in Enum.map(project.users, fn u -> u.id end)
   end
 
   # You will know it when you want it

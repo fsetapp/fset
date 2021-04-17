@@ -84,11 +84,17 @@ defmodule Fset.Projects do
     end
   end
 
-  def export_as_binary(%{"projectname" => projectname, "username" => _username}) do
+  def export_as_binary(params, opts \\ [])
+
+  def export_as_binary(%{"projectname" => projectname, "username" => username}, opts) do
     {:ok, project} = get_project(projectname)
-    Exports.export(Fset.Fmodels.to_project_sch(project))
-    ""
+
+    schema_path = Enum.join([username, projectname], "/")
+    schema_id = URI.merge("https://json-schema.fset.app", schema_path) |> URI.to_string()
+    opts = [{:schema_id, schema_id} | opts]
+
+    Exports.json_schema(:one_way, Fset.Fmodels.to_project_sch(project), opts)
   end
 
-  def export_as_binary(_), do: ""
+  def export_as_binary(_, _), do: ""
 end

@@ -3,7 +3,7 @@
     <div class="flex flex-1 items-center overflow-hidden">
       <%= img_tag Routes.static_path(@conn, "/images/fset-ico.svg"), class: "mx-3 w-8 h-8" %>
       <%= if assigns[:username] do %>
-        <%= link assigns[:username], to: Routes.profile_path(@conn, :show, assigns[:username]) %>
+        <%= link assigns[:username], to: Routes.profile_path(@conn, :show, assigns[:username]), class: "text-purple-400" %>
       <% else %>
         <span class="text-gray-400">public</span>
       <% end %>
@@ -47,7 +47,7 @@
       </button>
       <span class="flex-1"></span>
       <button name="mark_as_main" data-tree-action="mark_as_main" class="mr-4 p-2 text-gray-100 border-indigo-900 text-indigo-400 self-center">
-        Mark as entrypoint
+        Mark as Entrypoint
       </button>
     </div>
     <div class="flex-1 flex justify-end">
@@ -68,13 +68,13 @@
   <section class="m-px flex-1 text-sm flex bg-gray-900">
     <tab-container class="flex flex-col flex-grow">
       <div class="flex flex-shrink-0 px-2 space-x-2 py-1 bg-gray-meta border border-gray-800 mb-px" role="tablist">
-        <button type="button" role="tab" aria-selected="true"><%= FsetWeb.IconView.collection(class: "w-5 h-5 text-gray-300") %></button>
+        <button type="button" role="tab" aria-selected="true"><%= FsetWeb.IconView.collection(class: "w-5 h-5") %></button>
         <%= if assigns[:project_users] == [] do %>
           <button type="button" role="tab" tabindex="-1" class="px-2 border rounded border-indigo-600 bg-indigo-800 hover:bg-indigo-900 text-white text-xs font-thin">claim project</button>
         <% end %>
         <span class="flex-1"></span>
-        <button type="button" role="tab" tabindex="-1"><%= FsetWeb.IconView.import(class: "w-5 h-5 text-gray-300") %></button>
-        <button type="button" role="tab" tabindex="-1"><%= FsetWeb.IconView.export(class: "w-5 h-5 text-gray-300") %></button>
+        <button type="button" role="tab" tabindex="-1"><%= FsetWeb.IconView.import(class: "w-5 h-5") %></button>
+        <button type="button" role="tab" tabindex="-1"><%= FsetWeb.IconView.export(class: "w-5 h-5") %></button>
         <button type="button" role="tab" tabindex="-1" class="text-xs px-1 rounded border border-gray-700"><%= "<kbd>" %></button>
       </div>
       <div role="tabpanel" id="project" class="flex-grow overflow-hidden" tabindex="-1" >
@@ -112,8 +112,8 @@
       </div>
       <div role="tabpanel" class="overflow-hidden" hidden>
         <%= if @current_user do %>
-          <%= button("Open", to: Routes.export_path(@conn, :inline, @current_user.email, @project.key), target: "_blank") %>
-          <%= button("Download", to: Routes.export_path(@conn, :download, @current_user.email, @project.key), target: "_blank") %>
+          <%= link "Open", to: Routes.export_path(@conn, :inline, @current_user.username, @project.key), target: "_blank" %>
+          <%= link "Download", to: Routes.export_path(@conn, :download, @current_user.username, @project.key), download: true %>
         <% end %>
 
       </div>

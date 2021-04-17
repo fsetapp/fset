@@ -1,7 +1,7 @@
 [role='tab'][aria-selected='true'] {
   outline: none;
-  @apply rounded ring-1 ring-gray-600;
+  color: var(--blue-500);
 }
 [role='tab'][aria-selected='true']:focus {
-  @apply rounded ring-1 ring-gray-500;
+  @apply rounded ring-1 ring-blue-500;
 }
