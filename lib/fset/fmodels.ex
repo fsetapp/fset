@@ -28,9 +28,9 @@ defmodule Fset.Fmodels do
         end).()
   end
 
-  def persist_diff(diff, %Project{id: _} = project) do
+  def persist_diff(diff, %Project{id: _} = project, opts \\ []) do
     {multi, _project} =
-      {Ecto.Multi.new(), project}
+      {opts[:multi] || Ecto.Multi.new(), project}
       |> update_changed_diff(diff)
       |> delete_removed_diff(diff)
       |> insert_added_diff(diff)
@@ -43,11 +43,13 @@ defmodule Fset.Fmodels do
     project_attrs =
       changed[@project_diff]
       |> from_project_sch()
+      |> Map.delete(:files)
       |> put_timestamp()
 
     files =
       Enum.map(changed[@file_diff] || [], fn {_key, file_sch} ->
         from_file_sch(file_sch)
+        |> Map.delete(:fmodels)
         |> Map.put(:project_id, project.id)
         |> put_timestamp()
       end)
@@ -76,6 +78,7 @@ defmodule Fset.Fmodels do
     files =
       Enum.map(added[@file_diff] || [], fn {_key, file_sch} ->
         from_file_sch(file_sch)
+        |> Map.delete(:fmodels)
         |> Map.put(:project_id, project.id)
         |> put_timestamp()
       end)
@@ -226,8 +229,9 @@ defmodule Fset.Fmodels do
     |> put_from(:description, {project_sch, "description"})
     |> put_from(:key, {project_sch, "key"})
     |> put_from(:order, {project_sch, "order"})
-
-    # |> put_from(:files, {project_sch, "fields"}, fn fields -> Enum.map(fields, &from_file_sch/1) end)
+    |> put_from(:files, {project_sch, "fields"}, fn fields ->
+      Enum.map(fields, &from_file_sch/1)
+    end)
   end
 
   defp from_file_sch({_k, file_sch}), do: from_file_sch(file_sch)

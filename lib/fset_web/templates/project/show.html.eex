@@ -108,7 +108,13 @@
         </div>
       <% end %>
       <div role="tabpanel" class="overflow-hidden" hidden>
-        Import
+        <%= if @current_user do %>
+          <%= form_for :import, Routes.import_path(@conn, :create, @current_user.username, @project.key), [multipart: true], fn f -> %>
+            upload schema: <%= file_input f, :json_schema_file, accept: ".json" %>
+            url: <%= text_input f, :json_schema_url %>
+            <%= submit "Import" %>
+          <% end %>
+        <% end %>
       </div>
       <div role="tabpanel" class="overflow-hidden" hidden>
         <%= if @current_user do %>

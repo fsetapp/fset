@@ -79,6 +79,7 @@ defmodule FsetWeb.Router do
 
     get "/:username/:projectname/export", ExportController, :inline
     get "/:username/:projectname/export_download", ExportController, :download
+    post "/:username/:projectname/import", ImportController, :create
 
     post "/projects", ProjectController, :create
     get "/public/:projectname", ProjectController, :show
