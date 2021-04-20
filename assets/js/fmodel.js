@@ -19,13 +19,13 @@ export const start = ({ channel }) => {
   customElements.define("sch-listener", class extends HTMLElement {
     connectedCallback() {
       this.addEventListener("remote-connected", this.handleRemoteConnected)
-      this.addEventListener("tree-command", this.handleTreeCommand)
+      this.addEventListener("tree-command", buffer(this.handleTreeCommand.bind(this)))
       this.addEventListener("tree-command", buffer(this.handleProjectRemote.bind(this), 250))
       this.addEventListener("sch-update", this.handleSchUpdate)
     }
     disconnectedCallback() {
       this.removeEventListener("remote-connected", this.handleRemoteConnected)
-      this.removeEventListener("tree-command", this.handleTreeCommand)
+      this.removeEventListener("tree-command", buffer(this.handleTreeCommand.bind(this)))
       this.removeEventListener("tree-command", buffer(this.handleProjectRemote.bind(this), 250))
       this.removeEventListener("sch-update", this.handleSchUpdate)
     }
@@ -48,8 +48,10 @@ export const start = ({ channel }) => {
     }
     handleProjectRemote(e) {
       if (!window.userToken) return
+      if (!Project.isDiffableCmd(e.detail.command.name)) return
 
-      Project.taggedDiff(projectStore, e.detail.command, (diff) => {
+      projectStore._diffToRemote = this.runDiff()
+      Project.taggedDiff(projectStore, (diff) => {
         channel.push("push_project", diff)
           .receive("ok", (updated_project) => {
             let file = e.detail.target.closest("[data-tag='file']")

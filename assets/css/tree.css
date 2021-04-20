@@ -5,7 +5,7 @@
 
   --item-root-bg-color: var(--matte-black);
   --item-selected-bg-color: var(--gray-meta);
-  --item-selected-border-color: var(--blue-500);
+  --item-selected-border-color: var(--gray-600);
   --item-selected-header-bg-color: var(--gray-700);
 
   --key-color: var(--gray-300);

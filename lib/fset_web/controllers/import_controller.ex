@@ -11,8 +11,11 @@ defmodule FsetWeb.ImportController do
       |> Map.merge(params["import"])
       |> Projects.import(params)
 
+    project_show_path =
+      Routes.project_path(conn, :show, conn.assigns.current_user.username, project.key)
+
     conn
     |> put_view(FsetWeb.ProjectView)
-    |> render("show.html", project: project, username: conn.assigns.current_user.username)
+    |> redirect(to: project_show_path)
   end
 end

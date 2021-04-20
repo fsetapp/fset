@@ -3,7 +3,7 @@
     <div class="flex flex-1 items-center overflow-hidden">
       <%= img_tag Routes.static_path(@conn, "/images/fset-ico.svg"), class: "mx-3 w-8 h-8" %>
       <%= if assigns[:username] do %>
-        <%= link assigns[:username], to: Routes.profile_path(@conn, :show, assigns[:username]), class: "text-purple-400" %>
+        <%= link assigns[:username], to: Routes.profile_path(@conn, :show, assigns[:username]), class: "text-blue-400" %>
       <% else %>
         <span class="text-gray-400">public</span>
       <% end %>
