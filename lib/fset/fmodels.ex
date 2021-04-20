@@ -328,10 +328,13 @@ defmodule Fset.Fmodels do
     |> Map.put("$anchor", project.anchor)
     |> Map.put("key", project.key)
     |> Map.put("schMetas", project.allmeta)
-    |> Map.put("currentFileKey", hd(project.order))
     |> Map.put("type", "record")
     |> Map.put("order", project.order)
     |> Map.put("fields", Map.new(project.files, &{&1.key, to_file_sch(&1)}))
+    |> (fn
+          %{"order" => []} = p -> p
+          %{"order" => [h | _]} = p -> Map.put(p, "currentFileKey", h)
+        end).()
   end
 
   defp to_file_sch(%File{} = file) do
