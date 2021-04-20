@@ -5,7 +5,7 @@ defmodule Fset.Fmodels.Fmodel do
     field :anchor, Ecto.UUID
     field :type, :string
     field :key, :string
-    field :sch, :map
+    field :sch, Ecto.Term, default: %{}
     field :is_entry, :boolean
 
     belongs_to :file, Fset.Fmodels.File

@@ -5,7 +5,7 @@ defmodule FsetWeb.MainChannel do
   def join("project:" <> project_name, _params, socket) do
     case Projects.get_project(project_name) do
       {:ok, project} ->
-        send(self(), {:build_ids_lookup_table, project.key})
+        send(self(), {:build_ids_lookup_table, project})
 
         {:ok, Projects.to_project_sch(project), assign(socket, :project, %{project | files: []})}
 
@@ -29,10 +29,10 @@ defmodule FsetWeb.MainChannel do
     %{project: project, current_user: user_id} = socket.assigns
 
     if authorized(project, user_id) do
-      {:ok, _project} = Projects.persist_diff(diff, project)
-      {:ok, project} = Projects.get_project(project.key, user_id)
+      {_result, _project} = Projects.persist_diff(diff, project)
+      {:ok, project} = Projects.get_user_project(project.key, user_id)
 
-      send(self(), {:build_ids_lookup_table, project.key})
+      send(self(), {:build_ids_lookup_table, project})
 
       {:reply, {:ok, Projects.to_project_sch(project)}, socket}
     else
@@ -40,29 +40,23 @@ defmodule FsetWeb.MainChannel do
     end
   end
 
-  def handle_info({:build_ids_lookup_table, project_key}, socket) do
-    case Projects.get_project(project_key) do
-      {:ok, project} ->
-        map_fmodel = fn m ->
-          m
-          |> Map.from_struct()
-          |> Map.take([:id, :anchor])
-        end
-
-        map_file = fn f ->
-          f
-          |> Map.from_struct()
-          |> Map.take([:id, :anchor])
-          |> Map.put(:fmodels, Enum.map(f.fmodels, map_fmodel))
-        end
-
-        project = %{project | files: Enum.map(project.files, map_file)}
-
-        {:noreply, assign(socket, :project, project)}
-
-      _ ->
-        {:noreply, socket}
+  def handle_info({:build_ids_lookup_table, project}, socket) do
+    map_fmodel = fn m ->
+      m
+      |> Map.from_struct()
+      |> Map.take([:id, :anchor])
     end
+
+    map_file = fn f ->
+      f
+      |> Map.from_struct()
+      |> Map.take([:id, :anchor])
+      |> Map.put(:fmodels, Enum.map(f.fmodels, map_fmodel))
+    end
+
+    project = %{project | files: Enum.map(project.files, map_file)}
+
+    {:noreply, assign(socket, :project, project)}
   end
 
   defp authorized(project, user_id) do

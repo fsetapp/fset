@@ -22,7 +22,7 @@ defmodule FsetWeb.ProjectController do
       nil ->
         changeset = Accounts.change_user_registration(%Accounts.User{})
 
-        with {:ok, project} <- Projects.get_project(projectname),
+        with {:ok, project} <- Projects.get_project(projectname, preload: [:users]),
              %{username: uname} <- find_project_user.(project, username) do
           render(conn, "show.html",
             project: project,
@@ -33,7 +33,7 @@ defmodule FsetWeb.ProjectController do
         end
 
       _user ->
-        with {:ok, project} <- Projects.get_project(projectname),
+        with {:ok, project} <- Projects.get_project(projectname, preload: [:users]),
              %{username: uname} <- find_project_user.(project, username) do
           render(conn, "show.html", project: project, username: uname)
         end

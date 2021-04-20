@@ -29,13 +29,13 @@ defmodule Fset.Fmodels do
   end
 
   def persist_diff(diff, %Project{id: _} = project, opts \\ []) do
-    {multi, _project} =
+    {multi, project} =
       {opts[:multi] || Ecto.Multi.new(), project}
       |> update_changed_diff(diff)
       |> delete_removed_diff(diff)
       |> insert_added_diff(diff)
 
-    Repo.transaction(multi)
+    {Repo.transaction(multi), project}
   end
 
   # Currently support "type", "key", "order" changes.

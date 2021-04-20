@@ -32,16 +32,18 @@ defmodule Fset.Projects do
     end
   end
 
-  def get_project(name) do
+  def get_project(name, opts \\ []) do
+    preload = opts[:preload] || [:users, files: :fmodels]
+
     project_query =
       from p in Project,
         where: p.key == ^name,
-        preload: [:users, files: :fmodels]
+        preload: ^preload
 
     one_with_sch_metas(project_query)
   end
 
-  def get_project(name, user_id) do
+  def get_user_project(name, user_id) do
     project_query =
       from p in Project,
         join: r in Role,
@@ -154,8 +156,8 @@ defmodule Fset.Projects do
     %{"projectname" => projectname, "username" => _username} = params
     json = fetch_file(url) |> Jason.decode!()
     schema = Imports.json_schema(:draft7, json, opts)
-    replace(projectname, schema)
-    {:ok, project} = get_project(projectname)
+    {_result, project} = replace(projectname, schema)
+    # {:ok, project} = get_project(projectname)
     project
   end
 
