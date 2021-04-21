@@ -16,7 +16,7 @@
 [hidden] {
   display: none;
 }
-sch-meta {
+sch-meta > form {
   @apply text-xs;
 }
 

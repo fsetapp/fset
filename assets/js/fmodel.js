@@ -19,13 +19,13 @@ export const start = ({ channel }) => {
   customElements.define("sch-listener", class extends HTMLElement {
     connectedCallback() {
       this.addEventListener("remote-connected", this.handleRemoteConnected)
-      this.addEventListener("tree-command", buffer(this.handleTreeCommand.bind(this)))
+      this.addEventListener("tree-command", buffer(this.handleTreeCommand.bind(this), 5))
       this.addEventListener("tree-command", buffer(this.handleProjectRemote.bind(this), 250))
       this.addEventListener("sch-update", this.handleSchUpdate)
     }
     disconnectedCallback() {
       this.removeEventListener("remote-connected", this.handleRemoteConnected)
-      this.removeEventListener("tree-command", buffer(this.handleTreeCommand.bind(this)))
+      this.removeEventListener("tree-command", buffer(this.handleTreeCommand.bind(this), 5))
       this.removeEventListener("tree-command", buffer(this.handleProjectRemote.bind(this), 250))
       this.removeEventListener("sch-update", this.handleSchUpdate)
     }
@@ -50,23 +50,21 @@ export const start = ({ channel }) => {
       if (!window.userToken) return
       if (!Project.isDiffableCmd(e.detail.command.name)) return
 
-      projectStore._diffToRemote = this.runDiff()
+      Object.defineProperty(projectStore, "_diffToRemote", { value: this.runDiff(), writable: true })
       Project.taggedDiff(projectStore, (diff) => {
         channel.push("push_project", diff)
           .receive("ok", (updated_project) => {
             let file = e.detail.target.closest("[data-tag='file']")
             let filename = file?.key
 
-            // Project.projectToStore(updated_project, projectBaseStore)
-            // projectBaseStore = JSON.parse(JSON.stringify(projectStore))
+            projectBaseStore = JSON.parse(JSON.stringify(projectStore))
             this.runDiff()
 
             projectStore.render()
-            if (filename) {
-              let fileStore = Project.getFileStore(projectStore, filename)
+            if (!filename) return
+            let fileStore = Project.getFileStore(projectStore, filename)
+            if (fileStore)
               fileStore.render && fileStore.render()
-            }
-            // console.log("updated porject", updated_project)
           })
           .receive("error", (reasons) => console.log("update project failed", reasons))
           .receive("noop", (a) => a)
