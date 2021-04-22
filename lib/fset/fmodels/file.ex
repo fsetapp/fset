@@ -4,7 +4,7 @@ defmodule Fset.Fmodels.File do
   schema "files" do
     field :anchor, Ecto.UUID, autogenerate: true
     field :key, :string
-    field :order, {:array, :string}
+    field :order, :integer
 
     has_many :fmodels, Fset.Fmodels.Fmodel
     belongs_to :project, Fset.Projects.Project

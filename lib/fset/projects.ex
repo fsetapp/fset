@@ -33,7 +33,9 @@ defmodule Fset.Projects do
   end
 
   def get_project(name, opts \\ []) do
-    preload = opts[:preload] || [:users, files: :fmodels]
+    sorted_files = from f in Fset.Fmodels.File, order_by: f.order
+    sorted_fmodels = from f in Fset.Fmodels.Fmodel, order_by: f.order
+    preload = opts[:preload] || [:users, files: {sorted_files, [fmodels: sorted_fmodels]}]
 
     project_query =
       from p in Project,
@@ -107,21 +109,19 @@ defmodule Fset.Projects do
       put_in(
         diff,
         ["added", "files"],
-        Enum.reduce(files, %{}, fn {k, file}, acc ->
-          file = Map.put(file, "key", k)
-          Map.put(acc, k, file)
+        Enum.reduce(files, %{}, fn file, acc ->
+          Map.put(acc, Map.get(file, "key"), file)
         end)
       )
 
-    for {_, file} <- files, reduce: diff do
+    for file <- files, reduce: diff do
       acc ->
         {fmodels, file_} = Map.pop!(file, "fields")
 
         fmodels =
-          Enum.map(fmodels, fn {k, fmodel} ->
-            fmodel = Map.put(fmodel, "key", k)
+          Enum.map(fmodels, fn fmodel ->
             fmodel = Map.put(fmodel, "parentAnchor", Map.get(file_, "$anchor"))
-            {k, fmodel}
+            {Map.get(fmodel, "key"), fmodel}
           end)
 
         update_in(acc, ["added", Access.key("fmodels", %{})], fn fs ->

@@ -30,17 +30,14 @@ defmodule Fset.Sch do
   defp walk_(sch, f0, f1, acc, meta) do
     cond do
       sch["type"] in ["record"] ->
-        sch["order"]
+        sch["fields"]
         |> Enum.with_index()
-        |> Enum.reduce_while({sch, acc}, fn {k, i}, {sch_acc, acc_} ->
-          sch_ = sch_acc["fields"][k]
-          sch_ = Map.put(sch_, "key", k)
-
+        |> Enum.reduce_while({sch, acc}, fn {sch_, i}, {sch_acc, acc_} ->
+          k = Map.get(sch_, "key")
           nextMeta = nextMeta(sch_acc, meta, "#{meta["path"]}[#{k}]", i)
           {sch_, acc_} = walk(sch_, acc_, f0, f1, nextMeta)
 
-          sch_acc = put_in(sch_acc["fields"][k], sch_)
-
+          sch_acc = put_in(sch_acc, ["fields", Access.at!(i)], sch_)
           if sch_[:halt], do: {:halt, {sch_acc, acc_}}, else: {:cont, {sch_acc, acc_}}
         end)
 

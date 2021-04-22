@@ -13,16 +13,22 @@ defmodule Fset.Imports.JSONSchema do
         fmodels =
           %{}
           |> Map.put("type", "object")
-          |> Map.put(@properties, Map.new(defs_chuck))
-          |> Map.put("order", Enum.map(defs_chuck, fn {key, _} -> key end))
+          |> Map.put(
+            @properties,
+            Map.new(Enum.with_index(defs_chuck), fn {{k, a}, i} ->
+              {k, Map.put_new(a, "order", i)}
+            end)
+          )
 
         {first, fmodels}
       end)
 
     %{}
     |> Map.put("type", "object")
-    |> Map.put(@properties, Map.new(files))
-    |> Map.put("order", Enum.map(files, fn {key, _} -> key end))
+    |> Map.put(
+      @properties,
+      Map.new(Enum.with_index(files), fn {{k, f}, i} -> {k, Map.put_new(f, "order", i)} end)
+    )
   end
 
   def json_schema(_version, sch, _opts) do
@@ -38,24 +44,14 @@ defmodule Fset.Imports.JSONSchema do
     sch = chunk_defs_to_files(defs)
 
     map_put_type = fn
-      # %{@type_ => @object} = a, m, acc ->
-      #   sch =
-      #     %{}
-      #     |> Map.put("type", "record")
-      #     |> Map.put("fields", Map.get(@properties, %{}))
-      #     |> map_put("required", Map.get(a, @required))
-
-      #   {sch, acc}
-
       %{@properties => props} = a, m, acc ->
-        ordered_props = Enum.sort_by(props, fn {key, _sch} -> Map.get(a, "order", key) end)
-        keys = Enum.map(ordered_props, fn {key, _} -> key end)
+        ordered_props = Enum.sort_by(props, fn {key, sch} -> Map.get(sch, "order", key) end)
+        ordered_props = Enum.map(ordered_props, fn {key, sch} -> Map.put(sch, "key", key) end)
 
         sch =
           %{}
           |> Map.put("type", "record")
-          |> Map.put("fields", props)
-          |> Map.put("order", Map.get(a, "order", keys))
+          |> Map.put("fields", ordered_props)
           |> map_put("required", Map.get(a, @required))
 
         {sch, acc}
@@ -165,8 +161,7 @@ defmodule Fset.Imports.JSONSchema do
               %{
                 "$anchor" => Ecto.UUID.generate(),
                 "type" => "record",
-                "fields" => %{},
-                "order" => []
+                "fields" => []
               }
 
             @array ->
@@ -208,18 +203,19 @@ defmodule Fset.Imports.JSONSchema do
 
       a_ = Map.put_new(a_, "$anchor", anchor || Ecto.UUID.generate())
 
-      a_ = Map.put_new(a_, "key", Map.get(a, "key"))
-      a_ = Map.put_new(a_, "isEntry", Map.get(a, "isEntry"))
+      a_ = map_put(a_, "index", Map.get(a, "order"))
+      a_ = map_put(a_, "key", Map.get(a, "key"))
+      a_ = map_put(a_, "isEntry", Map.get(a, "isEntry"))
       {a_, acc_}
     end
 
     {schema, _} = Walker.walk(sch, %{}, fn a, _m, acc -> {:cont, {a, acc}} end, post_visit)
-
     schema
   end
 
   defp map_put(map, _k, ""), do: map
   defp map_put(map, _k, nil), do: map
+  defp map_put(map, "isEntry", false), do: map
   defp map_put(map, _k, []), do: map
   defp map_put(map, k, v), do: Map.put(map, k, v)
 end

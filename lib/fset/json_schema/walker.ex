@@ -15,9 +15,14 @@ defmodule Fset.JSONSchema.Walker do
       end
 
     sch_ = Map.put(sch_, "$anchor", Map.get(sch, "$anchor"))
-    sch_ = Map.put(sch_, "isEntry", Map.get(sch, "isEntry"))
+    sch_ = map_put(sch_, "isEntry", Map.get(sch, "isEntry"))
+    sch_ = map_put(sch_, "key", Map.get(sch, "key"))
+    sch_ = map_put(sch_, "order", Map.get(sch, "order"))
     fpost.(sch_, meta, acc_)
   end
+
+  defp map_put(map, _k, nil), do: map
+  defp map_put(map, k, v), do: Map.put(map, k, v)
 
   defp walk_(sch, f0, f1, acc, meta) do
     case sch do

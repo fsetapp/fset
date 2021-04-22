@@ -5,7 +5,6 @@ defmodule Fset.Projects.Project do
   schema "projects" do
     field :anchor, Ecto.UUID, autogenerate: true
     field :key, :string
-    field :order, {:array, :string}
     field :description, :string
 
     field :current_file_id, :integer, virtual: true

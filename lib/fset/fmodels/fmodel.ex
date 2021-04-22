@@ -5,6 +5,7 @@ defmodule Fset.Fmodels.Fmodel do
     field :anchor, Ecto.UUID
     field :type, :string
     field :key, :string
+    field :order, :integer
     field :sch, Ecto.Term, default: %{}
     field :is_entry, :boolean
 

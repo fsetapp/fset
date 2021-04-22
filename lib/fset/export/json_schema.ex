@@ -22,7 +22,7 @@ defmodule Fset.Exports.JSONSchema do
         sch_meta = get_meta.(a)
 
         fields = Map.fetch!(a, "fields")
-        fields = Map.take(fields, Map.fetch!(a, "order"))
+        fields = Map.new(fields, fn %{"key" => k} = a -> {k, Map.delete(a, "key")} end)
 
         sch =
           %{}
@@ -175,7 +175,7 @@ defmodule Fset.Exports.JSONSchema do
     post_visit = fn a, m, acc ->
       {a_, acc_} = map_put_type.(a, m, acc)
 
-      a_ = Map.delete(a_, "key")
+      a_ = map_put(a_, "key", Map.get(a, "key"))
 
       a_ =
         case get_meta.(a) do
@@ -218,9 +218,9 @@ defmodule Fset.Exports.JSONSchema do
     Jason.encode!(schema, [{:pretty, true} | opts[:json] || []])
   end
 
-  defp map_put_required(%{"fields" => fields} = map, sch_metas) when is_map(fields) do
+  defp map_put_required(%{"fields" => fields} = map, sch_metas) when is_list(fields) do
     required =
-      Enum.reduce(fields, [], fn {k, %{"$anchor" => anchor}}, acc ->
+      Enum.reduce(fields, [], fn %{"$anchor" => anchor, "key" => k}, acc ->
         meta = Map.get(sch_metas, anchor)
         if meta && meta.required, do: [k | acc], else: acc
       end)
