@@ -123,7 +123,7 @@
         <% end %>
 
       </div>
-      <div role="tabpanel" class="overflow-hidden" hidden>
+      <div role="tabpanel" class="flex flex-col overflow-hidden" hidden>
         <%= render "_help.html" %>
       </div>
     </tab-container>
