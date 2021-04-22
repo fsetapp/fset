@@ -5,6 +5,7 @@
 @import "./tab.css";
 @import "./vendor/fbox.min.css";
 @import "./kbd.css";
+@import "./form.css";
 
 .bg-black {
   background-color: var(--matte-black);
