@@ -75,6 +75,12 @@ defmodule Fset.Imports.JSONSchema do
 
   defp cast_type(a, defs) do
     case a do
+      %{@enum => _schs} -> new_union(a)
+      %{@const => _const} -> new_const(a)
+      %{@ref => _ref} -> new_ref(a, defs)
+      %{@any_of => _schs} -> new_union(a)
+      %{@one_of => _schs} -> new_union(a)
+      #
       %{@type_ => @object} -> new_record(a)
       %{@type_ => @array} -> new_list_or_tuple(a)
       %{@type_ => @string} -> new_string(a)
@@ -82,10 +88,7 @@ defmodule Fset.Imports.JSONSchema do
       %{@type_ => @integer} -> new_integer(a)
       %{@type_ => @boolean} -> new_boolean(a)
       %{@type_ => @null} -> new_null(a)
-      %{@const => _const} -> new_const(a)
-      %{@ref => _ref} -> new_ref(a, defs)
-      %{@any_of => _schs} -> new_union(a)
-      %{@one_of => _schs} -> new_union(a)
+      #
       %{@type_ => types} when is_list(types) -> new_union(a, defs)
       a when map_size(a) != 0 -> new_possible_type(a, defs)
       _ -> %{@type_ => "any"}
@@ -93,9 +96,11 @@ defmodule Fset.Imports.JSONSchema do
   end
 
   defp new_possible_type(a, defs) do
-    a = Map.take(a, @applicators)
-    a = Map.put(a, @type_, [@object, @array])
-    cast_type(a, defs)
+    case Map.take(a, @applicators) do
+      %{} = map when map != %{} -> Map.put(map, @type_, [@object, @array])
+      any -> any
+    end
+    |> cast_type(defs)
   end
 
   defp new_record(a) do
@@ -198,6 +203,18 @@ defmodule Fset.Imports.JSONSchema do
     %{}
     |> Map.put("type", "union")
     |> Map.put("schs", schs)
+  end
+
+  defp new_union(%{@enum => enum}) when is_list(enum) and length(enum) > 0 do
+    enum =
+      Enum.map(enum, fn e ->
+        e = new_const(%{@const => e})
+        _e = Map.put_new(e, "$anchor", Ecto.UUID.generate())
+      end)
+
+    %{}
+    |> Map.put("type", "union")
+    |> Map.put("schs", enum)
   end
 
   defp new_union(%{@type_ => types} = a, defs) when is_list(types) when length(types) > 0 do

@@ -81,9 +81,14 @@ defmodule Fset.Exports.JSONSchema do
         {sch, acc}
 
       %{"type" => "union"} = a, _m, acc ->
+        schs = Map.fetch!(a, "schs")
+        all_string = Enum.all?(schs, fn u -> Map.get(u, "const") end)
+
         sch =
-          %{}
-          |> Map.put(@one_of, Map.fetch!(a, "schs"))
+          cond do
+            all_string -> Map.put(%{}, @enum, Enum.map(schs, fn e -> Map.get(e, "const") end))
+            true -> Map.put(%{}, @any_of, schs)
+          end
 
         {sch, acc}
 
