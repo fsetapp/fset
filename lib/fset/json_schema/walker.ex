@@ -1,109 +1,90 @@
 defmodule Fset.JSONSchema.Walker do
+  use Fset.JSONSchema.Vocab
+
   def walk(
         sch,
         acc,
-        fpre,
-        fpost \\ fn a, _, c -> {a, c} end,
+        fpost,
+        fpre \\ fn a, _, c -> {:cont, {a, c}} end,
         meta \\ %{"path" => "", "level" => 1, "parent" => %{}, "index" => 0}
       )
 
-  def walk(sch, acc, fpre, fpost, meta) do
+  def walk(sch, acc, fpost, fpre, meta) do
     {sch_, acc_} =
       case fpre.(Map.delete(sch, :halt), meta, acc) do
         {:halt, {sch_, acc_}} -> {Map.put(sch_, :halt, true), acc_}
-        {:cont, {sch_, acc_}} -> walk_(sch_, fpre, fpost, acc_, meta)
+        {:cont, {sch_, acc_}} -> walk_(sch_, fpost, fpre, acc_, meta)
       end
 
-    sch_ = Map.put(sch_, "$anchor", Map.get(sch, "$anchor"))
-    sch_ = map_put(sch_, "isEntry", Map.get(sch, "isEntry"))
-    sch_ = map_put(sch_, "key", Map.get(sch, "key"))
-    sch_ = map_put(sch_, "order", Map.get(sch, "order"))
-    fpost.(sch_, meta, acc_)
+    fpost.(sch_, sch, meta, acc_)
   end
 
-  defp map_put(map, _k, nil), do: map
-  defp map_put(map, k, v), do: Map.put(map, k, v)
+  defp walk_(sch, f1, f0, acc, meta) do
+    sch
+    |> Map.take([
+      @properties,
+      @pattern_properties,
+      @items,
+      @prefix_items,
+      @one_of,
+      @any_of
+    ])
+    |> Enum.reduce({sch, acc}, fn
+      {@properties = box, properties}, {sch_acc, acc_} ->
+        walk_keyed(sch_acc, box, properties, f1, f0, acc_, meta)
 
-  defp walk_(sch, f0, f1, acc, meta) do
-    case sch do
-      %{"properties" => properties} ->
-        properties
-        |> Enum.reduce_while({%{}, acc}, fn {k, sch_}, {sch_acc, acc_} ->
-          sch_ = Map.put(sch_, "key", k)
-          i = Map.get(sch_, "order")
+      {@pattern_properties = box, properties}, {sch_acc, acc_} ->
+        walk_keyed(sch_acc, box, properties, f1, f0, acc_, meta)
 
-          nextMeta = nextMeta(sch_acc, meta, "#{meta["path"]}[#{k}]", i)
-          {sch_, acc_} = walk(sch_, acc_, f0, f1, nextMeta)
-
-          sch_acc = put_in(sch_acc, [Access.key("properties", %{}), k], sch_)
-
-          if sch_[:halt], do: {:halt, {sch_acc, acc_}}, else: {:cont, {sch_acc, acc_}}
-        end)
-
-      %{"type" => "object"} ->
-        sch
-        |> Map.get("properties", %{})
-        |> Enum.reduce_while({%{}, acc}, fn {k, sch_}, {sch_acc, acc_} ->
-          sch_ = Map.put(sch_, "key", k)
-          i = Map.get(sch_, "order")
-
-          nextMeta = nextMeta(sch_acc, meta, "#{meta["path"]}[#{k}]", i)
-          {sch_, acc_} = walk(sch_, acc_, f0, f1, nextMeta)
-
-          sch_acc = put_in(sch_acc, [Access.key("properties", %{}), k], sch_)
-
-          if sch_[:halt], do: {:halt, {sch_acc, acc_}}, else: {:cont, {sch_acc, acc_}}
-        end)
-
-      %{"items" => item} when is_map(item) ->
+      {@items, item}, {sch_acc, acc_} when is_map(item) ->
         nextMeta = nextMeta(sch, meta, "#{meta["path"]}[][0]", 0)
-        {sch_, acc_} = walk(item, acc, f0, f1, nextMeta)
+        {sch_, acc_} = walk(item, acc_, f1, f0, nextMeta)
 
-        sch = put_in(sch, ["items"], sch_)
-        {sch, acc_}
+        sch_acc = put_in(sch_acc, [@items], sch_)
+        {sch_acc, acc_}
 
-      %{"type" => "array"} ->
-        items = Map.get(sch, "items", nil) || Map.get(sch, "prefixItems", [])
+      {@items = box, items}, {sch_acc, acc_} when is_list(items) ->
+        walk_indexed(sch_acc, box, items, f1, f0, acc_, meta)
 
-        items
-        |> Enum.with_index()
-        |> Enum.reduce_while({sch, acc}, fn {sch_, i}, {sch_acc, acc_} ->
-          nextMeta = nextMeta(sch, meta, "#{meta["path"]}[][#{i}]", i)
-          {sch_, acc_} = walk(sch_, acc_, f0, f1, nextMeta)
+      {@prefix_items = box, items}, {sch_acc, acc_} when is_list(items) ->
+        walk_indexed(sch_acc, box, items, f1, f0, acc_, meta)
 
-          sch_acc = put_in(sch_acc, [Access.key("items", []), Access.at!(i)], sch_)
-          if sch_[:halt], do: {:halt, {sch_acc, acc_}}, else: {:cont, {sch_acc, acc_}}
-        end)
+      {@one_of = box, schs}, {sch_acc, acc_} ->
+        walk_indexed(sch_acc, box, schs, f1, f0, acc_, meta)
 
-      %{"oneOf" => schs} ->
-        items = schs
+      {@any_of = box, schs}, {sch_acc, acc_} ->
+        walk_indexed(sch_acc, box, schs, f1, f0, acc_, meta)
 
-        items
-        |> Enum.with_index()
-        |> Enum.reduce_while({sch, acc}, fn {sch_, i}, {sch_acc, acc_} ->
-          nextMeta = nextMeta(sch, meta, "#{meta["path"]}[][#{i}]", i)
-          {sch_, acc_} = walk(sch_, acc_, f0, f1, nextMeta)
+      _, {sch_acc, acc_} ->
+        {sch_acc, acc_}
+    end)
+  end
 
-          sch_acc = put_in(sch_acc, [Access.key("oneOf", []), Access.at!(i)], sch_)
-          if sch_[:halt], do: {:halt, {sch_acc, acc_}}, else: {:cont, {sch_acc, acc_}}
-        end)
+  defp walk_keyed(sch, container, props, f1, f0, acc, meta) when is_map(props) do
+    props
+    |> Enum.reduce_while({sch, acc}, fn {k, sch_}, {sch_acc, acc_} ->
+      sch_ = Map.put(sch_, "key", k)
+      i = Map.get(sch_, "order")
 
-      %{"anyOf" => schs} ->
-        items = schs
+      nextMeta = nextMeta(sch_acc, meta, "#{meta["path"]}[#{k}]", i)
+      {sch_, acc_} = walk(sch_, acc_, f1, f0, nextMeta)
 
-        items
-        |> Enum.with_index()
-        |> Enum.reduce_while({sch, acc}, fn {sch_, i}, {sch_acc, acc_} ->
-          nextMeta = nextMeta(sch, meta, "#{meta["path"]}[][#{i}]", i)
-          {sch_, acc_} = walk(sch_, acc_, f0, f1, nextMeta)
+      sch_acc = put_in(sch_acc, [Access.key(container, %{}), k], sch_)
 
-          sch_acc = put_in(sch_acc, [Access.key("anyOf", []), Access.at!(i)], sch_)
-          if sch_[:halt], do: {:halt, {sch_acc, acc_}}, else: {:cont, {sch_acc, acc_}}
-        end)
+      if sch_[:halt], do: {:halt, {sch_acc, acc_}}, else: {:cont, {sch_acc, acc_}}
+    end)
+  end
 
-      _ ->
-        {sch, acc}
-    end
+  defp walk_indexed(sch, container, items, f1, f0, acc, meta) when is_list(items) do
+    items
+    |> Enum.with_index()
+    |> Enum.reduce_while({sch, acc}, fn {sch_, i}, {sch_acc, acc_} ->
+      nextMeta = nextMeta(sch, meta, "#{meta["path"]}[][#{i}]", i)
+      {sch_, acc_} = walk(sch_, acc_, f1, f0, nextMeta)
+
+      sch_acc = put_in(sch_acc, [Access.key(container, []), Access.at!(i)], sch_)
+      if sch_[:halt], do: {:halt, {sch_acc, acc_}}, else: {:cont, {sch_acc, acc_}}
+    end)
   end
 
   defp nextMeta(sch, meta, path, i) do

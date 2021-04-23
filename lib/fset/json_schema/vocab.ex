@@ -41,7 +41,7 @@ defmodule Fset.JSONSchema.Vocab do
 
       # Applicator
       @properties "properties"
-      @patternProperties "patternProperties"
+      @pattern_properties "patternProperties"
       @items "items"
       @prefix_items "prefixItems"
       # @all_of "allOf"

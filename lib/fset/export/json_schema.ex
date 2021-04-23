@@ -146,7 +146,8 @@ defmodule Fset.Exports.JSONSchema do
 
       %{"type" => "ref"} = a, _m, acc ->
         fmodel_anchor = Map.fetch!(a, "$ref")
-        %{path: file_dot_fmodel} = Map.fetch!(defs_index, fmodel_anchor)
+
+        %{path: file_dot_fmodel} = Map.get(defs_index, fmodel_anchor, %{path: fmodel_anchor})
         acc = Map.update(acc, :visit_defs, [], fn v -> [fmodel_anchor | v] end)
 
         ref =
