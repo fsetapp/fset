@@ -83,7 +83,10 @@ defmodule Fset.Fmodels do
         |> put_timestamp()
       end)
 
-    fmodels = fn
+    ready_fmodels =
+      Enum.map(added[@fmodel_diff] || [], fn {_key, fmodel_sch} -> from_fmodel_sch(fmodel_sch) end)
+
+    fmodels_after_files = fn
       %{insert_files: {_n, inserted_files}} ->
         new_files =
           Enum.reduce(inserted_files, project.files, fn file, acc ->
@@ -96,13 +99,10 @@ defmodule Fset.Fmodels do
           end)
 
         project = %{project | files: new_files}
-
-        Enum.map(added[@fmodel_diff] || [], fn {_key, fmodel_sch} -> fmodel_sch end)
-        |> Enum.map(fn fmodel_sch -> from_fmodel_sch(fmodel_sch) end)
-        |> put_required_file_id(project)
+        put_required_file_id(ready_fmodels, project)
     end
 
-    sch_metas = fn %{insert_fmodels: {_, inserted_fmodels}} ->
+    sch_metas_from_fmodels = fn inserted_fmodels ->
       Enum.flat_map(inserted_fmodels, fn inserted_fmodel ->
         sch =
           inserted_fmodel.sch
@@ -162,15 +162,21 @@ defmodule Fset.Fmodels do
         on_conflict: {:replace, [:key, :order]},
         returning: true
       )
-      |> Ecto.Multi.insert_all(:insert_fmodels, Fmodel, fmodels,
+      |> Ecto.Multi.insert_all(:insert_fmodels, Fmodel, fmodels_after_files,
         conflict_target: [:anchor],
         on_conflict: {:replace, [:key, :order, :type, :is_entry, :sch]},
         returning: true
       )
-      |> Ecto.Multi.insert_all(:insert_sch_metas, SchMeta, sch_metas,
-        conflict_target: [:anchor],
-        on_conflict: {:replace, [:title, :description, :rw, :required, :metadata]}
-      )
+
+    multi =
+      sch_metas_from_fmodels.(ready_fmodels)
+      |> Enum.chunk_every(5_000)
+      |> Enum.reduce(multi, fn [%{anchor: head} | _] = fmodels_batch, multi_acc ->
+        Ecto.Multi.insert_all(multi_acc, {:insert_sch_metas, head}, SchMeta, fmodels_batch,
+          conflict_target: [:anchor],
+          on_conflict: {:replace, [:title, :description, :rw, :required, :metadata]}
+        )
+      end)
 
     {multi, project}
   end
@@ -253,7 +259,7 @@ defmodule Fset.Fmodels do
     |> put_from(:type, {fmodel_sch, "type"})
     |> put_from(:key, {fmodel_sch, "key"})
     |> put_from(:order, {fmodel_sch, "index"})
-    |> put_from(:is_entry, {fmodel_sch, "isEntry"})
+    |> Map.put(:is_entry, Map.get(fmodel_sch, "isEntry", false))
     |> Map.put(:sch, Map.drop(fmodel_sch, ["$anchor", "index", "type", "key", "isEntry"]))
   end
 

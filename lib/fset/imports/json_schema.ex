@@ -65,6 +65,18 @@ defmodule Fset.Imports.JSONSchema do
         |> map_put("index", Map.get(a_og, "order"))
         |> map_put("key", Map.get(a_og, "key"))
         |> map_put("isEntry", Map.get(a_og, "isEntry"))
+        |> Map.put_new_lazy("metadata", fn ->
+          %{}
+          |> map_put("title", Map.get(a_og, @title))
+          |> map_put("description", Map.get(a_og, @description))
+        end)
+
+      a_ =
+        case {Map.get(a_og, @read_only), Map.get(a_og, @write_only)} do
+          {true, false} -> Map.put(a_, "rw", :r)
+          {false, true} -> Map.put(a_, "rw", :w)
+          _ -> Map.put(a_, "rw", :rw)
+        end
 
       {a_, acc}
     end
@@ -104,18 +116,27 @@ defmodule Fset.Imports.JSONSchema do
   end
 
   defp new_record(a) do
+    required = Map.get(a, @required, [])
+
     ordered_props =
       a
       |> Map.get(@pattern_properties, %{})
       |> Map.new(fn {p_key, sch} -> {p_key, Map.put(sch, "isKeyPattern", true)} end)
       |> Map.merge(Map.get(a, @properties, %{}))
       |> Enum.sort_by(fn {key, sch} -> Map.get(sch, "order", key) end)
-      |> Enum.map(fn {key, sch} -> Map.put(sch, "key", key) end)
+      |> Enum.map(fn {key, sch} ->
+        sch = Map.put(sch, "key", key)
+        _sch = put_in(sch, [Access.key("metadata", %{}), "required"], key in required)
+      end)
 
     %{}
     |> Map.put("type", "record")
     |> Map.put("fields", ordered_props)
-    |> map_put("required", Map.get(a, @required))
+    |> Map.put_new_lazy("metadata", fn ->
+      %{}
+      |> map_put("min", Map.get(a, @min_properties))
+      |> map_put("max", Map.get(a, @max_properties))
+    end)
   end
 
   defp new_list_or_tuple(a) do
@@ -133,6 +154,11 @@ defmodule Fset.Imports.JSONSchema do
     %{}
     |> Map.put("type", "list")
     |> Map.put("sch", item)
+    |> Map.put_new_lazy("metadata", fn ->
+      %{}
+      |> map_put("min", Map.get(a, @min_items, 1))
+      |> map_put("max", Map.get(a, @max_items))
+    end)
   end
 
   defp new_tuple(a) do
@@ -143,25 +169,51 @@ defmodule Fset.Imports.JSONSchema do
     %{}
     |> Map.put("type", "tuple")
     |> Map.put("schs", items)
+    |> Map.put_new_lazy("metadata", fn ->
+      %{}
+      |> map_put("min", Map.get(a, @min_items, Enum.count(items)))
+      |> map_put("max", Map.get(a, @max_items))
+    end)
   end
 
   defp new_string(a) do
-    Map.put(%{}, "type", "string")
+    %{}
+    |> Map.put("type", "string")
+    |> Map.put_new_lazy("metadata", fn ->
+      %{}
+      |> map_put("min", Map.get(a, @min_length))
+      |> map_put("max", Map.get(a, @max_length))
+      |> map_put("pattern", Map.get(a, @pattern))
+    end)
   end
 
   defp new_number(a) do
-    Map.put(%{}, "type", "number")
+    %{}
+    |> Map.put("type", "number")
+    |> Map.put_new_lazy("metadata", fn ->
+      %{}
+      |> map_put("min", Map.get(a, @minimum))
+      |> map_put("max", Map.get(a, @maximum))
+      |> map_put("multipleOf", Map.get(a, @multiple_of))
+    end)
   end
 
   defp new_integer(a) do
-    Map.put(%{}, "type", "integer")
+    %{}
+    |> Map.put("type", "integer")
+    |> Map.put_new_lazy("metadata", fn ->
+      %{}
+      |> map_put("min", Map.get(a, @minimum))
+      |> map_put("max", Map.get(a, @maximum))
+      |> map_put("multipleOf", Map.get(a, @multiple_of))
+    end)
   end
 
-  defp new_boolean(a) do
+  defp new_boolean(_a) do
     Map.put(%{}, "type", "boolean")
   end
 
-  defp new_null(a) do
+  defp new_null(_a) do
     Map.put(%{}, "type", "null")
   end
 

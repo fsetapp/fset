@@ -123,14 +123,14 @@
           <% end %>
         <% end %>
       </div>
-      <div role="tabpanel" class="overflow-hidden" hidden>
+      <div role="tabpanel" class="overflow-hidden focus:outline-none" tabindex="-1" hidden>
         <%= if @current_user do %>
           <%= link "Open", to: Routes.export_path(@conn, :inline, @current_user.username, @project.key), target: "_blank" %>
           <%= link "Download", to: Routes.export_path(@conn, :download, @current_user.username, @project.key), download: true %>
         <% end %>
 
       </div>
-      <div role="tabpanel" class="flex flex-col overflow-hidden" hidden>
+      <div role="tabpanel" class="flex flex-col overflow-hidden focus:outline-none" tabindex="-1" hidden>
         <%= render "_help.html" %>
       </div>
     </tab-container>

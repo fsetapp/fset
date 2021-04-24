@@ -111,12 +111,12 @@ defmodule Fset.Exports.JSONSchema do
 
         {sch, acc}
 
-      %{"type" => "number"} = a, _m, acc ->
+      %{"type" => num} = a, _m, acc when num in [@number, @integer] ->
         sch_meta = get_meta.(a)
 
         sch =
           %{}
-          |> Map.put(@type_, @number)
+          |> Map.put(@type_, num)
 
         # optional
         sch =
@@ -199,10 +199,7 @@ defmodule Fset.Exports.JSONSchema do
             end
         end
 
-      a_ =
-        if Map.get(a, "isEntry"),
-          do: Map.put(a_, "isEntry", true),
-          else: Map.delete(a_, "isEntry")
+      a_ = map_put(a_, "isEntry", Map.get(a, "isEntry"))
 
       a_ =
         case export_type do
@@ -234,9 +231,7 @@ defmodule Fset.Exports.JSONSchema do
     map_put(map, @required, required)
   end
 
-  defp map_put(map, _k, ""), do: map
-  defp map_put(map, _k, nil), do: map
-  defp map_put(map, _k, []), do: map
+  defp map_put(map, _k, v) when v in ["", nil, [], false], do: map
   defp map_put(map, k, v), do: Map.put(map, k, v)
 
   defp defs_index(project_sch) do

@@ -90,7 +90,8 @@ defmodule Fset.Projects do
   end
 
   def replace(projectname, schema) do
-    project = Repo.get_by!(Fset.Projects.Project, key: projectname)
+    # Repo.get_by!(Fset.Projects.Project, key: projectname)
+    {:ok, project} = get_project(projectname)
     project_files = from f in Fset.Fmodels.File, where: f.project_id == ^project.id
     project_sch_metas = from m in Fset.Fmodels.SchMeta, where: m.project_id == ^project.id
 
@@ -98,7 +99,24 @@ defmodule Fset.Projects do
     multi = Ecto.Multi.delete_all(multi, :replace_sch_metas, project_sch_metas)
 
     schema = Map.put(schema, :key, projectname)
-    Fset.Fmodels.persist_diff(to_diff(schema), %{project | files: []}, multi: multi)
+    Fset.Fmodels.persist_diff(to_diff(schema), build_ids(project), multi: multi)
+  end
+
+  defp build_ids(project) do
+    map_fmodel = fn m ->
+      m
+      |> Map.from_struct()
+      |> Map.take([:id, :anchor])
+    end
+
+    map_file = fn f ->
+      f
+      |> Map.from_struct()
+      |> Map.take([:id, :anchor])
+      |> Map.put(:fmodels, Enum.map(f.fmodels, map_fmodel))
+    end
+
+    project = %{project | files: Enum.map(project.files, map_file)}
   end
 
   defp to_diff(schema) do
@@ -161,8 +179,16 @@ defmodule Fset.Projects do
     project
   end
 
-  defp fetch_file(url) do
-    {:ok, result} = Finch.request(Finch.build(:get, url), FsetHttp)
-    result.body
+  defp fetch_file(url, retry \\ 3)
+  defp fetch_file(_url, 0), do: :error
+
+  defp fetch_file(url, retry) do
+    case Finch.request(Finch.build(:get, url), FsetHttp) do
+      {:ok, result} ->
+        result.body
+
+      {:error, %Mint.TransportError{reason: :closed}} ->
+        fetch_file(url, retry - 1)
+    end
   end
 end

@@ -1,4 +1,5 @@
 import { FmodelTree, ProjectTree, SchMetaForm, Project, Diff } from "./vendor/fbox.min.js"
+import autosize from "autosize"
 
 var projectStore = Project.createProjectStore()
 var projectBaseStore
@@ -45,6 +46,7 @@ export const start = ({ channel }) => {
     handleTreeCommand(e) {
       Project.controller(projectStore, e.detail.target, e.detail.command, this.runDiff)
       document.activeAriaTree = e.detail.target.closest("[role='tree']")
+      autosize(document.querySelectorAll("[id='fsch'] textarea"))
     }
     handleProjectRemote(e) {
       if (!window.userToken) return
