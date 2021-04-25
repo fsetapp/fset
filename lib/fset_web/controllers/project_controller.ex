@@ -14,7 +14,7 @@ defmodule FsetWeb.ProjectController do
     username = Map.get(params, "username", {:ok, "public"})
 
     find_project_user = fn
-      _project, {:ok, "public"} -> %{username: "public"}
+      _project, {:ok, "public"} -> %{username: "public", email: "public"}
       project, username -> Enum.find(project.users, fn u -> u.username == username end)
     end
 
@@ -23,19 +23,19 @@ defmodule FsetWeb.ProjectController do
         changeset = Accounts.change_user_registration(%Accounts.User{})
 
         with {:ok, project} <- Projects.get_project(projectname, preload: [:users]),
-             %{username: uname} <- find_project_user.(project, username) do
+             %{} = user <- find_project_user.(project, username) do
           render(conn, "show.html",
             project: project,
             signup_changeset: changeset,
             project_users: project.users,
-            username: uname
+            user: user
           )
         end
 
       _user ->
         with {:ok, project} <- Projects.get_project(projectname, preload: [:users]),
-             %{username: uname} <- find_project_user.(project, username) do
-          render(conn, "show.html", project: project, username: uname)
+             %{} = user <- find_project_user.(project, username) do
+          render(conn, "show.html", project: project, user: user)
         end
     end
   end

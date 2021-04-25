@@ -1,7 +1,7 @@
 defmodule Fset.Projects do
   import Ecto.Query, warn: false
   alias Fset.Repo
-  alias Fset.Projects.{Project, Role, User}
+  alias Fset.Projects.{Project, Role}
   alias Fset.Exports
   alias Fset.Imports
 
@@ -9,16 +9,6 @@ defmodule Fset.Projects do
   defdelegate persist_diff(diff, project), to: Fset.Fmodels
   defdelegate to_project_sch(project), to: Fset.Fmodels
   defdelegate from_project_sch(project_sch), to: Fset.Fmodels
-
-  def by_user(%User{} = user), do: Repo.preload(user, :projects)
-  def by_user(%{id: user_id}), do: Repo.preload(%User{id: user_id}, :projects)
-
-  def by_username(username) do
-    case Repo.get_by(User, username: username) do
-      nil -> {:error, :not_found}
-      user -> {:ok, by_user(user)}
-    end
-  end
 
   def add_member(project_key, user_id, opts \\ []) do
     {:ok, project} = get_project(project_key)

@@ -1,10 +1,21 @@
-<ul>
-<%= if @current_user do %>
-  <li><%= @current_user.email %></li>
-  <li><%= link "Settings", to: Routes.user_settings_path(@conn, :edit) %></li>
-  <li><%= link "Log out", to: Routes.user_session_path(@conn, :delete), method: :delete %></li>
-<% else %>
-  <li><%= link "Register", to: Routes.user_registration_path(@conn, :new) %></li>
-  <li><%= link "Log in", to: Routes.user_session_path(@conn, :new) %></li>
-<% end %>
-</ul>
+<div class="flex justify-end h-16 items-center px-4 py-1 flex-shrink-0">
+  <%= if @current_user do %>
+    <details class="relative">
+      <summary class="rounded-full outline-none ring-1 ring-gray-700 focus:ring-blue-600">
+        <%= img_tag FsetWeb.ProfileView.gravatar(@current_user.email), class: "w-10 h-10" %>
+      </summary>
+      <details-menu role="menu" class="flex flex-col whitespace-nowrap absolute right-0 bg-gray-700 text-sm rounded shadow-lg border border-gray-900">
+        <p class="px-3 py-2 border-b border-gray-600">Signed in as <span class="font-bold"><%= @current_user.username %></span></p>
+        <%= button "Create Project", to: Routes.project_path(@conn, :create), type: "button", role: "menuitem", class: "py-2 px-3 text-left bg-indigo-600 hover:bg-indigo-700 focus:bg-indigo-700 focus:outline-none" %>
+        <%= link "Your profile", to: Routes.profile_path(@conn, :show, @current_user.username), role: "menuitem", class: "py-2 px-3 hover:bg-gray-600 focus:bg-gray-600" %>
+        <%= link "Settings", to: Routes.user_settings_path(@conn, :edit), role: "menuitem", class: "py-2 px-3 hover:bg-gray-600 focus:bg-gray-600 border-b border-gray-600" %>
+        <%= link "Log out", to: Routes.user_session_path(@conn, :delete), method: :delete, role: "menuitem", class: "hover:bg-gray-600 focus:bg-gray-600 py-2 px-3" %>
+      </details-menu>
+    </details>
+  <% else %>
+    <ul class="flex space-x-4">
+      <li><%= link "Register", to: Routes.user_registration_path(@conn, :new) %></li>
+      <li><%= link "Log in", to: Routes.user_session_path(@conn, :new) %></li>
+    </ul>
+  <% end %>
+</div>
