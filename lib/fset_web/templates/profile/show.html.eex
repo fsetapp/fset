@@ -20,7 +20,7 @@
         <%= link project.key, to: Routes.project_path(@conn, :show, @user.username, project.key), class: "text-lg text-blue-500" %>
         <p class=""><%= project.description %></p>
         <p class="text-xs text-gray-400">
-          <span>Update </span>
+          <span>Updated </span>
           <time-ago datetime="<%= DateTime.to_iso8601(DateTime.from_naive!(project.updated_at, "Etc/UTC")) %>">
             <%= project.updated_at %>
           </time-ago>

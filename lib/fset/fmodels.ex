@@ -44,14 +44,15 @@ defmodule Fset.Fmodels do
       changed[@project_diff]
       |> from_project_sch()
       |> Map.delete(:files)
-      |> put_timestamp()
+      |> Map.put(:updated_at, timestamp())
 
     files =
       Enum.map(changed[@file_diff] || [], fn {_key, file_sch} ->
         from_file_sch(file_sch)
         |> Map.delete(:fmodels)
         |> Map.put(:project_id, project.id)
-        |> put_timestamp()
+        |> Map.put(:inserted_at, timestamp())
+        |> Map.put(:updated_at, timestamp())
       end)
 
     fmodels =
@@ -80,7 +81,8 @@ defmodule Fset.Fmodels do
         from_file_sch(file_sch)
         |> Map.delete(:fmodels)
         |> Map.put(:project_id, project.id)
-        |> put_timestamp()
+        |> Map.put(:inserted_at, timestamp())
+        |> Map.put(:updated_at, timestamp())
       end)
 
     ready_fmodels =
@@ -290,12 +292,8 @@ defmodule Fset.Fmodels do
     end
   end
 
-  defp put_timestamp(map) do
-    timestamp = NaiveDateTime.truncate(NaiveDateTime.utc_now(), :second)
-
-    map
-    |> Map.put(:inserted_at, timestamp)
-    |> Map.put(:updated_at, timestamp)
+  defp timestamp() do
+    NaiveDateTime.truncate(NaiveDateTime.utc_now(), :second)
   end
 
   # Any fmodel that does not belong to a file will be excluded
