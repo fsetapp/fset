@@ -23,9 +23,7 @@
     <script defer type="module" src="<%= Routes.static_path(@conn, "/js/app.js") %>"></script>
   </head>
   <body class="text-gray-300 bg-black">
-    <main role="main" class="flex flex-col h-screen">
-      <p role="alert"><%= get_flash(@conn, :info) %></p>
-      <p role="alert"><%= get_flash(@conn, :error) %></p>
+    <main role="main" class="">
       <%= @inner_content %>
     </main>
   </body>

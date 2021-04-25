@@ -34,6 +34,21 @@ defmodule FsetWeb.UserSettingsController do
     end
   end
 
+  def update(conn, %{"action" => "update_info"} = params) do
+    %{"user" => user_params} = params
+    user = conn.assigns.current_user
+
+    case Accounts.update_user_info(user, user_params) do
+      {:ok, _user} ->
+        conn
+        |> put_flash(:info, "User info updated successfully.")
+        |> redirect(to: Routes.user_settings_path(conn, :edit))
+
+      {:error, changeset} ->
+        render(conn, "edit.html", info_changeset: changeset)
+    end
+  end
+
   def update(conn, %{"action" => "update_password"} = params) do
     %{"current_password" => password, "user" => user_params} = params
     user = conn.assigns.current_user
@@ -68,6 +83,7 @@ defmodule FsetWeb.UserSettingsController do
     user = conn.assigns.current_user
 
     conn
+    |> assign(:info_changeset, Accounts.change_user_info(user))
     |> assign(:email_changeset, Accounts.change_user_email(user))
     |> assign(:password_changeset, Accounts.change_user_password(user))
   end

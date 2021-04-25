@@ -46,6 +46,17 @@ defmodule Fset.Accounts.User do
     |> unique_constraint(:email)
   end
 
+  defp validate_username(changeset) do
+    changeset
+    |> validate_required([:username])
+    |> validate_format(:username, ~r/^[[:alnum:]-_]+$/,
+      message: "must be a mix of A-Z, a-z, 0-9, dash (-), or underscore (_)"
+    )
+    |> validate_length(:username, max: 160)
+    |> unsafe_validate_unique(:username, Fset.Repo)
+    |> unique_constraint(:username)
+  end
+
   defp validate_password(changeset, opts) do
     changeset
     |> validate_required([:password])
@@ -82,6 +93,12 @@ defmodule Fset.Accounts.User do
       %{changes: %{email: _}} = changeset -> changeset
       %{} = changeset -> add_error(changeset, :email, "did not change")
     end
+  end
+
+  def info_changeset(user, attrs) do
+    user
+    |> cast(attrs, [:username])
+    |> validate_username()
   end
 
   @doc """

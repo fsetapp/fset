@@ -108,6 +108,19 @@ defmodule Fset.Accounts do
   end
 
   @doc """
+  Returns an `%Ecto.Changeset{}` for changing the user info.
+
+  ## Examples
+
+      iex> change_user_info(user)
+      %Ecto.Changeset{data: %User{}}
+
+  """
+  def change_user_info(user, attrs \\ %{}) do
+    User.info_changeset(user, attrs)
+  end
+
+  @doc """
   Emulates that the email will change without actually changing
   it in the database.
 
@@ -124,6 +137,25 @@ defmodule Fset.Accounts do
     user
     |> User.email_changeset(attrs)
     |> User.validate_current_password(password)
+    |> Ecto.Changeset.apply_action(:update)
+  end
+
+  @doc """
+  Emulates that the username will change without actually changing
+  it in the database.
+
+  ## Examples
+
+      iex> apply_user_info(user, "valid password", %{username: ...})
+      {:ok, %User{}}
+
+      iex> apply_user_info(user, "invalid password", %{username: ...})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def apply_user_info(user, password, attrs) do
+    user
+    |> User.info_changeset(attrs)
     |> Ecto.Changeset.apply_action(:update)
   end
 
@@ -204,6 +236,30 @@ defmodule Fset.Accounts do
     Ecto.Multi.new()
     |> Ecto.Multi.update(:user, changeset)
     |> Ecto.Multi.delete_all(:tokens, UserToken.user_and_contexts_query(user, :all))
+    |> Repo.transaction()
+    |> case do
+      {:ok, %{user: user}} -> {:ok, user}
+      {:error, :user, changeset, _} -> {:error, changeset}
+    end
+  end
+
+  @doc """
+  Updates the user info.
+
+  ## Examples
+
+      iex> update_user_info(user, %{username: ...})
+      {:ok, %User{}}
+
+      iex> update_user_info(user, %{username: ...})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_user_info(user, attrs) do
+    changeset = User.info_changeset(user, attrs)
+
+    Ecto.Multi.new()
+    |> Ecto.Multi.update(:user, changeset)
     |> Repo.transaction()
     |> case do
       {:ok, %{user: user}} -> {:ok, user}

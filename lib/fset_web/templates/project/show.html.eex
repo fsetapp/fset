@@ -1,139 +1,141 @@
-<action-listener>
-  <header id="toolbar" class="m-px py-1 bg-gray-900 flex flex-shrink-0">
-    <div class="flex flex-1 items-center overflow-hidden">
-      <%= if @user do %>
-        <%= img_tag FsetWeb.ProfileView.gravatar(@user.email), class: "mx-3 w-8 h-8 rounded-full border border-gray-600 bg-black" %>
-        <%= link @user.username, to: Routes.profile_path(@conn, :show, @user.username), class: "text-blue-400" %>
-      <% else %>
-        <%= img_tag FsetWeb.ProfileView.gravatar(assigns[:username]), class: "mx-3 w-8 h-8" %>
-        <span class="text-gray-400">public</span>
-      <% end %>
-      <span class="text-gray-500 mx-2">/</span>
-      <span class="overflow-x-scroll"><%= @project.key %></span>
-
-    </div>
-    <div class="text-xs font-light text-gray-400 flex justify-center w-full" style="flex: 2;">
-      <button name="add_item" data-tree-action="add_item" class="flex flex-col items-center justify-center px-2 py-1 hover:bg-gray-800 rounded">
-        <%= FsetWeb.IconView.add(class: "w-4 h-4 text-gray-300") %>
-        Add item
-      </button>
-      <button name="move_up" data-tree-action="move_up" class="flex flex-col items-center justify-center px-2 py-1 hover:bg-gray-800 rounded">
-        <%= FsetWeb.IconView.move_up(class: "w-4 h-4 text-gray-300") %>
-        Move up
-      </button>
-      <button name="move_down" data-tree-action="move_down" class="flex flex-col items-center justify-center px-2 py-1 hover:bg-gray-800 rounded">
-        <%= FsetWeb.IconView.move_down(class: "w-4 h-4 text-gray-300") %>
-        Move down
-      </button>
-      <span class="mx-4"></span>
-      <button name="cut" data-tree-action="cut" class="flex flex-col items-center justify-center px-2 py-1 hover:bg-gray-800 rounded">
-        <%= FsetWeb.IconView.cut(class: "w-4 h-4 text-gray-300") %>
-        Cut
-      </button>
-      <button name="copy" data-tree-action="copy" class="flex flex-col items-center justify-center px-2 py-1 hover:bg-gray-800 rounded">
-        <%= FsetWeb.IconView.copy(class: "w-4 h-4 text-gray-300") %>
-        Copy
-      </button>
-      <button name="paste" data-tree-action="paste" class="flex flex-col items-center justify-center px-2 py-1 hover:bg-gray-800 rounded">
-        <%= FsetWeb.IconView.paste(class: "w-4 h-4 text-gray-300") %>
-        Paste
-      </button>
-      <button name="clone" data-tree-action="clone" class="flex flex-col items-center justify-center px-2 py-1 hover:bg-gray-800 rounded">
-        <%= FsetWeb.IconView.clone(class: "w-4 h-4 text-gray-300") %>
-        Clone
-      </button>
-      <button name="delete" data-tree-action="delete" class="flex flex-col items-center justify-center px-2 py-1 hover:bg-gray-800 rounded">
-        <%= FsetWeb.IconView.delete(class: "w-4 h-4 text-gray-300") %>
-        Delete
-      </button>
-      <span class="flex-1"></span>
-      <button name="mark_as_main" data-tree-action="mark_as_main" class="mr-4 p-2 text-gray-100 border-indigo-900 text-indigo-400 self-center">
-        Mark as Entrypoint
-      </button>
-    </div>
-    <div></div>
-    <div class="flex-1 flex justify-end">
-      <%= render FsetWeb.LayoutView, "_user_menu.html", assigns %>
-    </div>
-  </header>
-</action-listener>
-
-<sch-listener class="flex overflow-hidden flex-grow">
-  <section class="m-px flex-1 text-sm flex bg-gray-900">
-    <tab-container class="flex flex-col flex-grow">
-      <div class="flex flex-shrink-0 px-2 space-x-2 py-1 bg-gray-meta border border-gray-800 mb-px" role="tablist">
-        <button type="button" role="tab" aria-selected="true"><%= FsetWeb.IconView.collection(class: "w-5 h-5") %></button>
-        <%= if assigns[:project_users] == [] do %>
-          <button type="button" role="tab" tabindex="-1" class="px-2 border rounded border-indigo-600 bg-indigo-800 hover:bg-indigo-900 text-white text-xs font-thin">claim project</button>
+<div class="flex flex-col h-screen">
+  <action-listener>
+    <header id="toolbar" class="m-px py-1 bg-gray-900 flex flex-shrink-0">
+      <div class="flex flex-1 items-center overflow-hidden">
+        <%= if @user do %>
+          <%= img_tag FsetWeb.ProfileView.gravatar(@user.email), class: "mx-3 w-8 h-8 rounded-full border border-gray-600 bg-black" %>
+          <%= link @user.username, to: Routes.profile_path(@conn, :show, @user.username), class: "text-blue-400" %>
+        <% else %>
+          <%= img_tag FsetWeb.ProfileView.gravatar(assigns[:username]), class: "mx-3 w-8 h-8" %>
+          <span class="text-gray-400">public</span>
         <% end %>
-        <button type="button" role="tab" tabindex="-1" class="flex items-center"><%= FsetWeb.IconView.import(class: "w-5 h-5") %><span class="mx-1 text-xs">import</span></button>
+        <span class="text-gray-500 mx-2">/</span>
+        <span class="overflow-x-scroll"><%= @project.key %></span>
+
+      </div>
+      <div class="text-xs font-light text-gray-400 flex justify-center w-full" style="flex: 2;">
+        <button name="add_item" data-tree-action="add_item" class="flex flex-col items-center justify-center px-2 py-1 hover:bg-gray-800 rounded">
+          <%= FsetWeb.IconView.add(class: "w-4 h-4 text-gray-300") %>
+          Add item
+        </button>
+        <button name="move_up" data-tree-action="move_up" class="flex flex-col items-center justify-center px-2 py-1 hover:bg-gray-800 rounded">
+          <%= FsetWeb.IconView.move_up(class: "w-4 h-4 text-gray-300") %>
+          Move up
+        </button>
+        <button name="move_down" data-tree-action="move_down" class="flex flex-col items-center justify-center px-2 py-1 hover:bg-gray-800 rounded">
+          <%= FsetWeb.IconView.move_down(class: "w-4 h-4 text-gray-300") %>
+          Move down
+        </button>
+        <span class="mx-4"></span>
+        <button name="cut" data-tree-action="cut" class="flex flex-col items-center justify-center px-2 py-1 hover:bg-gray-800 rounded">
+          <%= FsetWeb.IconView.cut(class: "w-4 h-4 text-gray-300") %>
+          Cut
+        </button>
+        <button name="copy" data-tree-action="copy" class="flex flex-col items-center justify-center px-2 py-1 hover:bg-gray-800 rounded">
+          <%= FsetWeb.IconView.copy(class: "w-4 h-4 text-gray-300") %>
+          Copy
+        </button>
+        <button name="paste" data-tree-action="paste" class="flex flex-col items-center justify-center px-2 py-1 hover:bg-gray-800 rounded">
+          <%= FsetWeb.IconView.paste(class: "w-4 h-4 text-gray-300") %>
+          Paste
+        </button>
+        <button name="clone" data-tree-action="clone" class="flex flex-col items-center justify-center px-2 py-1 hover:bg-gray-800 rounded">
+          <%= FsetWeb.IconView.clone(class: "w-4 h-4 text-gray-300") %>
+          Clone
+        </button>
+        <button name="delete" data-tree-action="delete" class="flex flex-col items-center justify-center px-2 py-1 hover:bg-gray-800 rounded">
+          <%= FsetWeb.IconView.delete(class: "w-4 h-4 text-gray-300") %>
+          Delete
+        </button>
         <span class="flex-1"></span>
-        <button type="button" role="tab" tabindex="-1" class="flex items-center"><%= FsetWeb.IconView.export(class: "w-5 h-5") %><span class="mx-1 text-xs">export</span></button>
-        <button type="button" role="tab" tabindex="-1" class="text-xs px-1 rounded border border-gray-700"><%= "<kbd>" %></button>
+        <button name="mark_as_main" data-tree-action="mark_as_main" class="mr-4 p-2 text-gray-100 border-indigo-900 text-indigo-400 self-center">
+          Mark as Entrypoint
+        </button>
       </div>
-      <div role="tabpanel" id="project" class="flex-grow overflow-hidden" tabindex="-1" >
-        <p class="p-2">project is loading ...</p>
+      <div></div>
+      <div class="flex-1 flex justify-end">
+        <%= render FsetWeb.LayoutView, "_user_menu.html", assigns %>
       </div>
-      <%= if assigns[:project_users] == [] do %>
-        <div role="tabpanel" class="overflow-hidden" hidden>
-          <ul>
-            <%= form_for @signup_changeset, Routes.user_registration_path(@conn, :create), fn f -> %>
-              <%= if @signup_changeset.action do %>
-                <div class="alert alert-danger">
-                  <p>Oops, something went wrong! Please check the errors below.</p>
+    </header>
+  </action-listener>
+
+  <sch-listener class="flex overflow-hidden flex-grow">
+    <section class="m-px flex-1 text-sm flex bg-gray-900">
+      <tab-container class="flex flex-col flex-grow">
+        <div class="flex flex-shrink-0 px-2 space-x-2 py-1 bg-gray-meta border border-gray-800 mb-px" role="tablist">
+          <button type="button" role="tab" aria-selected="true"><%= FsetWeb.IconView.collection(class: "w-5 h-5") %></button>
+          <%= if assigns[:project_users] == [] do %>
+            <button type="button" role="tab" tabindex="-1" class="px-2 border rounded border-indigo-600 bg-indigo-800 hover:bg-indigo-900 text-white text-xs font-thin">claim project</button>
+          <% end %>
+          <button type="button" role="tab" tabindex="-1" class="flex items-center"><%= FsetWeb.IconView.import(class: "w-5 h-5") %><span class="mx-1 text-xs">import</span></button>
+          <span class="flex-1"></span>
+          <button type="button" role="tab" tabindex="-1" class="flex items-center"><%= FsetWeb.IconView.export(class: "w-5 h-5") %><span class="mx-1 text-xs">export</span></button>
+          <button type="button" role="tab" tabindex="-1" class="text-xs px-1 rounded border border-gray-700"><%= "<kbd>" %></button>
+        </div>
+        <div role="tabpanel" id="project" class="flex-grow overflow-hidden" tabindex="-1" >
+          <p class="p-2">project is loading ...</p>
+        </div>
+        <%= if assigns[:project_users] == [] do %>
+          <div role="tabpanel" class="overflow-hidden" hidden>
+            <ul>
+              <%= form_for @signup_changeset, Routes.user_registration_path(@conn, :create), fn f -> %>
+                <%= if @signup_changeset.action do %>
+                  <div class="alert alert-danger">
+                    <p>Oops, something went wrong! Please check the errors below.</p>
+                  </div>
+                <% end %>
+
+                <%= hidden_input f, :project_key, value: @project.key %>
+
+                <%= label f, :email %>
+                <%= email_input f, :email, required: true %>
+                <%= error_tag f, :email %>
+
+                <%= label f, :password %>
+                <%= password_input f, :password, required: true %>
+                <%= error_tag f, :password %>
+
+                <div>
+                  <%= submit "Claim" %>
                 </div>
               <% end %>
-
-              <%= hidden_input f, :project_key, value: @project.key %>
-
-              <%= label f, :email %>
-              <%= email_input f, :email, required: true %>
-              <%= error_tag f, :email %>
-
-              <%= label f, :password %>
-              <%= password_input f, :password, required: true %>
-              <%= error_tag f, :password %>
-
-              <div>
-                <%= submit "Claim" %>
-              </div>
+            </ul>
+          </div>
+        <% end %>
+        <div role="tabpanel" class="p-2 overflow-hidden focus:outline-none" tabindex="-1" hidden>
+          <%= if @current_user do %>
+            <h3>Import json schema</h3>
+            <p class="mb-3 text-gray-400">
+              Coverting your json schema into
+              <a href="/docs/import" target="_blank" class="text-blue-400">fset schema</a>
+            </p>
+            <%= form_for :import, Routes.import_path(@conn, :create, @current_user.username, @project.key), [multipart: true, class: "fbox"], fn f -> %>
+              <%= label class: "box-label w-full" do %>
+                <p class="l">JSON Schema URL</p>
+                <%= url_input f, :json_schema_url, required: true %>
+              <% end %>
+              <%= submit "Import", class: "mt-3 px-2 py-1 bg-indigo-600 hover:bg-indigo-700 text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-400" %>
             <% end %>
-          </ul>
-        </div>
-      <% end %>
-      <div role="tabpanel" class="p-2 overflow-hidden focus:outline-none" tabindex="-1" hidden>
-        <%= if @current_user do %>
-          <h3>Import json schema</h3>
-          <p class="mb-3 text-gray-400">
-            Coverting your json schema into
-            <a href="/docs/import" target="_blank" class="text-blue-400">fset schema</a>
-          </p>
-          <%= form_for :import, Routes.import_path(@conn, :create, @current_user.username, @project.key), [multipart: true, class: "fbox"], fn f -> %>
-            <%= label class: "box-label w-full" do %>
-              <p class="l">JSON Schema URL</p>
-              <%= url_input f, :json_schema_url, required: true %>
-            <% end %>
-            <%= submit "Import", class: "mt-3 px-2 py-1 bg-indigo-600 hover:bg-indigo-700 text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-400" %>
           <% end %>
-        <% end %>
-      </div>
-      <div role="tabpanel" class="overflow-hidden focus:outline-none" tabindex="-1" hidden>
-        <%= if @current_user do %>
-          <%= link "Open", to: Routes.export_path(@conn, :inline, @current_user.username, @project.key), target: "_blank" %>
-          <%= link "Download", to: Routes.export_path(@conn, :download, @current_user.username, @project.key), download: true %>
-        <% end %>
+        </div>
+        <div role="tabpanel" class="overflow-hidden focus:outline-none" tabindex="-1" hidden>
+          <%= if @current_user do %>
+            <%= link "Open", to: Routes.export_path(@conn, :inline, @current_user.username, @project.key), target: "_blank" %>
+            <%= link "Download", to: Routes.export_path(@conn, :download, @current_user.username, @project.key), download: true %>
+          <% end %>
 
-      </div>
-      <div role="tabpanel" class="flex flex-col overflow-hidden focus:outline-none" tabindex="-1" hidden>
-        <%= render "_help.html" %>
-      </div>
-    </tab-container>
-  </section>
-  <section id="fmodel" class="m-px bg-gray-900" style="flex: 2;">
-  </section>
-  <sch-meta id ="fsch" class="m-px flex-1" tabindex="-1">
-  </sch-meta>
-</sch-listener>
+        </div>
+        <div role="tabpanel" class="flex flex-col overflow-hidden focus:outline-none" tabindex="-1" hidden>
+          <%= render "_help.html" %>
+        </div>
+      </tab-container>
+    </section>
+    <section id="fmodel" class="m-px bg-gray-900" style="flex: 2;">
+    </section>
+    <sch-meta id ="fsch" class="m-px flex-1" tabindex="-1">
+    </sch-meta>
+  </sch-listener>
+</div>
 
 <template id="add_icon">
   <%= FsetWeb.IconView.add(class: "w-5 h-5 text-gray-300") %>
