@@ -82,3 +82,10 @@ a:-webkit-any-link:hover {
   outline: none;
   text-decoration: underline;
 }
+
+/* app specific */
+.fbox .box-label.title,
+.fbox .box-label.description,
+.fbox .box-label.examples {
+  width: 100%;
+}

@@ -37,6 +37,18 @@
   --diff-changed-color: rgba(255, 140, 0, .5);
 }
 
+#fmodel [role="tree"] > .root-item > .h,
+#project [role="tree"] > .root-item > .h {
+  padding-right: 8rem;
+}
+#fmodel [role="tree"] > .root-item[aria-selected='true'] > .h:after,
+#project [role="tree"] > .root-item[aria-selected='true'] > .h:after {
+  position: absolute;
+  right: 1rem;
+  content: "shift +";
+  color: var(--gray-400);
+}
+
 sch-meta > .meta-def {
   padding: 1rem 0;
   word-break: break-all;

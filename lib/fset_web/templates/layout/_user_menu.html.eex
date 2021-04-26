@@ -2,7 +2,7 @@
   <%= if @current_user do %>
     <details class="relative">
       <summary class="rounded-full overflow-hidden outline-none ring-1 ring-gray-700 focus:ring-blue-600">
-        <%= img_tag FsetWeb.ProfileView.gravatar(@current_user.email), class: "w-10 h-10" %>
+        <%= img_tag FsetWeb.ProfileView.gravatar(@current_user.email), class: "w-10 h-10 bg-black" %>
       </summary>
       <details-menu role="menu" class="flex flex-col whitespace-nowrap absolute right-0 bg-gray-700 text-sm rounded shadow-lg border border-gray-900">
         <p class="px-3 py-2 border-b border-gray-600">Signed in as <span class="font-bold"><%= @current_user.username %></span></p>

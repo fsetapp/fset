@@ -31,3 +31,8 @@ sch-meta > form {
 .root-item > [role='group'] {
   margin-bottom: .5rem;
 }
+
+/* actions */
+[data-tree-action]:focus {
+  @apply outline-none ring-1 ring-gray-700
+}
