@@ -108,10 +108,10 @@
         <% end %>
         <%= if @is_project_member do %>
           <div role="tabpanel" class="p-2 overflow-hidden focus:outline-none" tabindex="-1" hidden>
-            <h3>Import json schema</h3>
+            <h3>Import JSON Schema</h3>
             <p class="mb-3 text-gray-400">
               Coverting your json schema into
-              <a href="/docs/import" target="_blank" class="text-blue-400">fset schema</a>
+              <a href="/docs/import/json_schema" target="_blank" class="text-blue-400">fset schema</a>
             </p>
             <%= form_for :import, Routes.import_path(@conn, :create, @current_user.username, @project.key), [multipart: true, class: "fbox"], fn f -> %>
               <%= label class: "box-label w-full" do %>
@@ -123,9 +123,16 @@
           </div>
         <% end %>
         <%= if @is_project_member do %>
-          <div role="tabpanel" class="overflow-hidden focus:outline-none" tabindex="-1" hidden>
-            <%= link "Open", to: Routes.export_path(@conn, :inline, @current_user.username, @project.key), target: "_blank" %>
-            <%= link "Download", to: Routes.export_path(@conn, :download, @current_user.username, @project.key), download: true %>
+          <div role="tabpanel" class="p-2 overflow-hidden focus:outline-none" tabindex="-1" hidden>
+            <h3>Export to JSON Schema</h3>
+            <p class="mb-3 text-gray-400">
+              Coverting
+              <a href="/docs/export/json_schema" target="_blank" class="text-blue-400">fset schema</a>
+              into json schema
+            </p>
+            <br>
+            <%= link "Download", to: Routes.export_path(@conn, :download, @current_user.username, @project.key), download: true, class: "px-3 py-2 bg-gray-700 hover:bg-gray-800 focus:ring-2 focus:ring-gray-400 focus:outline-none rounded" %>
+            <%= link "View", to: Routes.export_path(@conn, :inline, @current_user.username, @project.key), target: "_blank", class: "ml-3 text-blue-400" %>
           </div>
         <% end %>
         <div role="tabpanel" class="flex flex-col overflow-hidden focus:outline-none" tabindex="-1" hidden>

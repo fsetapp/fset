@@ -262,11 +262,15 @@ defmodule Fset.Exports.JSONSchema do
         acc ->
           for {fmodel_name, fmodel} <- Map.fetch!(file, @properties), reduce: acc do
             acc_ ->
-              Map.put(acc_, "#{prefix}.#{fmodel_name}", fmodel)
+              Map.put(acc_, "#{prefix}::#{fmodel_name}", fmodel)
           end
       end
 
-    {[entry | _], defs} = Enum.split_with(defs, fn {_k, def} -> Map.get(def, "isEntry") end)
+    {entry, defs} =
+      case Enum.split_with(defs, fn {_k, def} -> Map.get(def, "isEntry") end) do
+        {[entry | _], defs} -> {entry, defs}
+        {[], defs} -> {{"", %{}}, defs}
+      end
 
     {_, entry} = entry
     entry = Map.delete(entry, "isEntry")
