@@ -10,6 +10,9 @@ defmodule Fset.Projects do
   defdelegate to_project_sch(project), to: Fset.Fmodels
   defdelegate from_project_sch(project_sch), to: Fset.Fmodels
 
+  defdelegate change_info(project, attrs \\ %{}), to: Fset.Projects.Project
+  defdelegate apply_info(project, attrs \\ %{}), to: Fset.Projects.Project
+
   def add_member(project_id, user_id, opts \\ []) do
     attrs = %{user_id: user_id, project_id: project_id, role: opts[:role] || :admin}
     changeset = Role.changeset(%Role{}, attrs)
@@ -74,6 +77,12 @@ defmodule Fset.Projects do
       _ ->
         Repo.insert!(Project.create_changeset(%Project{}, params))
     end
+  end
+
+  def update_info(project, project_params) do
+    project
+    |> Project.change_info(project_params)
+    |> Repo.update()
   end
 
   def replace(projectname, schema) do

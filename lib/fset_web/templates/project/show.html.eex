@@ -101,8 +101,8 @@
           <%= render "_help.html" %>
         </div>
         <%= if @is_project_member do %>
-          <div role="tabpanel" class="flex flex-col overflow-hidden focus:outline-none" tabindex="-1" hidden>
-            Settings
+          <div role="tabpanel" class="p-2 overflow-hidden focus:outline-none" tabindex="-1" hidden>
+            <%= render "_settings.html", assigns %>
           </div>
         <% end %>
       </tab-container>

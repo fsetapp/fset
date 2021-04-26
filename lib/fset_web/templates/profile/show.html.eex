@@ -9,16 +9,16 @@
   </section>
 
   <section class="w-full md:w-2/3">
-    <ul class="flex flex-col h-full space-y-2">
+    <ul class="flex flex-col md:w-4/5 mx-auto">
     <%= if @user.projects == [] do %>
       <li class="px-3 py-2 flex items-center justify-center flex-grow border border-gray-800 rounded bg-gray-900">
         <p class="text-gray-500">There is no project created yet</p>
       </li>
     <% end %>
     <%= for project <- @user.projects do %>
-      <li class="px-3 py-2 border border-gray-800 rounded bg-gray-900">
+      <li class="px-3 py-2 mb-3 border border-gray-800 rounded bg-gray-900">
         <%= link project.key, to: Routes.project_path(@conn, :show, @user.username, project.key), class: "text-lg text-blue-500" %>
-        <p class=""><%= project.description %></p>
+        <p class="py-2 text-sm"><%= project.description %></p>
         <p class="text-xs text-gray-400">
           <span>Updated </span>
           <time-ago datetime="<%= DateTime.to_iso8601(DateTime.from_naive!(project.updated_at, "Etc/UTC")) %>">
@@ -30,3 +30,6 @@
     </ul>
   </section>
 </div>
+<footer class="my-12">
+<hr class="border-gray-900">
+</footer>

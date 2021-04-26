@@ -65,6 +65,11 @@ defmodule FsetWeb.Router do
     get "/users/settings", UserSettingsController, :edit
     put "/users/settings", UserSettingsController, :update
     get "/users/settings/confirm_email/:token", UserSettingsController, :confirm_email
+
+    patch "/:username/:projectname", ProjectController, :update
+    get "/:username/:projectname/export", ExportController, :inline
+    get "/:username/:projectname/export_download", ExportController, :download
+    post "/:username/:projectname/import", ImportController, :create
   end
 
   scope "/", FsetWeb do
@@ -76,10 +81,6 @@ defmodule FsetWeb.Router do
     get "/users/confirm/:token", UserConfirmationController, :confirm
 
     get "/404.html", ErrorController, :notfound
-
-    get "/:username/:projectname/export", ExportController, :inline
-    get "/:username/:projectname/export_download", ExportController, :download
-    post "/:username/:projectname/import", ImportController, :create
 
     post "/projects", ProjectController, :create
     get "/:username/:projectname", ProjectController, :show

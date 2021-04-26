@@ -11,8 +11,6 @@ defmodule FsetWeb.ProjectController do
   channel push on client and ignore handling event from server.
   """
   def show(conn, %{"projectname" => projectname, "username" => username}) do
-    changeset = Accounts.change_user_registration(%Accounts.User{})
-
     with {:ok, project} <- Projects.get_project(projectname, preload: [:users]),
          %{} = user <- find_project_user(project, username) do
       render(conn, "show.html",
@@ -20,7 +18,8 @@ defmodule FsetWeb.ProjectController do
         user: user,
         is_project_unclaimed: project.users == [],
         is_project_member: is_project_member(project, conn.assigns[:current_user]),
-        signup_changeset: changeset
+        signup_changeset: Accounts.change_user_registration(%Accounts.User{}),
+        project_info_changeset: Projects.change_info(project)
       )
     end
   end
@@ -34,6 +33,29 @@ defmodule FsetWeb.ProjectController do
       user ->
         project = Projects.create(%{user_id: user.id})
         redirect(conn, to: Routes.project_path(conn, :show, user.username, project.key))
+    end
+  end
+
+  def update(conn, %{"project" => project_params, "projectname" => projectname}) do
+    user = conn.assigns.current_user
+
+    with {:ok, project} <- Projects.get_project(projectname, preload: [:users]) do
+      case Projects.update_info(project, project_params) do
+        {:ok, updated_project} ->
+          conn
+          |> put_flash(:info, "User info updated successfully.")
+          |> redirect(to: Routes.project_path(conn, :show, user.username, updated_project.key))
+
+        {:error, project_info_changeset} ->
+          render(conn, "show.html",
+            project: project,
+            user: user,
+            is_project_unclaimed: project.users == [],
+            is_project_member: is_project_member(project, conn.assigns[:current_user]),
+            signup_changeset: Accounts.change_user_registration(%Accounts.User{}),
+            project_info_changeset: project_info_changeset
+          )
+      end
     end
   end
 

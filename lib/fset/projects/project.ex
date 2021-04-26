@@ -21,4 +21,20 @@ defmodule Fset.Projects.Project do
     |> cast(attrs, [:key])
     |> unique_constraint(:key)
   end
+
+  def change_info(project, attrs) do
+    info_changeset(project, attrs)
+  end
+
+  def apply_info(project, attrs) do
+    project
+    |> info_changeset(attrs)
+    |> Ecto.Changeset.apply_action(:update)
+  end
+
+  defp info_changeset(project, attrs) do
+    project
+    |> cast(attrs, [:key, :description])
+    |> unique_constraint(:key)
+  end
 end
