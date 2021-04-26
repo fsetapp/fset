@@ -82,7 +82,6 @@ defmodule FsetWeb.Router do
     post "/:username/:projectname/import", ImportController, :create
 
     post "/projects", ProjectController, :create
-    get "/public/:projectname", ProjectController, :show
     get "/:username/:projectname", ProjectController, :show
     get "/:username", ProfileController, :show
   end

@@ -1,7 +1,7 @@
-<div class="flex justify-end h-16 items-center px-4 py-1 flex-shrink-0">
+<div class="flex justify-end h-12 items-center px-4 py-1 flex-shrink-0">
   <%= if @current_user do %>
     <details class="relative">
-      <summary class="rounded-full outline-none ring-1 ring-gray-700 focus:ring-blue-600">
+      <summary class="rounded-full overflow-hidden outline-none ring-1 ring-gray-700 focus:ring-blue-600">
         <%= img_tag FsetWeb.ProfileView.gravatar(@current_user.email), class: "w-10 h-10" %>
       </summary>
       <details-menu role="menu" class="flex flex-col whitespace-nowrap absolute right-0 bg-gray-700 text-sm rounded shadow-lg border border-gray-900">

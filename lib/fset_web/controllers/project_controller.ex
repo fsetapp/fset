@@ -10,33 +10,18 @@ defmodule FsetWeb.ProjectController do
   for guess, we soft cut communication between socket client and server; prevent
   channel push on client and ignore handling event from server.
   """
-  def show(conn, %{"projectname" => projectname} = params) do
-    username = Map.get(params, "username", {:ok, "public"})
+  def show(conn, %{"projectname" => projectname, "username" => username}) do
+    changeset = Accounts.change_user_registration(%Accounts.User{})
 
-    find_project_user = fn
-      _project, {:ok, "public"} -> %{username: "public", email: "public"}
-      project, username -> Enum.find(project.users, fn u -> u.username == username end)
-    end
-
-    case conn.assigns[:current_user] do
-      nil ->
-        changeset = Accounts.change_user_registration(%Accounts.User{})
-
-        with {:ok, project} <- Projects.get_project(projectname, preload: [:users]),
-             %{} = user <- find_project_user.(project, username) do
-          render(conn, "show.html",
-            project: project,
-            signup_changeset: changeset,
-            project_users: project.users,
-            user: user
-          )
-        end
-
-      _user ->
-        with {:ok, project} <- Projects.get_project(projectname, preload: [:users]),
-             %{} = user <- find_project_user.(project, username) do
-          render(conn, "show.html", project: project, user: user)
-        end
+    with {:ok, project} <- Projects.get_project(projectname, preload: [:users]),
+         %{} = user <- find_project_user(project, username) do
+      render(conn, "show.html",
+        project: project,
+        user: user,
+        is_project_unclaimed: project.users == [],
+        is_project_member: is_project_member(project, conn.assigns[:current_user]),
+        signup_changeset: changeset
+      )
     end
   end
 
@@ -51,4 +36,16 @@ defmodule FsetWeb.ProjectController do
         redirect(conn, to: Routes.project_path(conn, :show, user.username, project.key))
     end
   end
+
+  defp find_project_user(project, username) do
+    case project.users do
+      [] -> %{username: "public", email: nil}
+      _ -> Enum.find(project.users, &(&1.username == username))
+    end
+  end
+
+  defp is_project_member(_, nil), do: false
+
+  defp is_project_member(%{users: users}, current_user),
+    do: current_user.id in Enum.map(users, fn a -> a.id end)
 end

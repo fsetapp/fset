@@ -2,7 +2,7 @@ defmodule FsetWeb.ProfileView do
   use FsetWeb, :view
 
   def gravatar(email, opts \\ []) do
-    opts = [{:d, "robohash"} | opts]
+    opts = [{:d, opts[:d] || "robohash"} | opts]
     md5_email = Base.encode16(:erlang.md5(email), case: :lower)
 
     "https://www.gravatar.com/avatar/"
