@@ -3,7 +3,6 @@ defmodule FsetWeb.UserRegistrationController do
 
   alias Fset.Accounts
   alias Fset.Accounts.User
-  alias Fset.Projects
   alias FsetWeb.UserAuth
 
   def new(conn, _params) do
@@ -17,26 +16,15 @@ defmodule FsetWeb.UserRegistrationController do
         {:ok, _} =
           Accounts.deliver_user_confirmation_instructions(
             user,
-            &Routes.user_confirmation_url(conn, :confirm, &1)
+            &Routes.user_confirmation_url(conn, :confirm, &1, p: user_params["project_key"])
           )
-
-        if project_key = user_params["project_key"],
-          do: claim_project(user, project_key)
 
         conn
         |> put_flash(:info, "User created successfully.")
         |> UserAuth.log_in_user(user)
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        render(conn, "new.html", changeset: changeset)
-    end
-  end
-
-  defp claim_project(user, project_key) do
-    {:ok, project} = Projects.get_project(project_key)
-
-    if project.users == [] do
-      Projects.add_member(project_key, user.id)
+        render(conn, "new.html", changeset: changeset, p: user_params["project_key"])
     end
   end
 end

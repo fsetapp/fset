@@ -29,7 +29,7 @@ defmodule FsetWeb.ProjectController do
     case conn.assigns[:current_user] do
       nil = _public ->
         project = Projects.create()
-        redirect(conn, to: Routes.project_path(conn, :show, project.key))
+        redirect(conn, to: Routes.project_path(conn, :show, "p", project.key))
 
       user ->
         project = Projects.create(%{user_id: user.id})

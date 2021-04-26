@@ -2,6 +2,7 @@ defmodule FsetWeb.UserConfirmationController do
   use FsetWeb, :controller
 
   alias Fset.Accounts
+  alias Fset.Projects
 
   def new(conn, _params) do
     render(conn, "new.html")
@@ -27,9 +28,12 @@ defmodule FsetWeb.UserConfirmationController do
 
   # Do not log in the user after confirmation to avoid a
   # leaked token giving the user access to the account.
-  def confirm(conn, %{"token" => token}) do
+  def confirm(conn, %{"token" => token} = confirm_params) do
     case Accounts.confirm_user(token) do
-      {:ok, _} ->
+      {:ok, user} ->
+        if project_key = confirm_params["p"],
+          do: claim_project(user, project_key)
+
         conn
         |> put_flash(:info, "Account confirmed successfully.")
         |> redirect(to: "/")
@@ -48,6 +52,14 @@ defmodule FsetWeb.UserConfirmationController do
             |> put_flash(:error, "Account confirmation link is invalid or it has expired.")
             |> redirect(to: "/")
         end
+    end
+  end
+
+  defp claim_project(user, project_key) do
+    with {:ok, project} <- Projects.get_project(project_key, preload: [:users]) do
+      if project.users == [] do
+        Projects.add_member(project.id, user.id)
+      end
     end
   end
 end

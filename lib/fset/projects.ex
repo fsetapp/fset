@@ -10,10 +10,8 @@ defmodule Fset.Projects do
   defdelegate to_project_sch(project), to: Fset.Fmodels
   defdelegate from_project_sch(project_sch), to: Fset.Fmodels
 
-  def add_member(project_key, user_id, opts \\ []) do
-    {:ok, project} = get_project(project_key)
-
-    attrs = %{user_id: user_id, project_id: project.id, role: opts[:role] || :admin}
+  def add_member(project_id, user_id, opts \\ []) do
+    attrs = %{user_id: user_id, project_id: project_id, role: opts[:role] || :admin}
     changeset = Role.changeset(%Role{}, attrs)
 
     case Repo.insert(changeset) do
@@ -58,8 +56,7 @@ defmodule Fset.Projects do
   end
 
   def create(params \\ %{}) do
-    default_key = "project_#{DateTime.to_unix(DateTime.now!("Etc/UTC"))}"
-    params = Map.put_new(params, :key, default_key)
+    params = Map.put_new(params, :key, "project_#{rand_key(8)}")
 
     case params do
       %{user_id: user_id} ->
@@ -180,5 +177,9 @@ defmodule Fset.Projects do
       {:error, %Mint.TransportError{reason: :closed}} ->
         fetch_file(url, retry - 1)
     end
+  end
+
+  defp rand_key(length) when is_integer(length) do
+    :crypto.strong_rand_bytes(length) |> Base.url_encode64() |> binary_part(0, length)
   end
 end
