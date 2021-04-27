@@ -90,7 +90,16 @@ a:-webkit-any-link:hover {
   width: 100%;
 }
 
-
-.btn-gray { @apply px-3 py-2 bg-gray-700 rounded text-sm; }
+.btn-gray { @apply px-3 py-2 bg-gray-700 text-sm; }
 .btn-gray:hover { @apply bg-gray-800; }
 .btn-gray:focus { @apply ring-2 ring-gray-400 outline-none; }
+
+/* search */
+/* w-full px-2 py-1 text-sm rounded bg-black border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500 */
+.autoComplete_list {
+  @apply mt-1 z-50 absolute bg-gray-800 text-gray-100 w-full border-gray-600 shadow-lg;
+}
+.autoComplete_result { @apply px-2 py-1 text-sm font-thin }
+.autoComplete_selected.notfound { @apply border-gray-400 bg-gray-200 }
+.autoComplete_selected { @apply bg-gray-700 bg-opacity-50 }
+.autoComplete_highlighted { @apply text-indigo-400 font-semibold }

@@ -63,6 +63,7 @@ defmodule Fset.JSONSchema.Walker do
   defp walk_keyed(sch, container, props, f1, f0, acc, meta) when is_map(props) do
     props
     |> Enum.reduce_while({sch, acc}, fn {k, sch_}, {sch_acc, acc_} ->
+      sch_ = if sch_ == true, do: %{}, else: sch_
       sch_ = Map.put(sch_, "key", k)
       i = Map.get(sch_, "order")
 

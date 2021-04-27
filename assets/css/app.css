@@ -15,7 +15,7 @@
 }
 
 details > summary { display: flex; }
-details > summary::-webkit-details-marker {
+details > summary::marker {
   display: none;
 }
 [hidden] {
