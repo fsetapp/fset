@@ -54,3 +54,6 @@ sch-meta > .meta-def {
   word-break: break-all;
   --meta-def-color: var(--indigo-400);
 }
+
+combo-box { position: relative;}
+combo-box textarea { min-width: 40ch; }
