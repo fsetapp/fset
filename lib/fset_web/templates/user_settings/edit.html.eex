@@ -1,7 +1,7 @@
 <%= render FsetWeb.LayoutView, "_user_menu.html", assigns %>
 
 <div class="md:w-1/3 mx-auto h-full">
-  <h1 class="text-gray-400 text-2xl">Settings</h1>
+  <h1 class="text-gray-400 text-2xl font-light">Settings</h1>
   <br>
 
   <%= form_for @info_changeset, Routes.user_settings_path(@conn, :update), fn f -> %>
@@ -22,7 +22,7 @@
     </div>
 
     <div>
-      <%= submit "Change info", class: "px-3 py-2 bg-gray-700 hover:bg-gray-800 focus:ring-2 focus:ring-gray-400 focus:outline-none rounded" %>
+      <%= submit "Change info", class: "btn-gray" %>
     </div>
   <% end %>
   <br>
@@ -51,7 +51,7 @@
     </div>
 
     <div>
-      <%= submit "Change email", class: "px-3 py-2 bg-gray-700 hover:bg-gray-800 focus:ring-2 focus:ring-gray-400 focus:outline-none rounded" %>
+      <%= submit "Change email", class: "btn-gray" %>
     </div>
   <% end %>
   <br>
@@ -86,11 +86,11 @@
     </div>
 
     <div>
-      <%= submit "Change password", class: "px-3 py-2 bg-gray-700 hover:bg-gray-800 focus:ring-2 focus:ring-gray-400 focus:outline-none rounded" %>
+      <%= submit "Change password", class: "btn-gray" %>
     </div>
   <% end %>
 </div>
 
-<footer class="my-12">
+<footer class="py-12">
 <hr class="border-gray-900">
 </footer>

@@ -89,3 +89,8 @@ a:-webkit-any-link:hover {
 .fbox .box-label.examples {
   width: 100%;
 }
+
+
+.btn-gray { @apply px-3 py-2 bg-gray-700 rounded text-sm; }
+.btn-gray:hover { @apply bg-gray-800; }
+.btn-gray:focus { @apply ring-2 ring-gray-400 outline-none; }

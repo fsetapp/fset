@@ -93,7 +93,7 @@
               into json schema
             </p>
             <br>
-            <%= link "Download", to: Routes.export_path(@conn, :download, @current_user.username, @project.key), download: true, class: "px-3 py-2 bg-gray-700 hover:bg-gray-800 focus:ring-2 focus:ring-gray-400 focus:outline-none rounded" %>
+            <%= link "Download", to: Routes.export_path(@conn, :download, @current_user.username, @project.key), download: true, class: "btn-gray" %>
             <%= link "View", to: Routes.export_path(@conn, :inline, @current_user.username, @project.key), target: "_blank", class: "ml-3 text-blue-400" %>
           </div>
         <% end %>
