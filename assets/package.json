@@ -9,7 +9,6 @@
   "dependencies": {
     "@github/details-menu-element": "^1.0.9",
     "@github/tab-container-element": "^3.1.0",
-    "@github/time-elements": "^3.1.1",
     "@tarekraafat/autocomplete.js": "^9.0.5",
     "autosize": "^4.0.2",
     "phoenix": "file:../deps/phoenix",

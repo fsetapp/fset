@@ -21,9 +21,9 @@
         <p class="py-2 text-sm"><%= project.description %></p>
         <p class="text-xs text-gray-400">
           <span>Updated </span>
-          <time-ago datetime="<%= DateTime.to_iso8601(DateTime.from_naive!(project.updated_at, "Etc/UTC")) %>">
-            <%= project.updated_at %>
-          </time-ago>
+          <time datetime="<%= DateTime.to_iso8601(DateTime.from_naive!(project.updated_at, "Etc/UTC")) %>">
+            <%= Timex.from_now(project.updated_at) %>
+          </time>
         </p>
       </li>
     <% end %>

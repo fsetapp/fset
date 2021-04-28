@@ -141,25 +141,6 @@ defmodule Fset.Accounts do
   end
 
   @doc """
-  Emulates that the username will change without actually changing
-  it in the database.
-
-  ## Examples
-
-      iex> apply_user_info(user, "valid password", %{username: ...})
-      {:ok, %User{}}
-
-      iex> apply_user_info(user, "invalid password", %{username: ...})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def apply_user_info(user, password, attrs) do
-    user
-    |> User.info_changeset(attrs)
-    |> Ecto.Changeset.apply_action(:update)
-  end
-
-  @doc """
   Updates the user email using the given token.
 
   If the token matches, the user email is updated and the token is deleted.
