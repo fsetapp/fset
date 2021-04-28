@@ -21,12 +21,14 @@ export const start = ({ channel }) => {
     connectedCallback() {
       this.addEventListener("remote-connected", this.handleRemoteConnected)
       this.addEventListener("tree-command", buffer(this.handleTreeCommand.bind(this), 5))
+      this.addEventListener("tree-command", buffer(this.handlePostTreeCommand.bind(this), 5))
       this.addEventListener("tree-command", buffer(this.handleProjectRemote.bind(this), 250))
       this.addEventListener("sch-update", this.handleSchUpdate)
     }
     disconnectedCallback() {
       this.removeEventListener("remote-connected", this.handleRemoteConnected)
       this.removeEventListener("tree-command", buffer(this.handleTreeCommand.bind(this), 5))
+      this.removeEventListener("tree-command", buffer(this.handlePostTreeCommand.bind(this), 5))
       this.removeEventListener("tree-command", buffer(this.handleProjectRemote.bind(this), 250))
       this.removeEventListener("sch-update", this.handleSchUpdate)
     }
@@ -90,6 +92,17 @@ export const start = ({ channel }) => {
         channel.push("push_sch_meta", { $anchor: updated_sch.$anchor, metadata: updated_sch.metadata })
           .receive("ok", (updated_metadata) => {
           })
+    }
+    handlePostTreeCommand(e) {
+      let file = document.querySelector("[id='project'] [role='tree']")._walker.currentNode
+      let fmodel = document.querySelector("[id='fmodel'] [role='tree']")._walker.currentNode
+
+      let fileIsFile = file.getAttribute("data-tag") == "file"
+      let fmodelIsNotFile = fmodel.getAttribute("data-tag") != "file"
+
+      if (fileIsFile && fmodelIsNotFile)
+        if (file.key && fmodel.id)
+          history.replaceState(null, "", `${window.project_path}/m/${file.key}#${fmodel.id}`)
     }
   })
 
