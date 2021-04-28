@@ -6,6 +6,8 @@ defmodule Fset.Projects.User do
   schema "users" do
     field :email, :string
     field :username, :string
+    field :description, :string
+    field :avatar_url, :string
     many_to_many :projects, Fset.Projects.Project, join_through: Fset.Projects.Role
 
     timestamps()

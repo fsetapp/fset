@@ -10,6 +10,9 @@ defmodule Fset.Accounts.User do
     field :hashed_password, :string
     field :confirmed_at, :naive_datetime
 
+    field :description, :string
+    field :avatar_url, :string
+
     timestamps()
   end
 
@@ -97,7 +100,7 @@ defmodule Fset.Accounts.User do
 
   def info_changeset(user, attrs) do
     user
-    |> cast(attrs, [:username])
+    |> cast(attrs, [:username, :description, :avatar_url])
     |> validate_username()
   end
 

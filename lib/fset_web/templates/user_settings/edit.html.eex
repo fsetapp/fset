@@ -1,6 +1,8 @@
-<%= render FsetWeb.LayoutView, "_user_menu.html", assigns %>
+<header class="py-1 m-px px-2">
+  <%= render FsetWeb.LayoutView, "_user_menu.html", assigns %>
+</header>
 
-<div class="md:w-1/3 mx-auto h-full">
+<div class="md:w-2/5 mx-auto h-full">
   <h1 class="text-gray-400 text-2xl font-light">Settings</h1>
   <br>
 
@@ -11,13 +13,23 @@
         <p>Oops, something went wrong! Please check the errors below.</p>
       </div>
     <% end %>
-    <%= hidden_input f, :action, name: "action", value: "update_info" %>
+    <%= hidden_input f, :action, name: "action", id: "update_info_action", value: "update_info" %>
 
     <div class="fbox flex flex-col my-2">
       <%= label class: "box-label m-px" do %>
         <p class="l">Username</p>
         <%= text_input f, :username, required: true, placeholder: " " %>
         <%= error_tag f, :username, class: "err" %>
+      <% end %>
+      <%= label class: "box-label m-px" do %>
+        <p class="l">Description</p>
+        <%= textarea f, :description %>
+        <%= error_tag f, :description, class: "err" %>
+      <% end %>
+      <%= label class: "box-label m-px" do %>
+        <p class="l">Avatar url</p>
+        <%= url_input f, :avatar_url, value: @current_user.avatar_url || FsetWeb.ProfileView.gravatar(@current_user, s: "256") %>
+        <%= error_tag f, :avatar_url, class: "err" %>
       <% end %>
     </div>
 
@@ -34,7 +46,7 @@
         <p>Oops, something went wrong! Please check the errors below.</p>
       </div>
     <% end %>
-    <%= hidden_input f, :action, name: "action", value: "update_email" %>
+    <%= hidden_input f, :action, name: "action", id: "update_email_action", value: "update_email" %>
 
     <div class="fbox flex flex-col my-2">
       <%= label class: "box-label m-px" do %>
@@ -63,7 +75,7 @@
         <p>Oops, something went wrong! Please check the errors below.</p>
       </div>
     <% end %>
-    <%= hidden_input f, :action, name: "action", value: "update_password" %>
+    <%= hidden_input f, :action, name: "action", id: "update_password_action", value: "update_password" %>
 
     <div class="fbox flex flex-col my-2">
       <%= label class: "box-label m-px" do %>
