@@ -2,12 +2,13 @@ defmodule FsetWeb.MainChannel do
   use FsetWeb, :channel
   alias Fset.Projects
 
-  def join("project:" <> project_name, _params, socket) do
+  def join("project:" <> project_name, params, socket) do
     case Projects.get_project(project_name) do
       {:ok, project} ->
         send(self(), {:build_ids_lookup_table, project})
 
-        {:ok, Projects.to_project_sch(project), assign(socket, :project, %{project | files: []})}
+        {:ok, Projects.to_project_sch(project, params),
+         assign(socket, :project, %{project | files: []})}
 
       _ ->
         {:ok, socket}

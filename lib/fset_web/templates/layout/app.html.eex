@@ -14,6 +14,8 @@
     <script>
       <%= if assigns[:project] do %>
         window.projectName = "<%= @project.key %>";
+        window.currentFile = "<%= @current_file_key %>";
+        window.project_path = "<%= @project_path %>";
       <% end %>
 
       <%= if assigns[:user_token] do %>

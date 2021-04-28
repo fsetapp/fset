@@ -10,16 +10,18 @@ defmodule FsetWeb.ProjectController do
   for guess, we soft cut communication between socket client and server; prevent
   channel push on client and ignore handling event from server.
   """
-  def show(conn, %{"projectname" => projectname, "username" => username}) do
-    with {:ok, project} <- Projects.get_project(projectname, preload: [:users]),
-         %{} = user <- find_project_user(project, username) do
+  def show(conn, %{"projectname" => p, "username" => u} = params) do
+    with {:ok, project} <- Projects.get_project(p, preload: [:users]),
+         %{} = user <- find_project_user(project, u) do
       render(conn, "show.html",
         project: project,
         user: user,
         is_project_unclaimed: project.users == [],
         is_project_member: is_project_member(project, conn.assigns[:current_user]),
         signup_changeset: Accounts.change_user_registration(%Accounts.User{}),
-        project_info_changeset: Projects.change_info(project)
+        project_info_changeset: Projects.change_info(project),
+        current_file_key: Map.get(params, "filename"),
+        project_path: Routes.project_path(conn, :show, u, p)
       )
     end
   end

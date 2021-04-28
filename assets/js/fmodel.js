@@ -33,14 +33,18 @@ export const start = ({ channel }) => {
     handleRemoteConnected(e) {
       let project = e.detail.project
       Project.projectToStore(project, projectStore)
-      ProjectTree({ store: projectStore, target: "[id='project']" })
+      ProjectTree({ store: projectStore, target: "[id='project']", select: project.currentFileKey })
 
       let fileStore = Project.getFileStore(projectStore, project.currentFileKey)
       if (fileStore) {
         fileStore._models = Project.anchorsModels(projectStore, fileStore)
-        FmodelTree({ store: fileStore, target: "[id='fmodel']", metaSelector: "sch-meta" })
+        FmodelTree({ store: fileStore, target: "[id='fmodel']", metaSelector: "sch-meta", select: location.hash.replace("#", "") })
         SchMetaForm({ store: fileStore, target: "[id='fsch']", treeTarget: "[id='fmodel']" })
       }
+
+      if (project.currentFileKey && project.currentFileKey != "")
+        history.replaceState(null, "", `${window.project_path}/m/${project.currentFileKey}${location.hash}`)
+
       projectBaseStore = JSON.parse(JSON.stringify(projectStore))
     }
     handleTreeCommand(e) {

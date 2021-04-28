@@ -327,17 +327,14 @@ defmodule Fset.Fmodels do
     end)
   end
 
-  def to_project_sch(%Project{} = project) do
+  def to_project_sch(%Project{} = project, params \\ %{}) do
     %{}
     |> Map.put("$anchor", project.anchor)
     |> Map.put("key", project.key)
     |> Map.put("schMetas", project.allmeta)
     |> Map.put("type", "record")
     |> Map.put("fields", Enum.map(project.files, &to_file_sch/1))
-    |> (fn
-          %{"fields" => []} = p -> p
-          %{"fields" => [file | _]} = p -> Map.put(p, "currentFileKey", Map.get(file, "key"))
-        end).()
+    |> map_put_current_file(params)
   end
 
   defp to_file_sch(%File{} = file) do
@@ -354,5 +351,19 @@ defmodule Fset.Fmodels do
     |> Map.put("key", fmodel.key)
     |> Map.put("type", fmodel.type)
     |> Map.put("isEntry", fmodel.is_entry)
+  end
+
+  defp map_put_current_file(project, %{"filename" => ""} = params) do
+    map_put_current_file(project, Map.delete(params, "filename"))
+  end
+
+  defp map_put_current_file(project, params) do
+    case project do
+      %{"fields" => []} = p ->
+        p
+
+      %{"fields" => [file | _]} = p ->
+        Map.put(p, "currentFileKey", params["filename"] || Map.get(file, "key"))
+    end
   end
 end
