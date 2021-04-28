@@ -52,6 +52,18 @@
   </dl>
 
   <dl>
+    <h2>Collapse / Expand</h2>
+    <div>
+      <dd>Collapse selected schemas</dd>
+      <dt><kbd>ArrowLeft</kbd></dt>
+    </div>
+    <div>
+      <dd>Expand selected schemas</dd>
+      <dt><kbd>ArrowRight</kbd></dt>
+    </div>
+  </dl>
+
+  <dl>
     <h2>Delete</h2>
     <dd>Delete selected schemas</dd>
     <dt><kbd>Delete</kbd></dt>

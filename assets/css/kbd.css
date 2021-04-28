@@ -12,6 +12,7 @@
 
 .help dl {
   display: flex;
+  flex-direction: column;
   flex-wrap: wrap;
   align-items: baseline;
   padding: .5rem;
