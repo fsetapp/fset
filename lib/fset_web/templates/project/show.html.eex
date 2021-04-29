@@ -110,7 +110,7 @@
         <% end %>
       </tab-container>
     </section>
-    <section class="overflow-hidden flex flex-col m-px bg-gray-900" style="flex: 2">
+    <section class="overflow-hidden flex flex-col m-px bg-gray-900" style="flex: 2.5">
       <action-listener class="flex flex-shrink-0 bg-gray-meta border border-gray-800 text-xs">
         <button name="add_item" data-tree-action="add_item" tabindex="-1" class="px-2 py-1.5 hover:bg-gray-800 rounded">
           <%= FsetWeb.IconView.add(class: "w-4 h-4 text-gray-300") %>

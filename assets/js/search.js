@@ -29,9 +29,12 @@ const typeSearch = (selector, anchorsModels, opts = {}) => {
 const projectSearch = (selector, anchorsModels, opts = {}) => {
   let comboboxOpts = {
     placeHolder: opts.placeHolder || "Choose type ...",
+    resultsList: {
+      maxResults: 9
+    },
     resultItem: {
       content: (item, element) => {
-        element.setAttribute("id", item.value.anchor)
+        // element.setAttribute("id", item.value.display)
       },
       highlight: {
         render: true
