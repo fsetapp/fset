@@ -19,7 +19,7 @@ if (window.userToken || window.projectName) {
 if (window.projectName) {
   channel.join()
     .receive("ok", resp => {
-      document.querySelector("sch-listener")
+      document.querySelector("project-store")
         .dispatchEvent(new CustomEvent("remote-connected", { detail: { project: resp } }))
     })
     .receive("error", resp => { console.log("Unable to join", resp) })

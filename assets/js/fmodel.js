@@ -17,37 +17,34 @@ const buffer = function (func, wait, scope) {
 }
 
 export const start = ({ channel }) => {
-  customElements.define("sch-listener", class extends HTMLElement {
+  customElements.define("project-store", class extends HTMLElement {
     connectedCallback() {
       this.addEventListener("remote-connected", this.handleRemoteConnected)
       this.addEventListener("tree-command", buffer(this.handleTreeCommand.bind(this), 5))
-      this.addEventListener("tree-command", buffer(this.handlePostTreeCommand.bind(this), 5))
       this.addEventListener("tree-command", buffer(this.handleProjectRemote.bind(this), 250))
+      this.addEventListener("search-selected", buffer(this.handleSearchSelected.bind(this), 5), true)
+      this.addEventListener("tree-command", buffer(this.handlePostTreeCommand.bind(this), 5))
       this.addEventListener("sch-update", this.handleSchUpdate)
+
     }
     disconnectedCallback() {
       this.removeEventListener("remote-connected", this.handleRemoteConnected)
       this.removeEventListener("tree-command", buffer(this.handleTreeCommand.bind(this), 5))
-      this.removeEventListener("tree-command", buffer(this.handlePostTreeCommand.bind(this), 5))
       this.removeEventListener("tree-command", buffer(this.handleProjectRemote.bind(this), 250))
+      this.removeEventListener("search-selected", buffer(this.handleSearchSelected.bind(this), 5), true)
+      this.removeEventListener("tree-command", buffer(this.handlePostTreeCommand.bind(this), 5))
       this.removeEventListener("sch-update", this.handleSchUpdate)
     }
     handleRemoteConnected(e) {
       let project = e.detail.project
-      Project.projectToStore(project, projectStore)
-      ProjectTree({ store: projectStore, target: "[id='project']", select: project.currentFileKey })
+      this.changeUrlSSR(project)
 
-      let fileStore = Project.getFileStore(projectStore, project.currentFileKey)
-      if (fileStore) {
-        fileStore._models = Project.anchorsModels(projectStore, fileStore)
-        FmodelTree({ store: fileStore, target: "[id='fmodel']", metaSelector: "sch-meta", select: location.hash.replace("#", "") })
-        SchMetaForm({ store: fileStore, target: "[id='fsch']", treeTarget: "[id='fmodel']" })
-      }
-
-      if (project.currentFileKey && project.currentFileKey != "")
-        history.replaceState(null, "", `${window.project_path}/m/${project.currentFileKey}${location.hash}`)
+      this._projectStore = Project.projectToStore(project, projectStore)
+      ProjectTree({ store: projectStore, target: "[id='project']", select: `[${project.currentFileKey}]` })
+      Project.changeFile(projectStore, project.currentFileKey, location.hash.replace("#", ""))
 
       projectBaseStore = JSON.parse(JSON.stringify(projectStore))
+      this.pushChanged()
     }
     handleTreeCommand(e) {
       Project.controller(projectStore, e.detail.target, e.detail.command, this.runDiff)
@@ -94,16 +91,42 @@ export const start = ({ channel }) => {
           })
     }
     handlePostTreeCommand(e) {
+      this.changeUrl()
+      this.pushChanged()
+    }
+    handleSearchSelected(e) {
+      let filename = e.detail.value.file
+      let fmodelname = e.detail.value.fmodel
+
+      ProjectTree({ store: projectStore, target: "[id='project']", select: `[${filename}]` })
+      Project.changeFile(this._projectStore, filename, `[${fmodelname}]`)
+      this.changeUrl()
+    }
+    pushChanged() {
+      for (let commbobox of this.querySelectorAll("combo-box"))
+        commbobox.dispatchEvent(new CustomEvent("data-push", { detail: { _models: Project.anchorsModels(this._projectStore) } }))
+    }
+    changeUrlSSR() {
+      if (project.currentFileKey && project.currentFileKey != "")
+        history.replaceState(null, "", `${window.project_path}/m/${project.currentFileKey}${location.hash}`)
+    }
+    changeUrl() {
       let file = document.querySelector("[id='project'] [role='tree']")._walker.currentNode
       let fmodel = document.querySelector("[id='fmodel'] [role='tree']")._walker.currentNode
 
       let fileIsFile = file.getAttribute("data-tag") == "file"
       let fmodelIsNotFile = fmodel.getAttribute("data-tag") != "file"
 
-      if (fileIsFile && fmodelIsNotFile)
-        if (file.key && fmodel.id)
+      switch (true) {
+        case !!(fileIsFile && file.key) && !!(fmodelIsNotFile && fmodel.id):
           history.replaceState(null, "", `${window.project_path}/m/${file.key}#${fmodel.id}`)
+          break
+        case !!(fileIsFile && file.key):
+          history.replaceState(null, "", `${window.project_path}/m/${file.key}`)
+          break
+      }
     }
+
   })
 
   customElements.define("action-listener", class extends HTMLElement {
