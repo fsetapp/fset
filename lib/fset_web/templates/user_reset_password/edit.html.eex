@@ -15,12 +15,12 @@
     <div class="fbox flex flex-col my-2">
       <%= label class: "box-label m-px" do %>
         <p class="l">New password</p>
-        <%= text_input f, :password, required: true, placeholder: " ", minLength: 12 %>
+        <%= password_input f, :password, required: true, placeholder: " ", minLength: 12 %>
         <%= error_tag f, :password, class: "err" %>
       <% end %>
       <%= label class: "box-label m-px" do %>
         <p class="l">Confirm new password</p>
-        <%= text_input f, :password_confirmation, required: true, placeholder: " ", minLength: 12 %>
+        <%= password_input f, :password_confirmation, required: true, placeholder: " ", minLength: 12 %>
         <%= error_tag f, :password_confirmation, class: "err" %>
       <% end %>
     </div>

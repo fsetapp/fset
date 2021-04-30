@@ -13,7 +13,7 @@
     <% end %>
     <%= label class: "box-label m-px" do %>
       <p class="l">Password</p>
-      <%= text_input f, :password, required: true, placeholder: " ", minLength: 12 %>
+      <%= password_input f, :password, required: true, placeholder: " ", minLength: 12 %>
       <%= error_tag f, :password, class: "err" %>
     <% end %>
   </div>

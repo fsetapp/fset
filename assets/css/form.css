@@ -77,8 +77,8 @@
 .fbox select > option {
   color: black;
 }
-a:-webkit-any-link:focus,
-a:-webkit-any-link:hover {
+a:any-link:focus,
+a:any-link:hover {
   outline: none;
   text-decoration: underline;
 }
