@@ -13,13 +13,15 @@
     <link rel="icon" href="<%= Routes.static_path(@conn, "/images/fset-ico.svg") %>" sizes="any" type="image/svg+xml">
     <script>
       <%= if assigns[:project] do %>
-        window.projectName = "<%= @project.key %>";
+        window.projectName = "<%= Phoenix.Token.sign(@conn, "project name", @project.key) %>";
         window.currentFile = "<%= @current_file_key %>";
         window.project_path = "<%= @project_path %>";
       <% end %>
-
       <%= if assigns[:user_token] do %>
         window.userToken = "<%= @user_token %>";
+      <% end %>
+      <%= if assigns[:is_project_unclaimed] do %>
+        window.isUnclaimed = "<%= "yes_and_no :)" %>";
       <% end %>
     </script>
     <script defer type="module" src="<%= Routes.static_path(@conn, "/js/app.js") %>"></script>

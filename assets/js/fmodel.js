@@ -52,7 +52,7 @@ export const start = ({ channel }) => {
       autosize(document.querySelectorAll("[id='fsch'] textarea"))
     }
     handleProjectRemote(e) {
-      if (!window.userToken) return
+      if (!window.userToken && !window.isUnclaimed) return
       if (!Project.isDiffableCmd(e.detail.command.name)) return
 
       Object.defineProperty(projectStore, "_diffToRemote", { value: this.runDiff(), writable: true })
@@ -111,8 +111,9 @@ export const start = ({ channel }) => {
         history.replaceState(null, "", `${window.project_path}/m/${project.currentFileKey}${location.hash}`)
     }
     changeUrl() {
-      let file = document.querySelector("[id='project'] [role='tree']")._walker.currentNode
-      let fmodel = document.querySelector("[id='fmodel'] [role='tree']")._walker.currentNode
+      let file = document.querySelector("[id='project'] [role='tree']")?._walker.currentNode
+      let fmodel = document.querySelector("[id='fmodel'] [role='tree']")?._walker.currentNode
+      if (!file || !fmodel) return
 
       let fileIsFile = file.getAttribute("data-tag") == "file"
       let fmodelIsNotFile = fmodel.getAttribute("data-tag") != "file"

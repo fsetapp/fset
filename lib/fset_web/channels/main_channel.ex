@@ -3,6 +3,8 @@ defmodule FsetWeb.MainChannel do
   alias Fset.Projects
 
   def join("project:" <> project_name, params, socket) do
+    {:ok, project_name} = Phoenix.Token.verify(socket, "project name", project_name)
+
     case Projects.get_project(project_name) do
       {:ok, project} ->
         send(self(), {:build_ids_lookup_table, project})
@@ -27,11 +29,12 @@ defmodule FsetWeb.MainChannel do
   end
 
   def handle_in("push_project", diff, socket) do
-    %{project: project, current_user: user_id} = socket.assigns
+    %{project: project} = socket.assigns
+    user_id = Map.get(socket.assigns, :current_user)
 
     if authorized(project, user_id) do
       {_result, _project} = Projects.persist_diff(diff, project)
-      {:ok, project} = Projects.get_user_project(project.key, user_id)
+      {:ok, project} = Projects.get_project(project.key)
 
       send(self(), {:build_ids_lookup_table, project})
 
@@ -59,6 +62,8 @@ defmodule FsetWeb.MainChannel do
 
     {:noreply, assign(socket, :project, project)}
   end
+
+  defp authorized(%{users: []}, _), do: true
 
   defp authorized(project, user_id) do
     user_id in Enum.map(project.users, fn u -> u.id end)
