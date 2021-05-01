@@ -21,7 +21,7 @@ export const start = ({ channel }) => {
     connectedCallback() {
       this.addEventListener("remote-connected", this.handleRemoteConnected)
       this.addEventListener("tree-command", buffer(this.handleTreeCommand.bind(this), 5))
-      this.addEventListener("tree-command", buffer(this.handleProjectRemote.bind(this), 250))
+      this.addEventListener("tree-command", buffer(this.handleProjectRemote.bind(this), 1000))
       this.addEventListener("search-selected", buffer(this.handleSearchSelected.bind(this), 5), true)
       this.addEventListener("tree-command", buffer(this.handlePostTreeCommand.bind(this), 5))
       this.addEventListener("sch-update", this.handleSchUpdate)
@@ -30,7 +30,7 @@ export const start = ({ channel }) => {
     disconnectedCallback() {
       this.removeEventListener("remote-connected", this.handleRemoteConnected)
       this.removeEventListener("tree-command", buffer(this.handleTreeCommand.bind(this), 5))
-      this.removeEventListener("tree-command", buffer(this.handleProjectRemote.bind(this), 250))
+      this.removeEventListener("tree-command", buffer(this.handleProjectRemote.bind(this), 1000))
       this.removeEventListener("search-selected", buffer(this.handleSearchSelected.bind(this), 5), true)
       this.removeEventListener("tree-command", buffer(this.handlePostTreeCommand.bind(this), 5))
       this.removeEventListener("sch-update", this.handleSchUpdate)
