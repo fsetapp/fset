@@ -59,17 +59,17 @@ export const start = ({ channel }) => {
       Project.taggedDiff(projectStore, (diff) => {
         channel.push("push_project", diff)
           .receive("ok", (updated_project) => {
-            let file = e.detail.target.closest("[data-tag='file']")
-            let filename = file?.key
+            // let file = e.detail.target.closest("[data-tag='file']")
+            // let filename = file?.key
 
             projectBaseStore = JSON.parse(JSON.stringify(projectStore))
-            this.runDiff()
+            // this.runDiff()
 
-            projectStore.render()
-            if (!filename) return
-            let fileStore = Project.getFileStore(projectStore, filename)
-            if (fileStore)
-              fileStore.render && fileStore.render()
+            // projectStore.render()
+            // if (!filename) return
+            // let fileStore = Project.getFileStore(projectStore, filename)
+            // if (fileStore)
+            //   fileStore.render && fileStore.render()
           })
           .receive("error", (reasons) => console.log("update project failed", reasons))
           .receive("noop", (a) => a)
