@@ -43,7 +43,7 @@ export const start = ({ channel }) => {
       ProjectTree({ store: projectStore, target: "[id='project']", select: `[${project.currentFileKey}]` })
       Project.changeFile(projectStore, project.currentFileKey, location.hash.replace("#", ""))
 
-      projectBaseStore = JSON.parse(JSON.stringify(projectStore))
+      projectBaseStore = JSON.parse(JSON.stringify(this._projectStore))
       Diff.buildBaseIndices(projectBaseStore)
       this.pushChanged()
     }
@@ -58,7 +58,7 @@ export const start = ({ channel }) => {
 
       Object.defineProperty(projectStore, "_diffToRemote", { value: this.runDiff(), writable: true })
       Project.taggedDiff(projectStore, (diff) => {
-        channel.push("push_project", diff)
+        channel.push("push_project", diff, 30_000)
           .receive("ok", (updated_project) => {
             // let file = e.detail.target.closest("[data-tag='file']")
             // let filename = file?.key
