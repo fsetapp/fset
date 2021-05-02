@@ -37,8 +37,10 @@ defmodule FsetWeb.MainChannel do
       {:ok, project} = Projects.get_project(project.key)
 
       send(self(), {:build_ids_lookup_table, project})
+      project_sch = Projects.to_project_sch(project)
+      send(self(), {:prune_sch_metas, project_sch, project.id})
 
-      {:reply, {:ok, Projects.to_project_sch(project)}, socket}
+      {:reply, {:ok, project_sch}, socket}
     else
       {:noreply, socket}
     end
@@ -61,6 +63,11 @@ defmodule FsetWeb.MainChannel do
     project = %{project | files: Enum.map(project.files, map_file)}
 
     {:noreply, assign(socket, :project, project)}
+  end
+
+  def handle_info({:prune_sch_metas, project_sch, project_id}, socket) do
+    Projects.prune_sch_metas(project_id, project_sch)
+    {:noreply, socket}
   end
 
   defp authorized(%{users: []}, _), do: true

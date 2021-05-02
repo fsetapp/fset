@@ -9,6 +9,7 @@ defmodule Fset.Projects do
   defdelegate persist_diff(diff, project), to: Fset.Fmodels
   defdelegate to_project_sch(project, params \\ %{}), to: Fset.Fmodels
   defdelegate from_project_sch(project_sch), to: Fset.Fmodels
+  defdelegate prune_sch_metas(project_sch, project_id), to: Fset.Fmodels
 
   defdelegate change_info(project, attrs \\ %{}), to: Fset.Projects.Project
   defdelegate apply_info(project, attrs \\ %{}), to: Fset.Projects.Project

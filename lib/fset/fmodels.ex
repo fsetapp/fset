@@ -28,6 +28,19 @@ defmodule Fset.Fmodels do
         end).()
   end
 
+  def prune_sch_metas(project_id, project_sch) do
+    {_, sch_metas_anchors} =
+      Sch.walk(project_sch, [], fn a, _m, acc_ ->
+        {:cont, {a, [Map.get(a, "$anchor") | acc_]}}
+      end)
+
+    delete_sch_meta_query =
+      from m in SchMeta,
+        where: m.anchor not in ^sch_metas_anchors and m.project_id == ^project_id
+
+    Repo.delete_all(delete_sch_meta_query)
+  end
+
   def persist_diff(diff, %Project{id: _} = project, opts \\ []) do
     {multi, project} =
       {opts[:multi] || Ecto.Multi.new(), project}
