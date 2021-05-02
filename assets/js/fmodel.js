@@ -1,4 +1,4 @@
-import { FmodelTree, ProjectTree, SchMetaForm, Project, Diff } from "./vendor/fbox.min.js"
+import { ProjectTree, Project, Diff } from "./vendor/fbox.min.js"
 import autosize from "autosize"
 
 var projectStore = Project.createProjectStore()
@@ -44,6 +44,7 @@ export const start = ({ channel }) => {
       Project.changeFile(projectStore, project.currentFileKey, location.hash.replace("#", ""))
 
       projectBaseStore = JSON.parse(JSON.stringify(projectStore))
+      Diff.buildBaseIndices(projectBaseStore)
       this.pushChanged()
     }
     handleTreeCommand(e) {
@@ -63,6 +64,7 @@ export const start = ({ channel }) => {
             // let filename = file?.key
 
             projectBaseStore = JSON.parse(JSON.stringify(projectStore))
+            Diff.buildBaseIndices(projectBaseStore)
             // this.runDiff()
 
             // projectStore.render()
