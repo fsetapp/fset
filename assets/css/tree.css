@@ -75,4 +75,4 @@ sch-meta > .meta-def {
 }
 
 combo-box { position: relative;}
-combo-box textarea { min-width: 40ch; }
+combo-box textarea { min-width: 50ch; }

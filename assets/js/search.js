@@ -3,6 +3,9 @@ import autoComplete from "@tarekraafat/autocomplete.js"
 const typeSearch = (selector, anchorsModels, opts = {}) => {
   let comboboxOpts = {
     placeHolder: opts.placeHolder || "Choose type ...",
+    resultsList: {
+      maxResults: 15
+    },
     resultItem: {
       highlight: {
         render: true
@@ -10,9 +13,10 @@ const typeSearch = (selector, anchorsModels, opts = {}) => {
     },
     onSelection: function (feedback) {
       this.inputField.value = feedback.selection.value.fmodelname
+      this.inputField.dispatchEvent(new KeyboardEvent("keydown", { bubbles: true, key: "Enter" }))
     }
   }
-
+  onNavigate(selector)
 
   let types = ["string", "record", "list", "tuple", "boolean", "number", "union", "null", "any"]
     .reduce((acc, t) => Object.assign(acc, { [t]: { display: t } }), {})
@@ -30,7 +34,7 @@ const projectSearch = (selector, anchorsModels, opts = {}) => {
   let comboboxOpts = {
     placeHolder: opts.placeHolder || "Choose type ...",
     resultsList: {
-      maxResults: 9
+      maxResults: 30
     },
     resultItem: {
       content: (item, element) => {
@@ -45,6 +49,7 @@ const projectSearch = (selector, anchorsModels, opts = {}) => {
       this.inputField.dispatchEvent(new CustomEvent("search-selected", { detail: { selector, value: feedback.selection.value } }))
     }
   }
+  onNavigate(selector)
 
   let data = anchorsModels
   let anchors = Object.keys(data)
@@ -54,6 +59,18 @@ const projectSearch = (selector, anchorsModels, opts = {}) => {
     datalist.push(Object.assign({ anchor: anchors[i], fmodelname: data[anchors[i]].display }, data[anchors[i]]))
 
   return new autoComplete({ ...comboboxOpts, selector: selector, data: { src: datalist, key: ["fmodelname"] } })
+}
+
+const onNavigate = (selector) => {
+  document.querySelector(`${selector}`).addEventListener("navigate", function (event) {
+    let list = document.querySelector(`[id='${this.getAttribute("aria-controls")}']`)
+    let option = list.querySelector(`[id='${this.getAttribute("aria-activedescendant")}']`)
+    // Equivalent to option.scrollIntoView(false)
+    if (option.offsetTop + option.offsetHeight < list.offsetHeight)
+      list.scrollTop = 0
+    else
+      list.scrollTop = option.offsetTop - (list.offsetHeight - option.offsetHeight);
+  })
 }
 
 export const start = () => {
