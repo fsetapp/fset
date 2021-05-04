@@ -10,6 +10,7 @@ defmodule Fset.Repo.Migrations.ChangeOrderType do
       add :order, :integer
     end
     alter table(:fmodels) do
+      remove :order
       add :order, :integer
     end
   end

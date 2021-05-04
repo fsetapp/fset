@@ -1,6 +1,5 @@
-process.env.NODE_ENV ||= "development"
+process.env.NODE_ENV = process.env.NODE_ENV || "development"
 
-/** @type {import("snowpack").SnowpackUserConfig } */
 module.exports = {
   mount: {
     "js": { url: "/js" },
@@ -11,6 +10,7 @@ module.exports = {
     out: "../priv/static/"
   },
   optimize: {
+    entrypoints: ["js/app.js"],
     bundle: true,
     minify: true,
     target: 'es2018'
