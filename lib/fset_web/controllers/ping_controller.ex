@@ -2,7 +2,7 @@ defmodule FsetWeb.PingController do
   use FsetWeb, :controller
   import Ecto.Query
 
-  def appstart(conn, _params) do
+  def ping(conn, _params) do
     [version] =
       Fset.Repo.one(
         from m in "schema_migrations",

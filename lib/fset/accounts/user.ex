@@ -1,4 +1,5 @@
 defmodule Fset.Accounts.User do
+  use Fset.ReserveUsername
   use Ecto.Schema
   import Ecto.Changeset
 
@@ -52,6 +53,7 @@ defmodule Fset.Accounts.User do
   defp validate_username(changeset) do
     changeset
     |> validate_required([:username])
+    |> validate_exclusion(:username, @reserved_username)
     |> validate_format(:username, ~r/^[[:alnum:]-_]+$/,
       message: "must be a mix of A-Z, a-z, 0-9, dash (-), or underscore (_)"
     )

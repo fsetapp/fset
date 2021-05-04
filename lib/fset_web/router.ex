@@ -72,10 +72,6 @@ defmodule FsetWeb.Router do
     post "/:username/:projectname/import", ImportController, :create
   end
 
-  scope "/", FsetWeb, host: "ping." do
-    get "/appstart", PingController, :appstart
-  end
-
   scope "/", FsetWeb do
     pipe_through [:browser]
 
@@ -84,7 +80,8 @@ defmodule FsetWeb.Router do
     post "/users/confirm", UserConfirmationController, :create
     get "/users/confirm/:token", UserConfirmationController, :confirm
 
-    get "/404.html", ErrorController, :notfound
+    get "/status/ping", PingController, :ping
+    get "/status/404.html", ErrorController, :notfound
 
     post "/projects", ProjectController, :create
     get "/:username/:projectname/m/:filename", ProjectController, :show
