@@ -72,6 +72,10 @@ defmodule FsetWeb.Router do
     post "/:username/:projectname/import", ImportController, :create
   end
 
+  scope "/", FsetWeb, host: "ping." do
+    get "/appstart", PingController, :appstart
+  end
+
   scope "/", FsetWeb do
     pipe_through [:browser]
 
