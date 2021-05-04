@@ -9,8 +9,8 @@ if config_env() == :prod do
       """
 
   hostname =
-    System.get_env("RENDER_EXTERNAL_HOSTNAME") ||
-      raise "RENDER_EXTERNAL_HOSTNAME not available"
+    System.get_env("FSET_HOST_URL") ||
+      raise "FSET_HOST_URL not available"
 
   config :fset, FsetWeb.Endpoint,
     server: true,
