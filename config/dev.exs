@@ -6,6 +6,8 @@ config :fset, Fset.Repo,
   # password: "postgres",
   database: "fset_dev",
   hostname: "localhost",
+  # url: System.get_env("DATABASE_URL"),
+  # ssl: true,
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
 
@@ -21,11 +23,7 @@ config :fset, FsetWeb.Endpoint,
   code_reloader: true,
   check_origin: false,
   watchers: [
-    node: [
-      "node_modules/.bin/npm-run-all",
-      "watch",
-      cd: Path.expand("../assets", __DIR__)
-    ]
+    yarn: ["run", "watch", cd: Path.expand("../assets", __DIR__)]
   ]
 
 # ## SSL Support

@@ -11,7 +11,7 @@ defmodule FsetWeb.Endpoint do
   ]
 
   socket "/socket", FsetWeb.UserSocket,
-    websocket: true,
+    websocket: [compress: true],
     longpoll: false
 
   socket "/live", Phoenix.LiveView.Socket, websocket: [connect_info: [session: @session_options]]

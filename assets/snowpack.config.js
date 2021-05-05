@@ -1,4 +1,4 @@
-process.env.NODE_ENV = process.env.NODE_ENV || "development"
+process.env.NODE_ENV = "production"
 
 module.exports = {
   mount: {
@@ -10,7 +10,7 @@ module.exports = {
     out: "../priv/static/"
   },
   optimize: {
-    entrypoints: ["js/app.js"],
+    entrypoints: ["static/index.html"],
     bundle: true,
     minify: true,
     target: 'es2018'
