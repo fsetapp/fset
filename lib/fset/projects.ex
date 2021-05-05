@@ -24,6 +24,10 @@ defmodule Fset.Projects do
     end
   end
 
+  def get_head(name) do
+    {:ok, Repo.one(from p in Project, where: p.key == ^name, preload: [:users])}
+  end
+
   def get_project(name, opts \\ []) do
     sorted_files = from f in Fset.Fmodels.File, order_by: f.order
     sorted_fmodels = from f in Fset.Fmodels.Fmodel, order_by: f.order

@@ -56,7 +56,7 @@ defmodule FsetWeb.UserConfirmationController do
   end
 
   defp claim_project(user, project_key) do
-    with {:ok, project} <- Projects.get_project(project_key, preload: [:users]) do
+    with {:ok, project} <- Projects.get_head(project_key) do
       if project.users == [] do
         Projects.add_member(project.id, user.id)
       end

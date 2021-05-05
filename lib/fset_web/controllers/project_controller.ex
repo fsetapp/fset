@@ -11,7 +11,7 @@ defmodule FsetWeb.ProjectController do
   channel push on client and ignore handling event from server.
   """
   def show(conn, %{"projectname" => p, "username" => u} = params) do
-    with {:ok, project} <- Projects.get_project(p, preload: [:users]),
+    with {:ok, project} <- Projects.get_head(p),
          %{} = user <- find_project_user(project, u) do
       render(conn, "show.html",
         project: project,
@@ -41,7 +41,7 @@ defmodule FsetWeb.ProjectController do
   def update(conn, %{"project" => project_params, "projectname" => projectname}) do
     user = conn.assigns.current_user
 
-    with {:ok, project} <- Projects.get_project(projectname, preload: [:users]) do
+    with {:ok, project} <- Projects.get_head(projectname) do
       case Projects.update_info(project, project_params) do
         {:ok, updated_project} ->
           conn
