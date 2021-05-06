@@ -24,13 +24,13 @@ RUN yarn --cwd ./assets install
 
 ENV NODE_ENV=production
 
+COPY lib lib
 COPY priv priv
 COPY assets assets
 RUN yarn --cwd ./assets run deploy
 RUN mix phx.digest
 
 # compile and build release
-COPY lib lib
 # uncomment COPY if rel/ exists
 # COPY rel rel
 RUN mix do compile, release

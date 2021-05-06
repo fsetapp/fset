@@ -2,6 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8"/>
+    <link rel="icon" href="<%= Routes.static_path(@conn, "/images/fset-ico.svg") %>" sizes="16x16" type="image/svg+xml">
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <%= if assigns[:current_user] do %>
@@ -10,7 +11,6 @@
     <%= csrf_meta_tag() %>
     <title>Fsetapp</title>
     <link rel="stylesheet" href="<%= Routes.static_path(@conn, "/css/app.css") %>"/>
-    <link rel="icon" href="<%= Routes.static_path(@conn, "/images/fset-ico.svg") %>" sizes="any" type="image/svg+xml">
     <script>
       <%= if assigns[:project] do %>
         window.projectName = "<%= Phoenix.Token.sign(@conn, "project name", @project.key) %>";
