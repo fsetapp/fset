@@ -23,8 +23,9 @@ defmodule FsetWeb.Endpoint do
   plug Plug.Static,
     at: "/",
     from: :fset,
-    gzip: false,
-    only: ~w(css fonts images js favicon.ico robots.txt _snowpack)
+    brotli: true,
+    gzip: true,
+    only: ~w(css fonts images js favicon.ico robots.txt)
 
   # Code reloading can be explicitly enabled under the
   # :code_reloader configuration of your endpoint.

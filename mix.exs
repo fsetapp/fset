@@ -48,7 +48,8 @@ defmodule Fset.MixProject do
       {:plug_cowboy, "~> 2.0"},
       {:phx_gen_auth, "~> 0.6", only: [:dev], runtime: false},
       {:finch, "~> 0.6"},
-      {:timex, "~> 3.0"}
+      {:timex, "~> 3.0"},
+      {:benchee, "~> 1.0", only: :dev}
     ]
   end
 

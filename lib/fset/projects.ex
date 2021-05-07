@@ -25,7 +25,10 @@ defmodule Fset.Projects do
   end
 
   def get_head(name) do
-    {:ok, Repo.one(from p in Project, where: p.key == ^name, preload: [:users])}
+    case Repo.one(from p in Project, where: p.key == ^name, preload: [:users]) do
+      nil -> {:error, :not_found}
+      project -> {:ok, project}
+    end
   end
 
   def get_project(name, opts \\ []) do

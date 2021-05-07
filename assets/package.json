@@ -3,8 +3,8 @@
   "description": " ",
   "license": "MIT",
   "scripts": {
-    "deploy": "snowpack build",
-    "watch": "snowpack build"
+    "build": "vite build",
+    "watch": "vite build --watch --minify false --emptyOutDir false --clearScreen false --mode development"
   },
   "dependencies": {
     "@github/details-menu-element": "^1.0.9",
@@ -12,14 +12,11 @@
     "@tarekraafat/autocomplete.js": "^9.0.5",
     "autosize": "^4.0.2",
     "phoenix": "file:../deps/phoenix",
-    "phoenix_html": "file:../deps/phoenix_html",
-    "tailwindcss": "^2.1.2"
+    "phoenix_html": "file:../deps/phoenix_html"
   },
   "devDependencies": {
-    "@snowpack/plugin-postcss": "^1.1.0",
     "autoprefixer": "^10.2.4",
-    "postcss": "^8.2.6",
-    "postcss-cli": "^8.3.1",
-    "snowpack": "^3.0.11"
+    "tailwindcss": "^2.1.2",
+    "vite": "^2.2.4"
   }
 }

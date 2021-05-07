@@ -46,6 +46,7 @@ export const start = ({ channel }) => {
       projectBaseStore = JSON.parse(JSON.stringify(this._projectStore))
       Diff.buildBaseIndices(projectBaseStore)
       this.pushChanged()
+      autosize(document.querySelectorAll("[id='fsch'] textarea"))
     }
     handleTreeCommand(e) {
       Project.controller(projectStore, e.detail.target, e.detail.command, this.runDiff)

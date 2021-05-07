@@ -334,7 +334,7 @@ defmodule Fset.Fmodels do
         m.anchor,
         m
         |> Map.from_struct()
-        |> Map.take([:anchor, :title, :description, :required, :rw])
+        |> Map.take([:title, :description, :required, :rw])
         |> Map.merge(m.metadata)
       )
     end)
