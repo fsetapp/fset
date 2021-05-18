@@ -14,6 +14,7 @@ defmodule Fset.Accounts.User do
     field :description, :string
     field :avatar_url, :string
 
+    has_one :subscription, Fset.Accounts.UserSubscription
     timestamps()
   end
 

@@ -1,6 +1,7 @@
 import "phoenix_html"
 import "@github/tab-container-element"
 import "@github/details-menu-element"
+import "@github/include-fragment-element"
 import Search from "./search.js"
 import autosize from "autosize"
 

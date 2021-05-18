@@ -5,3 +5,6 @@
 [role='tab'][aria-selected='true']:focus {
   @apply rounded ring-1 ring-blue-500;
 }
+[role='tab']:focus {
+  outline: none;
+}

@@ -4,6 +4,7 @@ defmodule Fset.ReserveUsername do
       @reserved_username [
         # Internal_source_list
         "users",
+        "products",
         "public",
         "status",
         "ping",

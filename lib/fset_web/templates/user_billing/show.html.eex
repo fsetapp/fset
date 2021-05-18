@@ -1,0 +1,51 @@
+<div class="bg-grid py-8" style="--grid-color: var(--gray-900); --subgrid-color: var(--gray-900)">
+  <div class="md:w-1/2 mx-auto">
+    <header class="flex flex-wrap space-x-4">
+      <div>
+        <p class="text-gray-500 text-sm">Current monthly bill</p>
+        <p><%= @current_price %> USD</p>
+      </div>
+      <div>
+        <p class="text-gray-500 text-sm">Next payment due</p>
+        <p><%= @next_bill_date || "–" %></p>
+      </div>
+    </header>
+
+    <div class="my-8">
+      <p class="text-gray-500 text-sm">Current plan <%= link "change plan", to: Routes.page_path(@conn, :pricing), class: "ml-2 text-sm text-blue-500" %></p>
+      <p><%= @current_plan.name %><span class="text-gray-400 text-sm rounded"><span class="mx-2 text-gray-500">·</span><%= @subscription.status %></span></p>
+
+      <%= if @subscription.status == :cancelled do %>
+        <div class="my-8">
+          <p class="text-gray-500 text-sm">Cancellation effective date</p>
+          <p class="text-yellow-200 text-sm">You can still use all features of current subscription until this effective date:</p>
+          <p><%= @cancellation_effective_date || "–" %></p>
+        </div>
+      <% end %>
+
+      <ul class="my-4 space-y-4">
+        <li class="flex items-center">
+          <%= FsetWeb.IconView.ticket(class: "mr-3 w-5 h-5 text-blue-400") %> <span>Full-feature schema editor</span>
+        </li>
+        <li class="flex items-center">
+          <%= FsetWeb.IconView.ticket(class: "mr-3 w-5 h-5 text-blue-400") %> <span>Unlimited private and public projects</span>
+        </li>
+        <li class="flex items-center">
+          <%= FsetWeb.IconView.ticket(class: "mr-3 w-5 h-5 text-blue-400") %> <span>Inline schema documentation</span>
+        </li>
+        <li class="flex items-center">
+          <%= FsetWeb.IconView.ticket(class: "mr-3 w-5 h-5 text-blue-400") %> <span>Import / Export (JTD | JSON Schemas)</span>
+        </li>
+        <li class="flex items-center">
+          <%= FsetWeb.IconView.ticket(class: "mr-3 w-5 h-5 text-blue-400") %> <span>1 hosted exported schema (cdn url</span>
+        )</li>
+      </ul>
+      <%= if @subscription.status == :active do %>
+        <%= button "Cancel Subscription", to: Routes.user_subscription_path(@conn, :cancel, @subscription.external_id), class: "my-2 px-2 py-1 btn-gray rounded text-sm" %>
+      <% end %>
+    </div>
+
+    <include-fragment src="<%= Routes.user_subscription_path(@conn, :transactions) %>">
+    </include-fragment>
+  </div>
+</div>

@@ -6,7 +6,7 @@ export default {
     outDir: "../priv/static",
     emptyOutDir: true,
     rollupOptions: {
-      input: ["js/app.js", "css/app.css"],
+      input: ["js/app.js", "css/app.css", "js/paddle.js"],
       output: {
         entryFileNames: "js/[name].js",
         chunkFileNames: "js/[name].js",

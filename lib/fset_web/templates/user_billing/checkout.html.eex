@@ -1,0 +1,40 @@
+<paddle-checkout class="w-full flex flex-col justify-center items-center" data-vendor-id="<%= @vendor_id %>" data-product-id="<%= @product_id %>" data-email="<%= @current_user.email %>">
+  <div class="w-full py-8 flex justify-center items-start flex-wrap">
+    <section class="w-full md:w-1/4 min-w-max px-4">
+      <header class="mb-10 -ml-2"><%= img_tag Routes.static_path(@conn, "/images/fset-ico.svg"), class: "w-12 h-12 bg-matte-black", alt: "app logo" %></header>
+      <ul>
+        <li><h3 class="text-lg">Purchase FSET <span class="text-blue-500 text-xl ml-1">Schema</span></h3></li>
+        <li id="pricing"><span class="text-2xl">15.00</span> <span class="text-sm">USD / month</span></li>
+      </ul>
+      <hr class="w-1/2 w-full mx-auto border-gray-800 my-8">
+      <ul class="mt-8 space-y-4">
+        <li class="flex items-center">
+          <%= FsetWeb.IconView.ticket(class: "mr-3 w-5 h-5 text-blue-400") %> <span>Full-feature schema editor</span>
+        </li>
+        <li class="flex items-center">
+          <%= FsetWeb.IconView.ticket(class: "mr-3 w-5 h-5 text-blue-400") %> <span>Unlimited private and public projects</span>
+        </li>
+        <li class="flex items-center">
+          <%= FsetWeb.IconView.ticket(class: "mr-3 w-5 h-5 text-blue-400") %> <span>Inline schema documentation</span>
+        </li>
+        <li class="flex items-center">
+          <%= FsetWeb.IconView.ticket(class: "mr-3 w-5 h-5 text-blue-400") %> <span>Import / Export (JTD | JSON Schemas)</span>
+        </li>
+        <li class="flex items-center">
+          <%= FsetWeb.IconView.ticket(class: "mr-3 w-5 h-5 text-blue-400") %> <span>1 hosted exported schema (cdn url</span>
+        )</li>
+      </ul>
+      <hr class="w-1/2 w-full mx-auto border-gray-800 my-8">
+      <div id="purchased" class="hidden mb-8">
+        <p class="mb-4 text-green-500">Purchased successfully!</p>
+        <a href="/" class="text-sm px-3 py-2 rounded bg-gray-800 hover:bg-gray-900 text-gray-100">Access Fset App →</a>
+      </div>
+    </section>
+    <div class="hidden md:block md:mx-8"></div>
+    <section class="w-full md:w-1/4 min-w-max px-4">
+      <h3 class="text-xl">Payment Details</h3>
+      <p class="text-gray-400 text-sm">Complete your purchase by providing your payment information.</p>
+      <div class="mt-4 mb-8 checkout-container bg-white" style="min-width: 415px; min-height: 80vh;"></div>
+    </section>
+  </div>
+</paddle-checkout>

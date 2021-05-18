@@ -176,7 +176,7 @@ defmodule Fset.Projects do
 
   def import(%{"json_schema_url" => url} = params, opts) do
     %{"projectname" => projectname, "username" => _username} = params
-    json = fetch_file(url) |> Jason.decode!()
+    json = fetch_file(url)
     schema = Imports.json_schema(:draft7, json, opts)
     {_result, project} = replace(projectname, schema)
     # {:ok, project} = get_project(projectname)
@@ -189,7 +189,7 @@ defmodule Fset.Projects do
   defp fetch_file(url, retry) do
     case Finch.request(Finch.build(:get, url), FsetHttp) do
       {:ok, result} ->
-        result.body
+        Jason.decode!(result.body)
 
       {:error, %Mint.TransportError{reason: :closed}} ->
         fetch_file(url, retry - 1)

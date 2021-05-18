@@ -21,12 +21,15 @@ defmodule FsetWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
+    get "/pricing", PageController, :pricing
   end
 
   # Other scopes may use custom stacks.
-  # scope "/api", FsetWeb do
-  #   pipe_through :api
-  # end
+  scope "/api", FsetWeb do
+    pipe_through :api
+
+    post "/payment-callback", APIPaymentController, :notify
+  end
 
   # Enables LiveDashboard only for development
   #
@@ -65,6 +68,12 @@ defmodule FsetWeb.Router do
     get "/users/settings", UserSettingsController, :edit
     put "/users/settings", UserSettingsController, :update
     get "/users/settings/confirm_email/:token", UserSettingsController, :confirm_email
+
+    get "/users/billing", UserSubscriptionController, :show
+    get "/users/checkout/:id", UserSubscriptionController, :checkout
+    get "/products/transactions", UserSubscriptionController, :transactions
+    post "/products/cancel/:sub_id", UserSubscriptionController, :cancel
+    # post "/products/refund/:order_id", UserSubscriptionController, :refund
 
     patch "/:username/:projectname", ProjectController, :update
     get "/:username/:projectname/export", ExportController, :inline

@@ -11,26 +11,17 @@
     <%= csrf_meta_tag() %>
     <title>Fsetapp</title>
     <link rel="stylesheet" href="<%= Routes.static_path(@conn, "/css/app.css") %>"/>
+    <script src="https://cdn.paddle.com/paddle/paddle.js"></script>
+    <script defer type="module" src="<%= Routes.static_path(@conn, "/js/paddle.js") %>"></script>
     <%= if Application.get_env(:fset, :environment) == :dev do %>
       <script src="https://unpkg.com/tailwindcss-jit-cdn"></script>
     <% end %>
-    <script>
-      <%= if assigns[:project] do %>
-        window.projectName = "<%= Phoenix.Token.sign(@conn, "project name", @project.key) %>";
-        window.currentFile = "<%= @current_file_key %>";
-        window.project_path = "<%= @project_path %>";
-      <% end %>
-      <%= if assigns[:user_token] do %>
-        window.userToken = "<%= @user_token %>";
-      <% end %>
-      <%= if assigns[:is_project_unclaimed] do %>
-        window.isUnclaimed = "<%= "yes_and_no :)" %>";
-      <% end %>
-    </script>
-    <script defer type="module" src="<%= Routes.static_path(@conn, "/js/app.js") %>"></script>
   </head>
   <body class="text-gray-300 bg-matte-black">
-    <main role="main" class="">
+    <main role="main" class="min-h-screen">
+      <header class="py-1 m-px px-2">
+        <%= render FsetWeb.LayoutView, "_user_menu.html", assigns %>
+      </header>
       <%= @inner_content %>
     </main>
   </body>

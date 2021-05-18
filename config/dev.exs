@@ -1,5 +1,7 @@
 use Mix.Config
 
+config :fset, environment: :dev
+
 # Configure your database
 config :fset, Fset.Repo,
   # username: "postgres",

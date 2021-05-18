@@ -1,6 +1,7 @@
 defmodule FsetWeb.MainChannel do
   use FsetWeb, :channel
   alias Fset.Projects
+  alias Fset.Payments
 
   def join("project:" <> project_name, params, socket) do
     {:ok, project_name} = Phoenix.Token.verify(socket, "project name", project_name)
@@ -73,7 +74,14 @@ defmodule FsetWeb.MainChannel do
   defp authorized(%{users: []}, _), do: true
 
   defp authorized(project, user_id) do
-    user_id in Enum.map(project.users, fn u -> u.id end)
+    with %{} = user <- Enum.find(project.users, fn u -> u.id == user_id end),
+         %{} = sub <- Payments.load_subscription(user).subscription,
+         {:ok, effective_date} <- Date.from_iso8601(Payments.cancellation_effective_date(sub)) do
+      Date.compare(Date.utc_today(), effective_date) == :lt
+    else
+      _ ->
+        false
+    end
   end
 
   # You will know it when you want it
