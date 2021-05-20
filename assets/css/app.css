@@ -19,6 +19,8 @@ details > summary::marker,
 details > summary::-webkit-details-marker {
   display: none;
 }
+details-menu { min-width: 22ch; z-index: 1;}
+
 [hidden] {
   display: none !important;
 }

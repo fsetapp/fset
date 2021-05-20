@@ -1,0 +1,18 @@
+<ul class="my-8 space-y-4">
+  <li class="flex items-center">
+    <%= FsetWeb.IconView.ticket(class: "mr-3 w-5 h-5 text-blue-400") %> <span>Full-feature schema editor</span>
+  </li>
+  <li class="flex items-center">
+    <%= FsetWeb.IconView.ticket(class: "mr-3 w-5 h-5 text-blue-400") %> <span>Unlimited private and public projects</span>
+  </li>
+  <li class="flex items-center">
+    <%= FsetWeb.IconView.ticket(class: "mr-3 w-5 h-5 text-blue-400") %> <span>Inline schema documentation</span>
+  </li>
+  <li class="flex items-center">
+    <%= FsetWeb.IconView.ticket(class: "mr-3 w-5 h-5 text-blue-400") %>
+    <span>Unlimited Import / Export (<%= link "JTD", to: "#", class: "underline" %>, <%= link "JSON Schemas", to: "#", class: "underline" %>)</span>
+  </li>
+  <li class="flex items-center">
+    <%= FsetWeb.IconView.ticket(class: "mr-3 w-5 h-5 text-blue-400") %> <span>1 hosted exported schema (cdn url)</span>
+  </li>
+</ul>

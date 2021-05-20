@@ -1,14 +1,13 @@
 .fbox {
   display: flex;
   flex-wrap: wrap;
-  gap: .25rem;
 }
 
 .fbox .box-label {
   display: block;
   background-color: var(--gray-meta);
   color: var(--gray-400);
-  border: 1px solid var(--gray-800);
+  border: 1px solid var(--gray-900);
   flex-grow: 1;
   min-height: 100%;
   word-break: break-all;

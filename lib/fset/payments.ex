@@ -34,7 +34,7 @@ defmodule Fset.Payments do
   end
 
   def plans() do
-    [%{id: 11294, name: "Schema", price: 15}]
+    [%{id: 11294, name: "FModel", price: 15}]
   end
 
   def cancel(sub_id, provider \\ @provider) do

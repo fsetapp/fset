@@ -23,23 +23,7 @@
         </div>
       <% end %>
 
-      <ul class="my-4 space-y-4">
-        <li class="flex items-center">
-          <%= FsetWeb.IconView.ticket(class: "mr-3 w-5 h-5 text-blue-400") %> <span>Full-feature schema editor</span>
-        </li>
-        <li class="flex items-center">
-          <%= FsetWeb.IconView.ticket(class: "mr-3 w-5 h-5 text-blue-400") %> <span>Unlimited private and public projects</span>
-        </li>
-        <li class="flex items-center">
-          <%= FsetWeb.IconView.ticket(class: "mr-3 w-5 h-5 text-blue-400") %> <span>Inline schema documentation</span>
-        </li>
-        <li class="flex items-center">
-          <%= FsetWeb.IconView.ticket(class: "mr-3 w-5 h-5 text-blue-400") %> <span>Import / Export (JTD | JSON Schemas)</span>
-        </li>
-        <li class="flex items-center">
-          <%= FsetWeb.IconView.ticket(class: "mr-3 w-5 h-5 text-blue-400") %> <span>1 hosted exported schema (cdn url</span>
-        )</li>
-      </ul>
+      <%= render FsetWeb.PageView, "_fmodel_plan.html" %>
       <%= if @subscription.status == :active do %>
         <%= button "Cancel Subscription", to: Routes.user_subscription_path(@conn, :cancel, @subscription.external_id), class: "my-2 px-2 py-1 btn-gray rounded text-sm" %>
       <% end %>
