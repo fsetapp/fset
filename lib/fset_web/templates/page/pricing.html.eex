@@ -1,6 +1,4 @@
-<header class="py-1 m-px px-2">
-  <%= render FsetWeb.LayoutView, "_user_menu.html", assigns %>
-</header>
+<%= render FsetWeb.LayoutView, "_header.html", assigns %>
 
 <div class="flex justify-center py-40 bg-grid" style="--grid-color: var(--gray-900); --subgrid-color: var(--gray-900)">
   <div>

@@ -1,0 +1,11 @@
+<%= if assigns[:current_user] do %>
+  <details class="mr-4 inline-flex relative">
+    <summary class="overflow-hidden outline-none p-1 focus:ring-1 focus:ring-blue-600 rounded">
+      <%= FsetWeb.IconView.add(class: "inline-block w-5 h-5") %>
+      <svg class="inline-block w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20"><path stroke="#6b7280" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 8l4 4 4-4"/></svg>
+    </summary>
+    <details-menu role="menu" class="flex flex-col whitespace-nowrap absolute mt-2 right-0 bg-gray-700 text-sm rounded shadow-lg border border-gray-900">
+      <%= button "New Project", to: Routes.project_path(@conn, :create), type: "button", role: "menuitem", class: "py-2 px-3 text-left hover:bg-indigo-700 focus:bg-indigo-700 focus:outline-none" %>
+    </details-menu>
+  </details>
+<% end %>

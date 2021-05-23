@@ -1,6 +1,4 @@
-<header class="py-1 m-px px-2">
-  <%= render FsetWeb.LayoutView, "_user_menu.html", assigns %>
-</header>
+<%= render FsetWeb.LayoutView, "_header.html", assigns %>
 
 <div class="md:w-2/5 mx-auto h-full">
   <h1 class="text-gray-400 text-2xl font-light">Settings</h1>

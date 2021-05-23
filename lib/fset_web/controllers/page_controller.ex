@@ -15,4 +15,8 @@ defmodule FsetWeb.PageController do
   def pricing(conn, _params) do
     render(conn, "pricing.html", plans: Payments.plans())
   end
+
+  def docs(conn, _params) do
+    render(conn, "docs.html")
+  end
 end

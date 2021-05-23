@@ -1,25 +1,22 @@
-<div class="flex justify-end h-12 items-center px-4 py-1 flex-shrink-0">
-  <%= if @current_user do %>
-    <details class="relative">
-      <summary class="rounded-full overflow-hidden outline-none ring-1 ring-gray-800 focus:ring-blue-600">
-        <%= img_tag FsetWeb.ProfileView.gravatar(@current_user), class: "w-8 h-8 bg-matte-black", alt: "avatar", onerror: "this.src='#{Routes.static_path(@conn, "/favicon.ico")}'" %>
-      </summary>
-      <details-menu role="menu" class="flex flex-col whitespace-nowrap absolute right-0 bg-gray-700 text-sm rounded shadow-lg border border-gray-900">
-        <p class="px-3 py-2 border-b border-gray-600">Signed in as <span class="font-bold"><%= @current_user.username %></span></p>
-        <%= button "Create Project", to: Routes.project_path(@conn, :create), type: "button", role: "menuitem", class: "py-2 px-3 text-left bg-indigo-600 hover:bg-indigo-700 focus:bg-indigo-700 focus:outline-none" %>
-        <%= link "Your profile", to: Routes.profile_path(@conn, :show, @current_user.username), role: "menuitem", class: "py-2 px-3 hover:bg-gray-600 focus:bg-gray-600" %>
-        <%= link "Your billing", to: Routes.user_subscription_path(@conn, :show), role: "menuitem", class: "py-2 px-3 hover:bg-gray-600 focus:bg-gray-600" %>
-        <%= link "Settings", to: Routes.user_settings_path(@conn, :edit), role: "menuitem", class: "py-2 px-3 hover:bg-gray-600 focus:bg-gray-600 border-b border-gray-600" %>
-        <%= link "Log out", to: Routes.user_session_path(@conn, :delete), method: :delete, role: "menuitem", class: "hover:bg-gray-600 focus:bg-gray-600 py-2 px-3" %>
-      </details-menu>
-    </details>
-  <% else %>
-    <ul class="flex space-x-4">
-      <li><%= link "Register", to: Routes.user_registration_path(@conn, :new) %></li>
-      <li><%= link "Log in", to: Routes.user_session_path(@conn, :new) %></li>
-    </ul>
-  <% end %>
-</div>
+<%= if @current_user do %>
+  <details class="inline-flex relative">
+    <summary class="rounded-full overflow-hidden outline-none ring-1 ring-gray-800 focus:ring-blue-600">
+      <%= img_tag FsetWeb.ProfileView.gravatar(@current_user), class: "w-8 h-8 bg-matte-black", alt: "avatar", onerror: "this.src='#{Routes.static_path(@conn, "/favicon.ico")}'" %>
+    </summary>
+    <details-menu role="menu" class="flex flex-col mt-2 whitespace-nowrap absolute right-0 bg-gray-700 text-sm rounded shadow-lg border border-gray-900">
+      <p class="px-3 py-2 border-b border-gray-600">Signed in as <span class="font-bold"><%= @current_user.username %></span></p>
+      <%= link "Your projects", to: Routes.profile_path(@conn, :show, @current_user.username), role: "menuitem", class: "py-2 px-3 hover:bg-gray-600 focus:bg-gray-600" %>
+      <%= link "Your billing", to: Routes.user_subscription_path(@conn, :show), role: "menuitem", class: "py-2 px-3 hover:bg-gray-600 focus:bg-gray-600" %>
+      <%= link "Settings", to: Routes.user_settings_path(@conn, :edit), role: "menuitem", class: "py-2 px-3 hover:bg-gray-600 focus:bg-gray-600 border-b border-gray-600" %>
+      <%= link "Log out", to: Routes.user_session_path(@conn, :delete), method: :delete, role: "menuitem", class: "hover:bg-gray-600 focus:bg-gray-600 py-2 px-3" %>
+    </details-menu>
+  </details>
+<% else %>
+  <ul class="flex space-x-4">
+    <li><%= link "Register", to: Routes.user_registration_path(@conn, :new) %></li>
+    <li><%= link "Log in", to: Routes.user_session_path(@conn, :new) %></li>
+  </ul>
+<% end %>
 
 <%= if get_flash(@conn, :info) ||  get_flash(@conn, :error) do %>
   <div class="flex justify-center absolute inset-x-0 top-4 p-4" onclick="this.remove()">

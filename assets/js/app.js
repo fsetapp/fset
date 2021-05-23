@@ -13,3 +13,9 @@ if (channel) Fmodel.start({ channel })
 Search.start()
 
 autosize(document.querySelectorAll("input, textarea"))
+
+document.addEventListener("click", e => {
+  for (let d of document.querySelectorAll("details[open]"))
+    if (!d.contains(e.target))
+      d.removeAttribute("open")
+})

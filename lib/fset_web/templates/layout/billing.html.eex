@@ -19,9 +19,7 @@
   </head>
   <body class="text-gray-300 bg-matte-black">
     <main role="main" class="min-h-screen">
-      <header class="py-1 m-px px-2">
-        <%= render FsetWeb.LayoutView, "_user_menu.html", assigns %>
-      </header>
+      <%= render FsetWeb.LayoutView, "_header.html", assigns %>
       <%= @inner_content %>
     </main>
   </body>

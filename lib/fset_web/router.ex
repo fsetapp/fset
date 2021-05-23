@@ -22,6 +22,7 @@ defmodule FsetWeb.Router do
 
     get "/", PageController, :index
     get "/pricing", PageController, :pricing
+    get "/docs", PageController, :docs
   end
 
   # Other scopes may use custom stacks.
