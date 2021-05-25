@@ -111,12 +111,20 @@ defmodule Fset.Exports.JSONSchema do
 
         {sch, acc}
 
-      %{"type" => num} = a, _m, acc when num in [@number, @integer] ->
+      %{"type" => num} = a, _m, acc
+      when num in ~w(int8 int16 int32 uint8 uint16 uint32 float32 float64) ->
         sch_meta = get_meta.(a)
+
+        num_type =
+          if num in ~w(int8 int16 int32 uint8 uint16 uint32) do
+            @integer
+          else
+            @number
+          end
 
         sch =
           %{}
-          |> Map.put(@type_, num)
+          |> Map.put(@type_, num_type)
 
         # optional
         sch =

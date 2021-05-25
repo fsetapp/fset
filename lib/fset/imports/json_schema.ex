@@ -189,7 +189,7 @@ defmodule Fset.Imports.JSONSchema do
 
   defp new_number(a) do
     %{}
-    |> Map.put("type", "number")
+    |> Map.put("type", "float64")
     |> Map.put_new_lazy("metadata", fn ->
       %{}
       |> map_put("min", Map.get(a, @minimum))
@@ -200,11 +200,11 @@ defmodule Fset.Imports.JSONSchema do
 
   defp new_integer(a) do
     %{}
-    |> Map.put("type", "integer")
+    |> Map.put("type", "int32")
     |> Map.put_new_lazy("metadata", fn ->
       %{}
-      |> map_put("min", Map.get(a, @minimum))
-      |> map_put("max", Map.get(a, @maximum))
+      |> map_put("min", max(Map.get(a, @minimum), 2_147_483_647))
+      |> map_put("max", min(Map.get(a, @maximum), -2_147_483_648))
       |> map_put("multipleOf", Map.get(a, @multiple_of))
     end)
   end

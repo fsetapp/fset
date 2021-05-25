@@ -5,6 +5,8 @@ defmodule FsetWeb.MainChannel do
 
   def join("project:" <> project_name, params, socket) do
     {:ok, project_name} = Phoenix.Token.verify(socket, "project name", project_name)
+    # TODO: handle session from token expired
+    # {:error, :expired}
 
     case Projects.get_project(project_name) do
       {:ok, project} ->

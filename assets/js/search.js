@@ -1,3 +1,4 @@
+import { Project } from "./vendor/fbox.min.js"
 import autoComplete from "@tarekraafat/autocomplete.js"
 
 const typeSearch = (selector, anchorsModels, opts = {}) => {
@@ -13,12 +14,12 @@ const typeSearch = (selector, anchorsModels, opts = {}) => {
     },
     onSelection: function (feedback) {
       this.inputField.value = feedback.selection.value.fmodelname
-      this.inputField.dispatchEvent(new KeyboardEvent("keydown", { bubbles: true, key: "Enter" }))
     }
   }
   onNavigate(selector)
 
-  let types = ["string", "record", "list", "tuple", "boolean", "number", "union", "null", "any"]
+  let types = Project.allSchs
+    .map(a => a().type).filter(a => a != "value")
     .reduce((acc, t) => Object.assign(acc, { [t]: { display: t } }), {})
   let data = Object.assign({}, types, anchorsModels)
   let anchors = Object.keys(data)
