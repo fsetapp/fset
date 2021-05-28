@@ -77,9 +77,18 @@ defmodule FsetWeb.MainChannel do
 
   defp authorized(project, user_id) do
     with %{} = user <- Enum.find(project.users, fn u -> u.id == user_id end),
-         %{} = sub <- Payments.load_subscription(user).subscription,
-         {:ok, effective_date} <- Date.from_iso8601(Payments.cancellation_effective_date(sub)) do
-      Date.compare(Date.utc_today(), effective_date) == :lt
+         %{} = sub <- Payments.load_subscription(user).subscription do
+      case sub.status do
+        :active ->
+          true
+
+        :cancelled ->
+          {:ok, effective_date} = Date.from_iso8601(Payments.cancellation_effective_date(sub))
+          Date.compare(Date.utc_today(), effective_date) == :lt
+
+        :unknown ->
+          false
+      end
     else
       _ ->
         false

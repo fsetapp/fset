@@ -182,8 +182,8 @@ defmodule Fset.Exports.JSONSchema do
 
         {sch, acc}
 
-      a, _m, acc ->
-        {a, acc}
+      _a, _m, acc ->
+        {%{}, acc}
     end
 
     post_visit = fn a, m, acc ->
