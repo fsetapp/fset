@@ -45,7 +45,7 @@ defmodule FsetWeb.ProjectController do
       case Projects.update_info(project, project_params) do
         {:ok, updated_project} ->
           conn
-          |> put_flash(:info, "User info updated successfully.")
+          |> put_flash(:info, "Project info updated successfully.")
           |> redirect(to: Routes.project_path(conn, :show, user.username, updated_project.key))
 
         {:error, project_info_changeset} ->

@@ -11,26 +11,38 @@ defmodule Fset.JSONSchema.Vocab do
       @defs "$defs"
       @anchor "$anchor"
 
-      # Validation
+      ##
       @object "object"
+      @properties "properties"
+      @pattern_properties "patternProperties"
+      @additional_properties "additionalProperties"
+      @unevaluated_properties "@unevaluatedProperties"
+      #
       @max_properties "maxProperties"
       @min_properties "minProperties"
       @required "required"
 
+      ##
       @array "array"
+      @items "items"
+      @prefix_items "prefixItems"
+      #
       @max_items "maxItems"
       @min_items "minItems"
 
+      ##
       @string "string"
       @min_length "minLength"
       @max_length "maxLength"
       @pattern "pattern"
 
+      ##
       @number "number"
       @multiple_of "multipleOf"
       @maximum "maximum"
       @minimum "minimum"
 
+      ##
       @integer "integer"
 
       @type_ "type"
@@ -39,12 +51,6 @@ defmodule Fset.JSONSchema.Vocab do
       @boolean "boolean"
       @null "null"
 
-      # Applicator
-      @properties "properties"
-      @pattern_properties "patternProperties"
-      @items "items"
-      @prefix_items "prefixItems"
-      # @all_of "allOf"
       @any_of "anyOf"
       @one_of "oneOf"
 

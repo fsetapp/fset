@@ -9,6 +9,12 @@ defmodule Fset.JSONSchema.Walker do
         meta \\ %{"path" => "", "level" => 1, "parent" => %{}, "index" => 0}
       )
 
+  def walk(true, acc, fpost, fpre, meta),
+    do: walk(%{}, acc, fpost, fpre, meta)
+
+  def walk(false, acc, fpost, fpre, meta),
+    do: walk(%{@const => nil}, acc, fpost, fpre, meta)
+
   def walk(sch, acc, fpost, fpre, meta) do
     {sch_, acc_} =
       case fpre.(Map.delete(sch, :halt), meta, acc) do
@@ -24,6 +30,7 @@ defmodule Fset.JSONSchema.Walker do
     |> Map.take([
       @properties,
       @pattern_properties,
+      @additional_properties,
       @items,
       @prefix_items,
       @one_of,
@@ -35,6 +42,13 @@ defmodule Fset.JSONSchema.Walker do
 
       {@pattern_properties = box, properties}, {sch_acc, acc_} ->
         walk_keyed(sch_acc, box, properties, f1, f0, acc_, meta)
+
+      {@additional_properties, dict_v}, {sch_acc, acc_} ->
+        nextMeta = nextMeta(sch, meta, "#{meta["path"]}[][0]", 0)
+        {sch_, acc_} = walk(dict_v, acc_, f1, f0, nextMeta)
+
+        sch_acc = put_in(sch_acc, [@additional_properties], sch_)
+        {sch_acc, acc_}
 
       {@items, item}, {sch_acc, acc_} when is_map(item) ->
         nextMeta = nextMeta(sch, meta, "#{meta["path"]}[][0]", 0)
