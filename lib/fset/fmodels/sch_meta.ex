@@ -9,7 +9,7 @@ defmodule Fset.Fmodels.SchMeta do
     field :rw, Ecto.Enum, values: [:rw, :r, :w]
     field :required, :boolean
     # type specific meta
-    field :metadata, :map
+    field :metadata, Ecto.Term, default: %{}
 
     belongs_to :project, Fset.Projects.Project
   end

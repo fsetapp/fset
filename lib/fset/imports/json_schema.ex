@@ -164,7 +164,7 @@ defmodule Fset.Imports.JSONSchema do
       |> Enum.sort_by(fn {key, sch} -> Map.get(sch, "order", key) end)
       |> Enum.map(fn {key, sch} ->
         sch = Map.put(sch, "key", key)
-        _sch = put_in(sch, [Access.key("metadata", %{}), "required"], key in required)
+        update_metadata(sch, fn -> map_put(%{}, "required", key in required) end)
       end)
 
     T.record(ordered_props)

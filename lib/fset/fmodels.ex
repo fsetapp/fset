@@ -336,7 +336,7 @@ defmodule Fset.Fmodels do
         m
         |> Map.from_struct()
         |> Map.take([:title, :description, :required, :rw])
-        |> Map.merge(m.metadata)
+        |> Map.merge(m.metadata || %{})
       )
     end)
   end
