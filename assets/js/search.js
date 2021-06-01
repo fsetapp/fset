@@ -19,7 +19,7 @@ const typeSearch = (selector, anchorsModels, opts = {}) => {
   onNavigate(selector)
 
   let types = Project.allSchs
-    .map(a => a().type).filter(a => a != "value")
+    .map(a => a().t).filter(a => a != "value")
     .reduce((acc, t) => Object.assign(acc, { [t]: { display: t } }), {})
   let data = Object.assign({}, types, anchorsModels)
   let anchors = Object.keys(data)

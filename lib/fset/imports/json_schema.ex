@@ -1,16 +1,9 @@
 defmodule Fset.Imports.JSONSchema do
   use Fset.JSONSchema.Vocab
   alias Fset.JSONSchema.Walker
-  alias Fset.JSONSchema.T
 
-  @applicators [
-    @properties,
-    @pattern_properties,
-    @items,
-    @prefix_items,
-    @any_of,
-    @one_of
-  ]
+  use Fset.Fmodels.Vocab
+  alias Fset.Fmodels.New, as: T
 
   defp chunk_defs_to_files(defs, opts \\ [delimiter: "_", group_n: 2]) do
     d_chars = opts[:delimiter]
@@ -48,7 +41,7 @@ defmodule Fset.Imports.JSONSchema do
 
         fmodels =
           %{}
-          |> Map.put("type", "object")
+          |> Map.put(@type_, @object)
           |> Map.put(@properties, defs_with_order)
 
         {filename, fmodels}
@@ -61,16 +54,16 @@ defmodule Fset.Imports.JSONSchema do
       |> Map.new(fn {{k, f}, i} -> {k, Map.put(f, "order", i)} end)
 
     %{}
-    |> Map.put("type", "object")
+    |> Map.put(@type_, @object)
     |> Map.put(@properties, files_with_order)
   end
 
   def json_schema(_version, sch, _opts) do
-    defs = Map.get(sch, "$defs") || Map.get(sch, "definitions", %{})
+    defs = Map.get(sch, @defs) || Map.get(sch, "definitions", %{})
 
     entry =
       sch
-      |> Map.drop(["$defs", "definitions"])
+      |> Map.drop([@defs, "definitions"])
       |> Map.put("isEntry", true)
       |> Map.put("order", 0)
 
@@ -78,70 +71,77 @@ defmodule Fset.Imports.JSONSchema do
       defs
       |> Map.merge(%{"MAIN" => entry})
       |> Map.new(fn {key, def} ->
-        {key, Map.put_new(def, "$anchor", Ecto.UUID.generate())}
+        {key, Map.put_new(def, @anchor, Ecto.UUID.generate())}
       end)
 
     sch = chunk_defs_to_files(defs)
 
+    # depth-first transform from leafs back up to root
     post_visit = fn a, a_og, _m, acc ->
       a_ =
         a
         |> cast_type(defs)
-        |> Map.put("$anchor", Map.get(a_og, @anchor) || Ecto.UUID.generate())
+        |> T.put_anchor(Map.get(a_og, @anchor))
         |> map_put("index", Map.get(a_og, "order"))
         |> map_put("key", Map.get(a_og, "key"))
         |> map_put("isEntry", Map.get(a_og, "isEntry"))
-        |> update_in([Access.key("metadata", %{})], fn m ->
+        |> update_metadata(fn ->
           %{}
           |> map_put("title", Map.get(a_og, @title))
           |> map_put("description", Map.get(a_og, @description))
-          |> Map.merge(m)
         end)
 
       a_ =
         case {Map.get(a_og, @read_only), Map.get(a_og, @write_only)} do
           {true, false} -> put_in(a_, ["metadata", "rw"], "r")
           {false, true} -> put_in(a_, ["metadata", "rw"], "w")
-          _ -> put_in(a_, ["metadata", "rw"], "rw")
+          _ -> a_
         end
 
       {a_, acc}
     end
 
-    {schema, _} = Walker.walk(sch, %{}, post_visit)
+    {schema, _} = Walker.walk(sch, _acc = %{}, post_visit)
     schema
   end
 
   defp cast_type(a, defs) do
     case a do
-      %{@ref => _, @type_ => @object} -> new_e_record(a, defs)
-      # Type that does not care "type" keyword
-      %{@ref => _ref} -> new_ref(a, defs)
-      %{@const => _val} -> new_val(a)
-      %{@enum => _schs} -> new_union(a)
-      %{@any_of => _schs} -> new_union(a)
-      %{@one_of => _schs} -> new_tagged_union(a, defs)
+      %{@ref => ref, @type_ => @object} -> new_e_record(a, ref, defs)
+      # Type that does not care @type_ keyword
+      %{@ref => ref} -> new_ref(a, ref, defs)
+      %{@const => _} -> new_val(a)
+      %{@enum => _} -> new_union(a)
+      %{@any_of => schs} -> T.union(schs)
+      %{@one_of => _} -> new_tagged_union(a, defs)
       #
       %{@type_ => @object} -> new_record_or_dict(a, defs)
       %{@type_ => @array} -> new_list_or_tuple(a)
       %{@type_ => @string} -> new_string(a)
       %{@type_ => @number} -> new_number(a)
       %{@type_ => @integer} -> new_integer(a)
-      %{@type_ => @boolean} -> new_boolean(a)
-      %{@type_ => @null} -> new_null(a)
-      #
+      %{@type_ => @boolean} -> T.boolean()
+      %{@type_ => @null} -> T.null()
       %{@type_ => types} when is_list(types) -> new_union(a, defs)
+      #
       %{} = a when map_size(a) != 0 -> new_possible_type(a, defs)
-      _ -> %{@type_ => "any"}
+      _ -> T.put_anchor(T.any())
     end
   end
 
   defp new_possible_type(a, defs) do
-    case Map.take(a, @applicators) do
-      %{} = map when map != %{} -> Map.put(map, @type_, [@object, @array])
-      any -> any
-    end
-    |> cast_type(defs)
+    object = Map.take(a, [@properties, @pattern_properties, @additional_properties])
+    array = Map.take(a, [@items, @prefix_items])
+
+    possible =
+      cond do
+        object == %{} and array == %{} -> Map.put(a, @type_, [@array, @object])
+        object != %{} and array == %{} -> Map.put(a, @type_, @object)
+        object == %{} and array != %{} -> Map.put(a, @type_, @array)
+        object != %{} and array != %{} -> %{}
+      end
+
+    cast_type(possible, defs)
   end
 
   defp new_record_or_dict(a, defs) do
@@ -167,11 +167,9 @@ defmodule Fset.Imports.JSONSchema do
         _sch = put_in(sch, [Access.key("metadata", %{}), "required"], key in required)
       end)
 
-    %{}
-    |> Map.put("type", "record")
-    |> Map.put("fields", ordered_props)
+    T.record(ordered_props)
     |> map_put("lax", !!Map.get(a, @unevaluated_properties))
-    |> Map.put_new_lazy("metadata", fn ->
+    |> put_metadata(fn ->
       %{}
       |> map_put("min", Map.get(a, @min_properties))
       |> map_put("max", Map.get(a, @max_properties))
@@ -188,53 +186,51 @@ defmodule Fset.Imports.JSONSchema do
   end
 
   defp new_list(a) do
-    item = Map.get(a, @items, %{"type" => "any", "$anchor" => Ecto.UUID.generate()})
+    item = Map.get(a, @items, T.put_anchor(T.any()))
 
-    %{}
-    |> Map.put("type", "list")
-    |> Map.put("sch", item)
-    |> Map.put_new_lazy("metadata", fn ->
+    metadata =
       %{}
       |> map_put("min", Map.get(a, @min_items, 1))
       |> map_put("max", Map.get(a, @max_items))
-    end)
+
+    T.list(item) |> Map.put("metadata", metadata)
   end
 
   defp new_tuple(a) do
     items0 = Map.get(a, @prefix_items, [])
-    items1 = Map.get(a, @items, [%{"type" => "any", "$anchor" => Ecto.UUID.generate()}])
+    items1 = Map.get(a, @items, [T.put_anchor(T.any())])
     items = items0 ++ items1
 
-    %{}
-    |> Map.put("type", "tuple")
-    |> Map.put("schs", items)
-    |> Map.put_new_lazy("metadata", fn ->
+    T.tuple(items)
+    |> put_metadata(fn ->
       %{}
       |> map_put("min", Map.get(a, @min_items, Enum.count(items)))
       |> map_put("max", Map.get(a, @max_items))
     end)
   end
 
-  defp new_e_record(%{@ref => ref} = a, defs) do
+  defp new_e_record(a, ref, defs) do
     def_ = get_def(ref, defs)
 
     case def_ do
       %{@type_ => @object} ->
-        %{}
-        |> Map.put("type", "erecord")
-        |> Map.put("schs", [T.put_anchor(new_ref(a, defs)), T.put_anchor(new_record(a))])
+        T.e_record([
+          T.put_anchor(new_ref(a, ref, defs)),
+          T.put_anchor(new_record(a))
+        ])
 
       _ ->
-        %{"type" => "any"}
+        T.put_anchor(T.any())
     end
   end
 
   defp new_dict(a, _defs) do
     dict_v = Map.get(a, @additional_properties, %{})
 
-    %{}
-    |> Map.put("type", "dict")
-    |> Map.put("schs", [T.string(), T.put_anchor(dict_v)])
+    T.dict([
+      T.put_anchor(T.string()),
+      T.put_anchor(dict_v)
+    ])
   end
 
   defp new_tagged_union(a, _defs) do
@@ -247,18 +243,12 @@ defmodule Fset.Imports.JSONSchema do
         T.put_anchor(a)
       end)
 
-    %{}
-    |> Map.put("type", "tunion")
-    |> Map.put("fields", fields)
-    |> Map.put("keyPrefix", "tag")
-    |> Map.put("tagname", "tagname")
-    |> Map.put("allowedSchs", [T.record()])
+    T.tagged_union(fields)
   end
 
   defp new_string(a) do
-    %{}
-    |> Map.put("type", "string")
-    |> Map.put_new_lazy("metadata", fn ->
+    T.string()
+    |> put_metadata(fn ->
       %{}
       |> map_put("min", Map.get(a, @min_length))
       |> map_put("max", Map.get(a, @max_length))
@@ -267,9 +257,8 @@ defmodule Fset.Imports.JSONSchema do
   end
 
   defp new_number(a) do
-    %{}
-    |> Map.put("type", "float64")
-    |> Map.put_new_lazy("metadata", fn ->
+    T.float64()
+    |> put_metadata(fn ->
       %{}
       |> map_put("min", Map.get(a, @minimum))
       |> map_put("max", Map.get(a, @maximum))
@@ -278,9 +267,8 @@ defmodule Fset.Imports.JSONSchema do
   end
 
   defp new_integer(a) do
-    %{}
-    |> Map.put("type", "int32")
-    |> Map.put_new_lazy("metadata", fn ->
+    T.int32()
+    |> put_metadata(fn ->
       %{}
       |> map_put("min", max(Map.get(a, @minimum), -2_147_483_647))
       |> map_put("max", min(Map.get(a, @maximum), 2_147_483_648))
@@ -288,29 +276,15 @@ defmodule Fset.Imports.JSONSchema do
     end)
   end
 
-  defp new_boolean(_a) do
-    Map.put(%{}, "type", "boolean")
-  end
-
-  defp new_null(_a) do
-    Map.put(%{}, "type", "null")
-  end
-
   defp new_val(a) do
-    const = Map.get(a, @const)
-
-    %{}
-    |> Map.put("type", "value")
-    |> Map.put("const", const)
+    T.value(Map.get(a, @const))
   end
 
-  defp new_ref(%{@ref => ref}, defs) when is_binary(ref) do
+  defp new_ref(_, ref, defs) when is_binary(ref) do
     def_ = get_def(ref, defs)
-    ref = if def_, do: Map.get(def_, "$anchor"), else: ref
+    ref = if def_, do: Map.get(def_, @anchor), else: ref
 
-    %{}
-    |> Map.put("type", "ref")
-    |> Map.put("$ref", ref)
+    T.ref(ref)
   end
 
   defp get_def(ref, defs) do
@@ -324,41 +298,35 @@ defmodule Fset.Imports.JSONSchema do
     Map.get(defs, defname)
   end
 
-  defp new_union(%{@any_of => schs}) when is_list(schs) and length(schs) > 0 do
-    %{}
-    |> Map.put("type", "union")
-    |> Map.put("schs", schs)
-  end
-
-  defp new_union(%{@one_of => schs}) when is_list(schs) and length(schs) > 0 do
-    %{}
-    |> Map.put("type", "union")
-    |> Map.put("schs", schs)
-  end
-
   defp new_union(%{@enum => enum}) when is_list(enum) and length(enum) > 0 do
-    enum =
-      Enum.map(enum, fn e ->
-        e = new_val(%{@const => e})
-        _e = Map.put_new(e, "$anchor", Ecto.UUID.generate())
-      end)
-
-    %{}
-    |> Map.put("type", "union")
-    |> Map.put("schs", enum)
+    enum
+    |> Enum.map(fn e -> T.put_anchor(new_val(%{@const => e})) end)
+    |> T.union()
   end
 
   defp new_union(%{@type_ => types} = a, defs) when is_list(types) when length(types) > 0 do
     schs =
       types
       |> Enum.map(fn t -> cast_type(Map.put(a, @type_, t), defs) end)
-      |> Enum.map(fn sch -> Map.put_new(sch, "$anchor", Ecto.UUID.generate()) end)
+      |> Enum.map(fn sch -> T.put_anchor(sch) end)
 
-    %{}
-    |> Map.put("type", "union")
-    |> Map.put("schs", schs)
+    T.union(schs)
   end
 
   defp map_put(map, _k, v) when v in ["", nil, [], false], do: map
   defp map_put(map, k, v), do: Map.put(map, k, v)
+
+  defp put_metadata(map, f) do
+    v = f.()
+    if v == %{}, do: map, else: map_put(map, "metadata", v)
+  end
+
+  defp update_metadata(map, f) do
+    v = f.()
+    metadata = Map.get(map, "metadata", %{})
+
+    if v == %{} && metadata == %{},
+      do: map,
+      else: map_put(map, "metadata", Map.merge(metadata, v))
+  end
 end

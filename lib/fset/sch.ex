@@ -1,8 +1,10 @@
 defmodule Fset.Sch do
+  use Fset.Fmodels.Vocab
+
   def get(sch, anchor) do
     {_, %{got: got}} =
       walk(sch, %{got: nil}, fn
-        %{"$anchor" => ^anchor} = a, m, _acc -> {:halt, {a, %{got: Map.put(a, "meta", m)}}}
+        %{@f_anchor => ^anchor} = a, m, _acc -> {:halt, {a, %{got: Map.put(a, "meta", m)}}}
         a, _m, acc -> {:cont, {a, acc}}
       end)
 
@@ -28,44 +30,44 @@ defmodule Fset.Sch do
   end
 
   defp walk_(sch, f0, f1, acc, meta) do
-    cond do
-      sch["type"] in ["record"] ->
-        sch["fields"]
+    case sch do
+      %{@f_fields => fields} ->
+        fields
         |> Enum.with_index()
         |> Enum.reduce_while({sch, acc}, fn {sch_, i}, {sch_acc, acc_} ->
           k = Map.get(sch_, "key")
           nextMeta = nextMeta(sch_acc, meta, "#{meta["path"]}[#{k}]", i)
           {sch_, acc_} = walk(sch_, acc_, f0, f1, nextMeta)
 
-          sch_acc = put_in(sch_acc, ["fields", Access.at!(i)], sch_)
+          sch_acc = put_in(sch_acc, [@f_fields, Access.at!(i)], sch_)
           if sch_[:halt], do: {:halt, {sch_acc, acc_}}, else: {:cont, {sch_acc, acc_}}
         end)
 
-      sch["type"] in ["tuple", "union"] ->
-        sch["schs"]
+      %{@f_schs => schs} ->
+        schs
         |> Enum.with_index()
         |> Enum.reduce_while({sch, acc}, fn {sch_, i}, {sch_acc, acc_} ->
           nextMeta = nextMeta(sch, meta, "#{meta["path"]}[][#{i}]", i)
           {sch_, acc_} = walk(sch_, acc_, f0, f1, nextMeta)
 
-          sch_acc = put_in(sch_acc, ["schs", Access.at!(i)], sch_)
+          sch_acc = put_in(sch_acc, [@f_schs, Access.at!(i)], sch_)
           if sch_[:halt], do: {:halt, {sch_acc, acc_}}, else: {:cont, {sch_acc, acc_}}
         end)
 
-      sch["type"] in ["list"] ->
+      %{@f_sch => _} ->
         nextMeta = nextMeta(sch, meta, "#{meta["path"]}[][0]", 0)
-        {sch_, acc_} = walk(sch["sch"], acc, f0, f1, nextMeta)
+        {sch_, acc_} = walk(sch[@f_sch], acc, f0, f1, nextMeta)
 
-        sch = put_in(sch["sch"], sch_)
+        sch = put_in(sch[@f_sch], sch_)
         {sch, acc_}
 
-      true ->
+      _ ->
         {sch, acc}
     end
   end
 
   defp nextMeta(sch, meta, path, i) do
-    sch = Map.take(sch, ["tag", "type", "anchor", "key"])
+    sch = Map.take(sch, ["tag", @f_type, @f_anchor, "key"])
     meta = Map.take(meta, ["path", "level"])
     currentMeta = Map.merge(sch, meta)
 

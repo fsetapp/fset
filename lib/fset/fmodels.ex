@@ -6,6 +6,8 @@ defmodule Fset.Fmodels do
   alias Fset.Fmodels.{File, Fmodel, SchMeta}
   alias Fset.Sch
 
+  use Fset.Fmodels.Vocab
+
   @project_diff "project"
   @file_diff "files"
   @fmodel_diff "fmodels"
@@ -31,7 +33,7 @@ defmodule Fset.Fmodels do
   def prune_sch_metas(project_id, project_sch) do
     {_, sch_metas_anchors} =
       Sch.walk(project_sch, [], fn a, _m, acc_ ->
-        {:cont, {a, [Map.get(a, "$anchor") | acc_]}}
+        {:cont, {a, [Map.get(a, @f_anchor) | acc_]}}
       end)
 
     delete_sch_meta_query =
@@ -119,12 +121,7 @@ defmodule Fset.Fmodels do
 
     sch_metas_from_fmodels = fn inserted_fmodels ->
       Enum.flat_map(inserted_fmodels, fn inserted_fmodel ->
-        sch =
-          inserted_fmodel.sch
-          |> Map.put("type", inserted_fmodel.type)
-          |> Map.put("key", inserted_fmodel.key)
-          |> Map.put("$anchor", inserted_fmodel.anchor)
-          |> Map.put("isEntry", inserted_fmodel.is_entry)
+        sch = to_fmodel_sch(inserted_fmodel)
 
         {_fmodel_sch, acc} =
           Sch.walk(sch, [], fn a, _m, acc_ ->
@@ -143,7 +140,7 @@ defmodule Fset.Fmodels do
 
             sch_meta =
               %{}
-              |> Map.put(:anchor, a["$anchor"])
+              |> Map.put(:anchor, a[@f_anchor])
               |> Map.put(:title, flat["title"])
               |> Map.put(:description, flat["description"])
               |> Map.put(:rw, String.to_existing_atom(flat["rw"] || "rw"))
@@ -218,12 +215,12 @@ defmodule Fset.Fmodels do
         Enum.flat_map(delete_fmodels, fn delete_fmodel ->
           sch =
             delete_fmodel.sch
-            |> Map.put("$anchor", delete_fmodel.anchor)
-            |> Map.put("type", delete_fmodel.type)
+            |> Map.put(@f_anchor, delete_fmodel.anchor)
+            |> Map.put("t", delete_fmodel.type)
 
           {_fmodel_sch, acc} =
             Sch.walk(sch, [], fn a, _m, acc_ ->
-              {:cont, {a, [a["$anchor"] | acc_]}}
+              {:cont, {a, [a[@f_anchor] | acc_]}}
             end)
 
           acc
@@ -246,7 +243,7 @@ defmodule Fset.Fmodels do
 
   def from_project_sch(project_sch) when is_map(project_sch) do
     %{}
-    |> put_from!(:anchor, {project_sch, "$anchor"})
+    |> put_from!(:anchor, {project_sch, @f_anchor})
     |> put_from(:description, {project_sch, "description"})
     |> put_from(:key, {project_sch, "key"})
     |> put_from(:files, {project_sch, "fields"}, fn fields ->
@@ -258,7 +255,7 @@ defmodule Fset.Fmodels do
 
   defp from_file_sch(file_sch) when is_map(file_sch) do
     %{}
-    |> put_from!(:anchor, {file_sch, "$anchor"})
+    |> put_from!(:anchor, {file_sch, @f_anchor})
     |> put_from(:key, {file_sch, "key"})
     |> put_from(:order, {file_sch, "index"})
     |> put_from(:fmodels, {file_sch, "fields"}, fn fields ->
@@ -270,19 +267,23 @@ defmodule Fset.Fmodels do
 
   defp from_fmodel_sch(fmodel_sch) when is_map(fmodel_sch) do
     %{}
-    |> put_from!(:anchor, {fmodel_sch, "$anchor"})
-    |> put_from(:type, {fmodel_sch, "type"})
+    |> put_from!(:anchor, {fmodel_sch, @f_anchor})
+    # |> put_from(:type, {fmodel_sch, "type"})
+    |> Map.put(:type, "t")
     |> put_from(:key, {fmodel_sch, "key"})
     |> put_from(:order, {fmodel_sch, "index"})
     |> Map.put(:is_entry, Map.get(fmodel_sch, "isEntry", false))
-    |> Map.put(:sch, Map.drop(fmodel_sch, ["$anchor", "index", "type", "key", "isEntry"]))
+    |> Map.put(
+      :sch,
+      Map.drop(fmodel_sch, [@f_anchor, "index", "key", "isEntry", "metadata"])
+    )
   end
 
   defp from_sch_meta(sch) when is_map(sch) do
     metadata = Map.get(sch, "metadata", %{})
 
     %{}
-    |> put_from!(:anchor, {sch, "$anchor"})
+    |> put_from!(:anchor, {sch, @f_anchor})
     |> put_from(:title, {metadata, "title"})
     |> put_from(:description, {metadata, "description"})
     |> put_from(:rw, {metadata, "rw"}, fn val -> String.to_atom(val) end)
@@ -312,7 +313,7 @@ defmodule Fset.Fmodels do
   # Any fmodel that does not belong to a file will be excluded
   defp put_required_file_id(fmodels, project) when is_list(fmodels) do
     Enum.reduce(fmodels, [], fn fmodel, acc ->
-      {fmodel_parent_anchor, sch} = Map.pop(fmodel.sch, "parentAnchor")
+      {fmodel_parent_anchor, sch} = Map.pop(fmodel.sch, "pa")
       fmodel = %{fmodel | sch: sch}
 
       file = Enum.find(project.files, fn file -> file.anchor == fmodel_parent_anchor end)
@@ -342,28 +343,27 @@ defmodule Fset.Fmodels do
 
   def to_project_sch(%Project{} = project, params \\ %{}) do
     %{}
-    |> Map.put("$anchor", project.anchor)
+    |> Map.put(@f_anchor, project.anchor)
     |> Map.put("key", project.key)
     |> Map.put("schMetas", project.allmeta)
-    |> Map.put("type", "record")
+    |> Map.put("t", @f_record)
     |> Map.put("fields", Enum.map(project.files, &to_file_sch/1))
     |> map_put_current_file(params)
   end
 
   defp to_file_sch(%File{} = file) do
     %{}
-    |> Map.put("$anchor", file.anchor)
+    |> Map.put(@f_anchor, file.anchor)
     |> Map.put("key", file.key)
-    |> Map.put("type", "record")
+    |> Map.put(@f_type, @f_record)
     |> Map.put("fields", Enum.map(file.fmodels, &to_fmodel_sch/1))
   end
 
-  defp to_fmodel_sch(%Fmodel{} = fmodel) do
+  defp to_fmodel_sch(%{anchor: _, key: _} = fmodel) do
     fmodel.sch
-    |> Map.put("$anchor", fmodel.anchor)
+    |> Map.put(@f_anchor, fmodel.anchor)
     |> Map.put("key", fmodel.key)
-    |> Map.put("type", fmodel.type)
-    |> Map.put("isEntry", fmodel.is_entry)
+    |> map_put("isEntry", fmodel.is_entry)
   end
 
   defp map_put_current_file(project, %{"filename" => ""} = params) do
@@ -379,4 +379,7 @@ defmodule Fset.Fmodels do
         Map.put(p, "currentFileKey", params["filename"] || Map.get(file, "key"))
     end
   end
+
+  defp map_put(map, _k, v) when v in ["", nil, [], false], do: map
+  defp map_put(map, k, v), do: Map.put(map, k, v)
 end

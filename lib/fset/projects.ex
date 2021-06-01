@@ -120,7 +120,7 @@ defmodule Fset.Projects do
       |> Map.put(:fmodels, Enum.map(f.fmodels, map_fmodel))
     end
 
-    project = %{project | files: Enum.map(project.files, map_file)}
+    _project = %{project | files: Enum.map(project.files, map_file)}
   end
 
   defp to_diff(schema) do
@@ -142,7 +142,7 @@ defmodule Fset.Projects do
 
         fmodels =
           Enum.map(fmodels, fn fmodel ->
-            fmodel = Map.put(fmodel, "parentAnchor", Map.get(file_, "$anchor"))
+            fmodel = Map.put(fmodel, "pa", Map.get(file_, "$a"))
             {Map.get(fmodel, "key"), fmodel}
           end)
 

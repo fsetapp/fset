@@ -89,7 +89,7 @@ export const start = ({ channel }) => {
 
       if (!window.userToken) return
       if (updated_sch)
-        channel.push("push_sch_meta", { $anchor: updated_sch.$anchor, metadata: updated_sch.metadata })
+        channel.push("push_sch_meta", { $a: updated_sch.$a, metadata: updated_sch.metadata })
           .receive("ok", (updated_metadata) => {
           })
     }
