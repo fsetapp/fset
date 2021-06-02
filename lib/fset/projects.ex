@@ -143,7 +143,7 @@ defmodule Fset.Projects do
         fmodels =
           Enum.map(fmodels, fn fmodel ->
             fmodel = Map.put(fmodel, "pa", Map.get(file_, "$a"))
-            {Map.get(fmodel, "key"), fmodel}
+            {Map.get(file_, "key") <> Map.get(fmodel, "key"), fmodel}
           end)
 
         update_in(acc, ["added", Access.key("fmodels", %{})], fn fs ->

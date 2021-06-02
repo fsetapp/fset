@@ -11,13 +11,13 @@ defmodule Fset.Imports.JSONSchema do
 
     files =
       defs
-      |> Enum.group_by(fn {a, _} ->
-        k_list = String.split(a, d_chars)
+      |> Enum.group_by(fn {k, _} ->
+        k_list = String.split(k, d_chars)
 
         if Enum.count(k_list) == 1 do
-          [String.at(a, 0)]
+          [String.at(k, 0)]
         else
-          String.split(a, d_chars) |> Enum.take(n_chars)
+          String.split(k, d_chars) |> Enum.take(n_chars)
         end
       end)
       |> Enum.map(fn {group, defs_chuck} ->
@@ -28,7 +28,12 @@ defmodule Fset.Imports.JSONSchema do
           |> Enum.sort_by(fn {k, a} -> Map.get(a, "order", k) end)
           |> Enum.with_index()
           |> Map.new(fn {{k, a}, i} ->
-            k_list = String.split(k, d_chars) |> Enum.slice(n_chars..-1)
+            k_list =
+              case String.split(k, d_chars) |> Enum.split(n_chars) do
+                {k_list, []} -> k_list
+                {_, k_list} -> k_list
+              end
+
             fmodel_name = Enum.join(k_list, d_chars)
 
             fmodel_name =

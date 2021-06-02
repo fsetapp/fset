@@ -41,7 +41,7 @@
 .fbox select:focus {
   outline: none;
   border-color: transparent;
-  box-shadow: transparent;
+  box-shadow: 0 0 0 1px transparent;
 }
 .fbox textarea,
 .fbox input,

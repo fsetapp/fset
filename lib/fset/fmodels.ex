@@ -101,7 +101,9 @@ defmodule Fset.Fmodels do
       end)
 
     ready_fmodels =
-      Enum.map(added[@fmodel_diff] || [], fn {_key, fmodel_sch} -> from_fmodel_sch(fmodel_sch) end)
+      Enum.map(added[@fmodel_diff] || [], fn {_key, fmodel_sch} ->
+        from_fmodel_sch(fmodel_sch)
+      end)
 
     fmodels_after_files = fn
       %{insert_files: {_n, inserted_files}} ->
