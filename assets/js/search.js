@@ -1,4 +1,4 @@
-import { Project } from "./vendor/fbox.min.js"
+import { Project, tstr } from "./vendor/fbox.min.js"
 import autoComplete from "@tarekraafat/autocomplete.js"
 
 const typeSearch = (selector, anchorsModels, opts = {}) => {
@@ -19,7 +19,7 @@ const typeSearch = (selector, anchorsModels, opts = {}) => {
   onNavigate(selector)
 
   let types = Project.allSchs
-    .map(a => a().t).filter(a => a != "value")
+    .map(a => tstr(a().t)).filter(t => t != "value")
     .reduce((acc, t) => Object.assign(acc, { [t]: { display: t } }), {})
   let data = Object.assign({}, types, anchorsModels)
   let anchors = Object.keys(data)

@@ -24,6 +24,7 @@
 .fbox .err {
   margin: 0;
   padding: .25rem .5rem;
+  /*text-xs*/
   font-size: .75rem;
   line-height: 1rem;
 }
@@ -39,6 +40,8 @@
 .fbox input:focus,
 .fbox select:focus {
   outline: none;
+  border-color: transparent;
+  box-shadow: transparent;
 }
 .fbox textarea,
 .fbox input,
@@ -49,6 +52,7 @@
   background-color: transparent;
   width: 100%;
   min-width: 0;
+  border: 0;
 }
 .fbox textarea {
   resize: none;
@@ -86,6 +90,9 @@ a:any-link:hover {
 .fbox .box-label.title,
 .fbox .box-label.description,
 .fbox .box-label.examples {
+  /* text-sm */
+  font-size: 0.875rem;
+  line-height: 1.25rem;
   width: 100%;
 }
 
