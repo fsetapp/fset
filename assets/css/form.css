@@ -46,7 +46,7 @@
 .fbox textarea,
 .fbox input,
 .fbox select {
-  display: block;
+  display: inline-block;
   padding: .5rem;
   color: var(--gray-300);
   background-color: transparent;
@@ -63,6 +63,7 @@
 .fbox input[type='checkbox']{
   margin: .5rem;
   width: auto;
+  color: var(--blue-600);
 }
 .fbox select {
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
@@ -90,10 +91,14 @@ a:any-link:hover {
 .fbox .box-label.title,
 .fbox .box-label.description,
 .fbox .box-label.examples {
+  width: 100%;
+}
+.fbox .box-label.title textarea,
+.fbox .box-label.description textarea,
+.fbox .box-label select {
   /* text-sm */
   font-size: 0.875rem;
   line-height: 1.25rem;
-  width: 100%;
 }
 
 .btn-gray { @apply px-3 py-2 bg-gray-700 text-sm; }

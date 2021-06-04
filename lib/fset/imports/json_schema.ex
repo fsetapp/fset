@@ -5,6 +5,8 @@ defmodule Fset.Imports.JSONSchema do
   use Fset.Fmodels.Vocab
   alias Fset.Fmodels.New, as: T
 
+  @metadata "m"
+
   defp chunk_defs_to_files(defs, opts \\ [delimiter: "_", group_n: 2]) do
     d_chars = opts[:delimiter]
     n_chars = opts[:group_n]
@@ -63,7 +65,7 @@ defmodule Fset.Imports.JSONSchema do
     |> Map.put(@properties, files_with_order)
   end
 
-  def json_schema(_version, sch, _opts) do
+  def json_schema(_version, sch, opts) do
     defs = Map.get(sch, @defs) || Map.get(sch, "definitions", %{})
 
     entry =
@@ -81,6 +83,14 @@ defmodule Fset.Imports.JSONSchema do
 
     sch = chunk_defs_to_files(defs)
 
+    pre_visit = fn a, _m, acc ->
+      a_ =
+        a
+        |> put_children_info(defs)
+
+      {:cont, {a_, acc}}
+    end
+
     # depth-first transform from leafs back up to root
     post_visit = fn a, a_og, _m, acc ->
       a_ =
@@ -90,24 +100,37 @@ defmodule Fset.Imports.JSONSchema do
         |> map_put("index", Map.get(a_og, "order"))
         |> map_put("key", Map.get(a_og, "key"))
         |> map_put("isEntry", Map.get(a_og, "isEntry"))
-        |> update_metadata(fn ->
+
+      meta =
+        update_metadata(a_og, fn ->
           %{}
           |> map_put("title", Map.get(a_og, @title))
           |> map_put("description", Map.get(a_og, @description))
         end)
+        |> Map.get(@metadata)
+
+      a_ = Map.put(a_, @metadata, meta)
 
       a_ =
         case {Map.get(a_og, @read_only), Map.get(a_og, @write_only)} do
-          {true, false} -> put_in(a_, ["metadata", "rw"], "r")
-          {false, true} -> put_in(a_, ["metadata", "rw"], "w")
+          {true, false} -> put_in(a_, [@metadata, "rw"], "r")
+          {false, true} -> put_in(a_, [@metadata, "rw"], "w")
           _ -> a_
         end
 
+      acc =
+        update_in(acc, [Access.key("metadata_acc", [])], fn sch_meta_acc ->
+          case Fset.Fmodels.from_sch_meta(a_, opts) do
+            meta when meta == %{} -> sch_meta_acc
+            meta -> [meta | sch_meta_acc]
+          end
+        end)
+
+      a_ = Map.delete(a_, @metadata)
       {a_, acc}
     end
 
-    {schema, _} = Walker.walk(sch, _acc = %{}, post_visit)
-    schema
+    Walker.walk(sch, _acc = %{}, post_visit, pre_visit)
   end
 
   defp cast_type(a, defs) do
@@ -131,6 +154,23 @@ defmodule Fset.Imports.JSONSchema do
       #
       %{} = a when map_size(a) != 0 -> new_possible_type(a, defs)
       _ -> T.put_anchor(T.any())
+    end
+  end
+
+  defp put_children_info(a, _defs) do
+    case a do
+      %{@type_ => @object, @properties => props} ->
+        required = Map.get(a, @required, [])
+
+        props =
+          Map.new(props, fn {key, sch} ->
+            {key, update_metadata(sch, fn -> map_put(%{}, "required", key in required) end)}
+          end)
+
+        Map.put(a, @properties, props)
+
+      _ ->
+        a
     end
   end
 
@@ -159,18 +199,13 @@ defmodule Fset.Imports.JSONSchema do
   end
 
   defp new_record(a) do
-    required = Map.get(a, @required, [])
-
     ordered_props =
       a
       |> Map.get(@pattern_properties, %{})
       |> Map.new(fn {p_key, sch} -> {p_key, Map.put(sch, "isKeyPattern", true)} end)
       |> Map.merge(Map.get(a, @properties, %{}))
       |> Enum.sort_by(fn {key, sch} -> Map.get(sch, "order", key) end)
-      |> Enum.map(fn {key, sch} ->
-        sch = Map.put(sch, "key", key)
-        update_metadata(sch, fn -> map_put(%{}, "required", key in required) end)
-      end)
+      |> Enum.map(fn {key, sch} -> Map.put(sch, "key", key) end)
 
     T.record(ordered_props)
     |> map_put("lax", !!Map.get(a, @unevaluated_properties))
@@ -193,12 +228,12 @@ defmodule Fset.Imports.JSONSchema do
   defp new_list(a) do
     item = Map.get(a, @items, T.put_anchor(T.any()))
 
-    metadata =
+    T.list(item)
+    |> put_metadata(fn ->
       %{}
       |> map_put("min", Map.get(a, @min_items, 1))
       |> map_put("max", Map.get(a, @max_items))
-
-    T.list(item) |> Map.put("metadata", metadata)
+    end)
   end
 
   defp new_tuple(a) do
@@ -323,15 +358,12 @@ defmodule Fset.Imports.JSONSchema do
 
   defp put_metadata(map, f) do
     v = f.()
-    if v == %{}, do: map, else: map_put(map, "metadata", v)
+    if v == %{}, do: map, else: map_put(map, @metadata, v)
   end
 
   defp update_metadata(map, f) do
     v = f.()
-    metadata = Map.get(map, "metadata", %{})
-
-    if v == %{} && metadata == %{},
-      do: map,
-      else: map_put(map, "metadata", Map.merge(metadata, v))
+    metadata = Map.get(map, @metadata, %{})
+    map_put(map, @metadata, Map.merge(metadata, v))
   end
 end

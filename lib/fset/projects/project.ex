@@ -7,7 +7,7 @@ defmodule Fset.Projects.Project do
     field :key, :string
     field :description, :string
 
-    field :allmeta, :map, virtual: true
+    has_many :sch_metas, Fset.Fmodels.SchMeta
 
     has_many :files, Fset.Fmodels.File
     many_to_many :users, Fset.Projects.User, join_through: Fset.Projects.Role

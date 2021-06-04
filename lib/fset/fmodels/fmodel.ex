@@ -3,7 +3,6 @@ defmodule Fset.Fmodels.Fmodel do
 
   schema "fmodels" do
     field :anchor, Ecto.UUID
-    field :type, :string
     field :key, :string
     field :order, :integer
     field :sch, Ecto.Term, default: %{}

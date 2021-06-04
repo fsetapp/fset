@@ -8,7 +8,6 @@ defmodule Fset.Projects do
   defdelegate persist_metadata(sch, project), to: Fset.Fmodels
   defdelegate persist_diff(diff, project), to: Fset.Fmodels
   defdelegate to_project_sch(project, params \\ %{}), to: Fset.Fmodels
-  defdelegate from_project_sch(project_sch), to: Fset.Fmodels
   defdelegate prune_sch_metas(project_sch, project_id), to: Fset.Fmodels
 
   defdelegate change_info(project, attrs \\ %{}), to: Fset.Projects.Project
@@ -34,14 +33,19 @@ defmodule Fset.Projects do
   def get_project(name, opts \\ []) do
     sorted_files = from f in Fset.Fmodels.File, order_by: f.order
     sorted_fmodels = from f in Fset.Fmodels.Fmodel, order_by: f.order
-    preload = opts[:preload] || [:users, files: {sorted_files, [fmodels: sorted_fmodels]}]
+
+    preload =
+      opts[:preload] || [:users, :sch_metas, files: {sorted_files, [fmodels: sorted_fmodels]}]
 
     project_query =
       from p in Project,
         where: p.key == ^name,
         preload: ^preload
 
-    one_with_sch_metas(project_query)
+    case Repo.one(project_query) do
+      nil -> {:error, :not_found}
+      project -> {:ok, project}
+    end
   end
 
   def get_user_project(name, user_id) do
@@ -50,19 +54,11 @@ defmodule Fset.Projects do
         join: r in Role,
         where: p.id == r.project_id and r.user_id == ^user_id,
         where: p.key == ^name,
-        preload: [:users, files: :fmodels]
+        preload: [:users, :sch_metas, files: :fmodels]
 
-    one_with_sch_metas(project_query)
-  end
-
-  defp one_with_sch_metas(query) do
-    case Repo.one(query) do
-      nil ->
-        {:error, :not_found}
-
-      project ->
-        allmeta = Fset.Fmodels.all_sch_metas(project.id)
-        {:ok, %{project | allmeta: allmeta}}
+    case Repo.one(project_query) do
+      nil -> {:error, :not_found}
+      project -> {:ok, project}
     end
   end
 
@@ -93,17 +89,16 @@ defmodule Fset.Projects do
     |> Repo.update()
   end
 
-  def replace(projectname, schema) do
+  def replace(project, schema, acc) do
     # Repo.get_by!(Fset.Projects.Project, key: projectname)
-    {:ok, project} = get_project(projectname)
     project_files = from f in Fset.Fmodels.File, where: f.project_id == ^project.id
     project_sch_metas = from m in Fset.Fmodels.SchMeta, where: m.project_id == ^project.id
 
     multi = Ecto.Multi.delete_all(Ecto.Multi.new(), :replace_files, project_files)
     multi = Ecto.Multi.delete_all(multi, :replace_sch_metas, project_sch_metas)
 
-    schema = Map.put(schema, :key, projectname)
-    Fset.Fmodels.persist_diff(to_diff(schema), build_ids(project), multi: multi)
+    schema = Map.put(schema, :key, project.key)
+    Fset.Fmodels.persist_diff(to_diff(schema, acc), build_ids(project), multi: multi)
   end
 
   defp build_ids(project) do
@@ -123,7 +118,7 @@ defmodule Fset.Projects do
     _project = %{project | files: Enum.map(project.files, map_file)}
   end
 
-  defp to_diff(schema) do
+  defp to_diff(schema, acc) do
     {files, project} = Map.pop!(schema, "fields")
     diff = %{"changed" => %{"project" => project}, "added" => %{}, "removed" => %{}}
 
@@ -135,6 +130,8 @@ defmodule Fset.Projects do
           Map.put(acc, Map.get(file, "key"), file)
         end)
       )
+
+    diff = put_in(diff, ["added", "sch_metas"], Map.get(acc, "metadata_acc"))
 
     for file <- files, reduce: diff do
       acc ->
@@ -171,15 +168,18 @@ defmodule Fset.Projects do
   def import(%{"json_schema_file" => json} = params, opts) do
     %{"projectname" => projectname, "username" => _username} = params
     schema = Imports.json_schema(:draft7, json, opts)
-    # replace(projectname, schema)
+    # replace(project, schema, %{})
   end
 
   def import(%{"json_schema_url" => url} = params, opts) do
     %{"projectname" => projectname, "username" => _username} = params
     json = fetch_file(url)
-    schema = Imports.json_schema(:draft7, json, opts)
-    {_result, project} = replace(projectname, schema)
-    # {:ok, project} = get_project(projectname)
+    {:ok, project} = get_project(projectname)
+
+    opts = [{:project_id, project.id} | opts]
+    {schema, acc} = Imports.json_schema(:draft7, json, opts)
+    {_result, project} = replace(project, schema, acc)
+
     project
   end
 
