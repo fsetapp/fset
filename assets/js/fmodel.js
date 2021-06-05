@@ -25,7 +25,6 @@ export const start = ({ channel }) => {
       this.addEventListener("search-selected", this.handleSearchSelected.bind(this), true)
       this.addEventListener("tree-command", buffer(this.handlePostTreeCommand.bind(this), 5))
       this.addEventListener("sch-update", this.handleSchUpdate)
-
     }
     disconnectedCallback() {
       this.removeEventListener("remote-connected", this.handleRemoteConnected)
@@ -34,19 +33,28 @@ export const start = ({ channel }) => {
       this.removeEventListener("search-selected", this.handleSearchSelected.bind(this), true)
       this.removeEventListener("tree-command", buffer(this.handlePostTreeCommand.bind(this), 5))
       this.removeEventListener("sch-update", this.handleSchUpdate)
+      channel.off("each_batch")
+      channel.off("each_batch_finished")
     }
     handleRemoteConnected(e) {
       let project = e.detail.project
-      this.changeUrlSSR(project)
-
       this._projectStore = Project.projectToStore(project, projectStore)
-      ProjectTree({ store: projectStore, target: "[id='project']", select: `[${project.currentFileKey}]` })
-      Project.changeFile(projectStore, project.currentFileKey, location.hash.replace("#", ""))
 
-      projectBaseStore = JSON.parse(JSON.stringify(this._projectStore))
-      Diff.buildBaseIndices(projectBaseStore)
-      this.pushChanged()
-      autosize(document.querySelectorAll("[id='fsch'] textarea"))
+      channel.on("each_batch", ({ batch }) => {
+        for (let file of batch)
+          this._projectStore.fields.push(Project.fileToStore(file))
+      })
+      channel.on("each_batch_finished", nothing => {
+        this.changeUrlSSR(project)
+
+        ProjectTree({ store: projectStore, target: "[id='project']", select: `[${project.currentFileKey}]` })
+        Project.changeFile(projectStore, project.currentFileKey, location.hash.replace("#", ""))
+
+        projectBaseStore = JSON.parse(JSON.stringify(this._projectStore))
+        Diff.buildBaseIndices(projectBaseStore)
+        this.pushChanged()
+        autosize(document.querySelectorAll("[id='fsch'] textarea"))
+      })
     }
     handleTreeCommand(e) {
       Project.controller(projectStore, e.detail.target, e.detail.command, this.runDiff)

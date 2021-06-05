@@ -17,8 +17,10 @@ if (window.userToken || window.projectName) {
 }
 
 if (window.projectName) {
+  console.time("join")
   channel.join()
     .receive("ok", resp => {
+      console.timeEnd("join")
       document.querySelector("project-store")
         .dispatchEvent(new CustomEvent("remote-connected", { detail: { project: resp } }))
     })

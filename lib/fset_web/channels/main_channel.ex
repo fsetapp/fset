@@ -7,13 +7,20 @@ defmodule FsetWeb.MainChannel do
     {:ok, project_name} = Phoenix.Token.verify(socket, "project name", project_name)
     # TODO: handle session from token expired
     # {:error, :expired}
+    t1 = :os.system_time(:millisecond)
 
     case Projects.get_project(project_name) do
       {:ok, project} ->
         send(self(), {:build_ids_lookup_table, project})
+        t2 = inspect_time_from(t1, "get_project")
 
-        {:ok, Projects.to_project_sch(project, params),
-         assign(socket, :project, %{project | files: []})}
+        project_sch = Projects.to_project_sch(project, params)
+        _t3 = inspect_time_from(t2, "to_project_sch")
+
+        {files, project_sch_head} = Map.pop(project_sch, "fields")
+        send(self(), {:push_each_batch, Enum.chunk_every(files, div(Enum.count(files), 4))})
+
+        {:ok, project_sch_head, assign(socket, :project, %{project | files: []})}
 
       _ ->
         {:ok, socket}
@@ -68,6 +75,17 @@ defmodule FsetWeb.MainChannel do
     {:noreply, assign(socket, :project, project)}
   end
 
+  def handle_info({:push_each_batch, []}, socket) do
+    push(socket, "each_batch_finished", %{batch: []})
+    {:noreply, socket}
+  end
+
+  def handle_info({:push_each_batch, [batch | batches]}, socket) do
+    send(self(), {:push_each_batch, batches})
+    push(socket, "each_batch", %{batch: batch})
+    {:noreply, socket}
+  end
+
   def handle_info({:prune_sch_metas, project_sch, project_id}, socket) do
     Projects.prune_sch_metas(project_id, project_sch)
     {:noreply, socket}
@@ -93,6 +111,12 @@ defmodule FsetWeb.MainChannel do
       _ ->
         false
     end
+  end
+
+  defp inspect_time_from(t, label) do
+    tnow = :os.system_time(:millisecond)
+    IO.inspect("#{tnow - t}ms", label: label)
+    tnow
   end
 
   # You will know it when you want it
