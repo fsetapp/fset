@@ -18,7 +18,13 @@ defmodule FsetWeb.MainChannel do
         _t3 = inspect_time_from(t2, "to_project_sch")
 
         {files, project_sch_head} = Map.pop(project_sch, "fields")
-        send(self(), {:push_each_batch, Enum.chunk_every(files, div(Enum.count(files), 4))})
+
+        batches =
+          if Enum.empty?(files),
+            do: [],
+            else: Enum.chunk_every(files, max(1, div(Enum.count(files), 4)))
+
+        send(self(), {:push_each_batch, batches})
 
         {:ok, project_sch_head, assign(socket, :project, %{project | files: []})}
 
