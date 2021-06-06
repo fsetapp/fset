@@ -124,7 +124,7 @@
       </action-listener>
       <div id="fmodel" class="flex-grow overflow-hidden h-full"></div>
     </section>
-    <sch-meta id ="fsch" class="overflow-hidden m-px flex-1 bg-gray-900 px-2 focus:outline-none" tabindex="-1">
+    <sch-meta id ="fsch" class="overflow-auto m-px flex-1 bg-gray-900 px-2 pb-2 focus:outline-none" tabindex="-1">
     </sch-meta>
   </div>
 </project-store>

@@ -19,7 +19,8 @@ defmodule FsetWeb.MainChannel do
 
         {files, project_sch_head} = Map.pop(project_sch, "fields")
 
-        chuck_size = div(Enum.count(files), 50)
+        chuck_count = 4
+        chuck_size = div(Enum.count(files), chuck_count)
 
         batches =
           if chuck_size > 1,

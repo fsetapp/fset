@@ -172,6 +172,13 @@ export const start = ({ channel }) => {
 }
 
 customElements.define("autosize-textarea", class extends HTMLElement {
+  static get observedAttributes() { return ["data-value"] }
+
+  attributeChangedCallback(name, oldv, newv) {
+    let t = this.querySelector("textarea")
+    t.value = newv
+    autosize.update(t)
+  }
   connectedCallback() {
     autosize(this.querySelectorAll("textarea"))
   }
