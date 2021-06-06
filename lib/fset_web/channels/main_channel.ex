@@ -19,10 +19,12 @@ defmodule FsetWeb.MainChannel do
 
         {files, project_sch_head} = Map.pop(project_sch, "fields")
 
+        chuck_size = div(Enum.count(files), 50)
+
         batches =
-          if Enum.empty?(files),
-            do: [],
-            else: Enum.chunk_every(files, max(1, div(Enum.count(files), 4)))
+          if chuck_size > 1,
+            do: Enum.chunk_every(files, chuck_size),
+            else: [files]
 
         send(self(), {:push_each_batch, batches})
 
@@ -83,12 +85,19 @@ defmodule FsetWeb.MainChannel do
 
   def handle_info({:push_each_batch, []}, socket) do
     push(socket, "each_batch_finished", %{batch: []})
+    send(self(), {:push_sch_metas})
     {:noreply, socket}
   end
 
   def handle_info({:push_each_batch, [batch | batches]}, socket) do
     send(self(), {:push_each_batch, batches})
     push(socket, "each_batch", %{batch: batch})
+    {:noreply, socket}
+  end
+
+  def handle_info({:push_sch_metas}, socket) do
+    sch_metas_map = Projects.sch_metas_map(socket.assigns.project)
+    push(socket, "sch_metas_map", %{schMetas: sch_metas_map})
     {:noreply, socket}
   end
 

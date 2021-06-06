@@ -35,6 +35,7 @@ export const start = ({ channel }) => {
       this.removeEventListener("sch-update", this.handleSchUpdate)
       channel.off("each_batch")
       channel.off("each_batch_finished")
+      channel.off("sch_metas_map")
     }
     handleRemoteConnected(e) {
       let project = e.detail.project
@@ -53,13 +54,15 @@ export const start = ({ channel }) => {
         projectBaseStore = JSON.parse(JSON.stringify(this._projectStore))
         Diff.buildBaseIndices(projectBaseStore)
         this.pushChanged()
-        autosize(document.querySelectorAll("[id='fsch'] textarea"))
+      })
+      channel.on("sch_metas_map", ({ schMetas }) => {
+        Project.mergeSchMetas(this._projectStore, schMetas)
+        Project.changeFile(this._projectStore, project.currentFileKey, location.hash.replace("#", ""))
       })
     }
     handleTreeCommand(e) {
       Project.controller(projectStore, e.detail.target, e.detail.command, this.runDiff)
       document.activeAriaTree = e.detail.target.closest("[role='tree']")
-      autosize(document.querySelectorAll("[id='fsch'] textarea"))
     }
     handleProjectRemote(e) {
       if (!window.userToken && !window.isUnclaimed) return
@@ -167,3 +170,12 @@ export const start = ({ channel }) => {
     }
   })
 }
+
+customElements.define("autosize-textarea", class extends HTMLElement {
+  connectedCallback() {
+    autosize(this.querySelectorAll("textarea"))
+  }
+  disconnectedCallback() {
+    autosize.destroy(this.querySelectorAll("textarea"))
+  }
+})

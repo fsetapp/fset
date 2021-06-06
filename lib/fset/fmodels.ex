@@ -312,7 +312,6 @@ defmodule Fset.Fmodels do
     |> Map.put(@f_type, @f_record)
     |> Map.put("fields", Enum.map(project.files, &to_file_sch/1))
     |> map_put_current_file(params)
-    |> map_put_sch_metas(project)
   end
 
   defp to_file_sch(%File{} = file) do
@@ -344,30 +343,18 @@ defmodule Fset.Fmodels do
     end
   end
 
-  defp map_put_sch_metas(project_sch, project) do
-    sch_meta_indices =
-      Enum.reduce(project.sch_metas, %{}, fn s, acc ->
-        m =
-          (s.metadata || %{})
-          |> map_put("title", s.title)
-          |> map_put("description", s.description)
+  def sch_metas_map(project) do
+    project = Repo.preload(project, :sch_metas)
 
-        Map.put(acc, s.anchor, m)
-      end)
+    Enum.reduce(project.sch_metas, %{}, fn m, acc ->
+      s =
+        %{}
+        |> map_put("title", m.title)
+        |> map_put("description", m.description)
+        |> Map.merge(m.metadata || %{})
 
-    {sch, _} =
-      Sch.walk(project_sch, [], fn a, _m, acc_ ->
-        a =
-          case sch_meta_indices[a[@f_anchor]] do
-            nil -> a
-            m when m == %{} -> a
-            %{} = m -> map_put(a, "metadata", m)
-          end
-
-        {:cont, {a, acc_}}
-      end)
-
-    sch
+      if s == %{}, do: acc, else: Map.put(acc, m.anchor, s)
+    end)
   end
 
   defp map_put(map, _k, v) when v in ["", nil, [], false], do: map

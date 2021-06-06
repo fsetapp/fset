@@ -9,6 +9,7 @@ defmodule Fset.Projects do
   defdelegate persist_diff(diff, project), to: Fset.Fmodels
   defdelegate to_project_sch(project, params \\ %{}), to: Fset.Fmodels
   defdelegate prune_sch_metas(project_sch, project_id), to: Fset.Fmodels
+  defdelegate sch_metas_map(project), to: Fset.Fmodels
 
   defdelegate change_info(project, attrs \\ %{}), to: Fset.Projects.Project
   defdelegate apply_info(project, attrs \\ %{}), to: Fset.Projects.Project
@@ -34,8 +35,7 @@ defmodule Fset.Projects do
     sorted_files = from f in Fset.Fmodels.File, order_by: f.order
     sorted_fmodels = from f in Fset.Fmodels.Fmodel, order_by: f.order
 
-    preload =
-      opts[:preload] || [:users, :sch_metas, files: {sorted_files, [fmodels: sorted_fmodels]}]
+    preload = opts[:preload] || [:users, files: {sorted_files, [fmodels: sorted_fmodels]}]
 
     project_query =
       from p in Project,
