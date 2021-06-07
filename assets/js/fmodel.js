@@ -33,11 +33,15 @@ export const start = ({ channel }) => {
       this.removeEventListener("search-selected", this.handleSearchSelected.bind(this), true)
       this.removeEventListener("tree-command", buffer(this.handlePostTreeCommand.bind(this), 5))
       this.removeEventListener("sch-update", this.handleSchUpdate)
+      this.channelOff()
+    }
+    channelOff() {
       channel.off("each_batch")
       channel.off("each_batch_finished")
       channel.off("sch_metas_map")
     }
     handleRemoteConnected(e) {
+      this.channelOff()
       let project = e.detail.project
       this._projectStore = Project.projectToStore(project, projectStore)
 
