@@ -109,7 +109,7 @@ export const start = ({ channel }) => {
     }
     handlePostTreeCommand(e) {
       this.changeUrl()
-      buffer(this.pushChanged, 100)
+      buffer(this.pushChanged.bind(this), 100)()
     }
     handleSearchSelected(e) {
       let filename = e.detail.value.file

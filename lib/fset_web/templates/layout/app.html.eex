@@ -29,7 +29,7 @@
     </script>
     <script defer type="module" src="<%= Routes.static_path(@conn, "/js/app.js") %>"></script>
   </head>
-  <body class="text-gray-300 bg-matte-black">
+  <body class="text-gray-300 bg-matte-black" style="min-width: 1024px">
     <main role="main" class="">
       <%= @inner_content %>
     </main>
