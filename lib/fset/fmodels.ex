@@ -180,7 +180,6 @@ defmodule Fset.Fmodels do
           sch =
             delete_fmodel.sch
             |> Map.put(@f_anchor, delete_fmodel.anchor)
-            |> Map.put("t", delete_fmodel.type)
 
           {_fmodel_sch, acc} =
             Sch.walk(sch, [], fn a, _m, acc_ ->

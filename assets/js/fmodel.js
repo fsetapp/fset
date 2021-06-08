@@ -1,5 +1,4 @@
 import { ProjectTree, Project, Diff } from "./vendor/fbox.min.js"
-import autosize from "autosize"
 
 var projectStore = Project.createProjectStore()
 var projectBaseStore
@@ -110,7 +109,7 @@ export const start = ({ channel }) => {
     }
     handlePostTreeCommand(e) {
       this.changeUrl()
-      this.pushChanged()
+      buffer(this.pushChanged, 100)
     }
     handleSearchSelected(e) {
       let filename = e.detail.value.file
@@ -174,19 +173,3 @@ export const start = ({ channel }) => {
     }
   })
 }
-
-customElements.define("autosize-textarea", class extends HTMLElement {
-  static get observedAttributes() { return ["data-value"] }
-
-  attributeChangedCallback(name, oldv, newv) {
-    let t = this.querySelector("textarea")
-    t.value = newv
-    autosize.update(t)
-  }
-  connectedCallback() {
-    autosize(this.querySelectorAll("textarea"))
-  }
-  disconnectedCallback() {
-    autosize.destroy(this.querySelectorAll("textarea"))
-  }
-})

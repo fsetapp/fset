@@ -3,7 +3,6 @@ import "@github/tab-container-element"
 import "@github/details-menu-element"
 import "@github/include-fragment-element"
 import Search from "./search.js"
-import autosize from "autosize"
 
 import { channel } from "./socket"
 import * as Fmodel from "./fmodel.js"
