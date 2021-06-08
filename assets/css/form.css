@@ -115,6 +115,6 @@ a:any-link:hover {
 }
 .autoComplete_result { @apply px-2 py-1 text-xs font-light text-gray-200 }
 .autoComplete_result:hover { @apply bg-matte-black bg-opacity-50 }
+.autoComplete_result mark { @apply bg-transparent text-indigo-400 font-semibold }
 .autoComplete_selected.notfound { @apply border-gray-400 bg-gray-200 }
 .autoComplete_selected { @apply bg-matte-black bg-opacity-50 }
-.autoComplete_highlighted { @apply text-indigo-400 font-semibold }
