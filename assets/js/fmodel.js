@@ -17,21 +17,26 @@ const buffer = function (func, wait, scope) {
 
 export const start = ({ channel }) => {
   customElements.define("project-store", class extends HTMLElement {
+    constructor() {
+      super()
+      this.on = this.addEventListener
+      this.off = this.removeEventListener
+    }
     connectedCallback() {
-      this.addEventListener("remote-connected", this.handleRemoteConnected)
-      this.addEventListener("tree-command", buffer(this.handleTreeCommand.bind(this), 5))
-      this.addEventListener("tree-command", buffer(this.handleProjectRemote.bind(this), 1000))
-      this.addEventListener("search-selected", this.handleSearchSelected.bind(this), true)
-      this.addEventListener("tree-command", buffer(this.handlePostTreeCommand.bind(this), 5))
-      this.addEventListener("sch-update", this.handleSchUpdate)
+      this.on("remote-connected", this.handleRemoteConnected)
+      this.on("tree-command", buffer(this.handleTreeCommand.bind(this), 5))
+      this.on("tree-command", buffer(this.handleRemotePush.bind(this), 1000))
+      this.on("search-selected", this.handleSearchSelected.bind(this), true)
+      this.on("tree-command", buffer(this.handlePostTreeCommand.bind(this), 5))
+      this.on("sch-update", this.handleSchUpdate)
     }
     disconnectedCallback() {
-      this.removeEventListener("remote-connected", this.handleRemoteConnected)
-      this.removeEventListener("tree-command", buffer(this.handleTreeCommand.bind(this), 5))
-      this.removeEventListener("tree-command", buffer(this.handleProjectRemote.bind(this), 1000))
-      this.removeEventListener("search-selected", this.handleSearchSelected.bind(this), true)
-      this.removeEventListener("tree-command", buffer(this.handlePostTreeCommand.bind(this), 5))
-      this.removeEventListener("sch-update", this.handleSchUpdate)
+      this.off("remote-connected", this.handleRemoteConnected)
+      this.off("tree-command", buffer(this.handleTreeCommand.bind(this), 5))
+      this.off("tree-command", buffer(this.handleRemotePush.bind(this), 1000))
+      this.off("search-selected", this.handleSearchSelected.bind(this), true)
+      this.off("tree-command", buffer(this.handlePostTreeCommand.bind(this), 5))
+      this.off("sch-update", this.handleSchUpdate)
       this.channelOff()
     }
     channelOff() {
@@ -67,7 +72,7 @@ export const start = ({ channel }) => {
       Project.controller(projectStore, e.detail.target, e.detail.command, this.runDiff)
       document.activeAriaTree = e.detail.target.closest("[role='tree']")
     }
-    handleProjectRemote(e) {
+    handleRemotePush(e) {
       if (!window.userToken && !window.isUnclaimed) return
       if (!Project.isDiffableCmd(e.detail.command.name)) return
 
