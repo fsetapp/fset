@@ -49,6 +49,7 @@ defmodule Fset.Fmodels do
       |> update_changed_diff(diff)
       |> delete_removed_diff(diff)
       |> insert_added_diff(diff)
+      |> update_reorder_diff(diff)
 
     {Repo.transaction(multi), project}
   end
@@ -198,6 +199,36 @@ defmodule Fset.Fmodels do
       |> Ecto.Multi.delete_all(:delete_fmodels, delete_fmodels_query)
       |> Ecto.Multi.delete_all(:delete_sch_metas, delete_sch_metas_query)
       |> Ecto.Multi.delete_all(:delete_files, delete_files_query)
+
+    {multi, project}
+  end
+
+  defp update_reorder_diff({multi, project}, %{"reorder" => reorder}) do
+    files =
+      Enum.map(reorder[@file_diff] || [], fn {_key, file_sch} ->
+        from_file_sch(file_sch)
+        |> Map.put(:project_id, project.id)
+        |> Map.put(:inserted_at, timestamp())
+        |> Map.put(:updated_at, timestamp())
+      end)
+
+    fmodels =
+      Enum.map(reorder[@fmodel_diff] || [], fn {_key, fmodel_sch} ->
+        {_, fmodel} = from_fmodel_sch(fmodel_sch, project.id)
+        fmodel
+      end)
+      |> put_required_file_id(project)
+
+    multi =
+      multi
+      |> Ecto.Multi.insert_all(:reorder_files, File, files,
+        conflict_target: [:anchor],
+        on_conflict: {:replace, [:key, :order]}
+      )
+      |> Ecto.Multi.insert_all(:reorder_fmodels, Fmodel, fmodels,
+        conflict_target: [:anchor],
+        on_conflict: {:replace, [:key, :order]}
+      )
 
     {multi, project}
   end
