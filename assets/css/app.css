@@ -6,9 +6,10 @@
 @import "./vendor/fbox.min.css";
 @import "./kbd.css";
 @import "./form.css";
+@import "./billing.css";
 
 .bg-matte-black {
-  background-color: var(--matte-black);
+  background-color: var(--matte-black) !important;
 }
 .bg-gray-meta {
   background-color: var(--gray-meta);

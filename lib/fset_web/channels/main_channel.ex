@@ -117,8 +117,12 @@ defmodule FsetWeb.MainChannel do
           true
 
         :cancelled ->
-          {:ok, effective_date} = Date.from_iso8601(Payments.cancellation_effective_date(sub))
-          Date.compare(Date.utc_today(), effective_date) == :lt
+          if Payments.cancellation_effective_date(sub) do
+            {:ok, effective_date} = Date.from_iso8601(Payments.cancellation_effective_date(sub))
+            Date.compare(Date.utc_today(), effective_date) == :lt
+          else
+            false
+          end
 
         :unknown ->
           false

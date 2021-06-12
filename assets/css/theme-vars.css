@@ -12,6 +12,8 @@
   --blue-600: rgba(37, 99, 235, 1);
   --pink-400: rgba(244, 114, 182, 1);
   --indigo-400: rgba(129, 140, 248, 1);
+  --green-300: rgba(110, 231, 183, 1);
+  --green-900: rgba(6, 78, 59, 1);
   --matte-black: rgba(14, 19, 31, 1);
   color-scheme: dark;
 }
