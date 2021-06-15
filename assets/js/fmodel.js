@@ -76,22 +76,12 @@ export const start = ({ channel }) => {
       if (!window.userToken && !window.isUnclaimed) return
       if (!Project.isDiffableCmd(e.detail.command.name)) return
 
-      Object.defineProperty(projectStore, "_diffToRemote", { value: this.runDiff(), writable: true })
+      this.diffRender(e)
       Project.taggedDiff(projectStore, (diff) => {
         channel.push("push_project", diff, 30_000)
           .receive("ok", (updated_project) => {
-            // let file = e.detail.target.closest("[data-tag='file']")
-            // let filename = file?.key
-
             projectBaseStore = JSON.parse(JSON.stringify(projectStore))
             Diff.buildBaseIndices(projectBaseStore)
-            // this.runDiff()
-
-            // projectStore.render()
-            // if (!filename) return
-            // let fileStore = Project.getFileStore(projectStore, filename)
-            // if (fileStore)
-            //   fileStore.render && fileStore.render()
           })
           .receive("error", (reasons) => console.log("update project failed", reasons))
           .receive("noop", (a) => a)
@@ -100,6 +90,13 @@ export const start = ({ channel }) => {
     }
     runDiff() {
       return Diff.diff(projectStore, projectBaseStore)
+    }
+    diffRender(e) {
+      Object.defineProperty(this._projectStore, "_diffToRemote", { value: this.runDiff(), writable: true })
+      let file = e.detail.target.closest("[data-tag='file']")
+      let filename = file?.key
+      let fileStore = Project.getFileStore(this._projectStore, filename)
+      fileStore?.render()
     }
     handleSchUpdate(e) {
       let { detail, target } = e

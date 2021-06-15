@@ -52,7 +52,7 @@ defmodule FsetWeb.MainChannel do
     user_id = Map.get(socket.assigns, :current_user)
 
     if authorized(project, user_id) do
-      {_result, _project} = Projects.persist_diff(diff, project)
+      {_persisted_diff, _project_ids_lookup} = Projects.persist_diff(diff, project)
       {:ok, project} = Projects.get_project(project.key)
 
       send(self(), {:build_ids_lookup_table, project})
