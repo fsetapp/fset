@@ -4,7 +4,7 @@ defmodule Fset.Exports.JSONSchema do
   use Fset.Fmodels.Vocab
 
   def json_schema(export_type, project_sch, opts \\ []) do
-    sch_metas = Map.fetch!(project_sch, "schMetas")
+    sch_metas = Keyword.fetch!(opts, :sch_metas)
     defs_index = defs_index(project_sch)
 
     get_meta = fn a -> Map.get(sch_metas, Map.fetch!(a, @f_anchor)) end
@@ -238,10 +238,10 @@ defmodule Fset.Exports.JSONSchema do
             a_ = map_put(a_, @description, Map.get(sch_meta, :description))
             a_ = map_put(a_, @title, Map.get(sch_meta, :title))
 
-            case Map.get(sch_meta, :rw) do
-              :r -> Map.put(a_, @read_only, true)
-              :w -> Map.put(a_, @write_only, true)
-              :rw -> a_
+            case Map.get(sch_meta, "rw") do
+              "r" -> Map.put(a_, @read_only, true)
+              "w" -> Map.put(a_, @write_only, true)
+              _ -> a_
             end
         end
 
@@ -271,7 +271,7 @@ defmodule Fset.Exports.JSONSchema do
     required =
       Enum.reduce(fields, [], fn %{@f_anchor => anchor, "key" => k}, acc ->
         meta = Map.get(sch_metas, anchor)
-        if meta && meta.required, do: [k | acc], else: acc
+        if meta && Map.get(meta, "required"), do: [k | acc], else: acc
       end)
 
     map_put(map, @required, required)

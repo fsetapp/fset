@@ -239,7 +239,7 @@ defmodule Fset.Fmodels do
     %{}
     |> put_from!(:anchor, {project_sch, @f_anchor})
     |> put_from(:description, {project_sch, "description"})
-    |> put_from(:key, {project_sch, "key"})
+    |> put_from!(:key, {project_sch, "key"})
   end
 
   defp from_file_sch(file_sch) when is_map(file_sch) do
@@ -258,7 +258,7 @@ defmodule Fset.Fmodels do
       |> put_from(:key, {fmodel_sch, "key"})
       |> put_from(:order, {fmodel_sch, "index"})
       |> Map.put(:is_entry, Map.get(fmodel_sch, "isEntry", false))
-      |> Map.put(:sch, sch)
+      |> Map.put(:sch, %{@f_anchor => _, @f_type => _} = sch)
 
     {sch_metas, fmodel}
   end

@@ -157,6 +157,7 @@ defmodule Fset.Projects do
     schema_path = Enum.join([username, projectname], "/")
     schema_id = URI.merge("https://json-schema.fset.app", schema_path) |> URI.to_string()
     opts = [{:schema_id, schema_id} | opts]
+    opts = [{:sch_metas, sch_metas_map(project)} | opts]
 
     Exports.json_schema(:one_way, Fset.Fmodels.to_project_sch(project), opts)
   end
