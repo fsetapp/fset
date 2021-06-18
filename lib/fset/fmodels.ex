@@ -51,7 +51,8 @@ defmodule Fset.Fmodels do
       |> insert_added_diff(diff)
       |> update_reorder_diff(diff)
 
-    {Repo.transaction(multi), project}
+    persisted_diff_result = persisted_diff_result(Repo.transaction(multi), project)
+    {persisted_diff_result, project}
   end
 
   # Currently support "type", "key", "order" changes.
@@ -81,11 +82,13 @@ defmodule Fset.Fmodels do
       |> Ecto.Multi.update(:update_project, Ecto.Changeset.change(project, project_attrs))
       |> Ecto.Multi.insert_all(:update_files, File, files,
         conflict_target: [:anchor],
-        on_conflict: {:replace, [:key, :order]}
+        on_conflict: {:replace, [:key, :order]},
+        returning: true
       )
       |> Ecto.Multi.insert_all(:update_fmodels, Fmodel, fmodels,
         conflict_target: [:anchor],
-        on_conflict: {:replace, [:key, :order, :is_entry, :sch]}
+        on_conflict: {:replace, [:key, :order, :is_entry, :sch]},
+        returning: true
       )
 
     {multi, project}
@@ -212,12 +215,37 @@ defmodule Fset.Fmodels do
         |> Map.put(:updated_at, timestamp())
       end)
 
-    fmodels =
+    {anchors, orders, keys, file_ids} =
       Enum.map(reorder[@fmodel_diff] || [], fn {_key, fmodel_sch} ->
         {_, fmodel} = from_fmodel_sch(fmodel_sch, project.id)
         fmodel
       end)
       |> put_required_file_id(project)
+      |> Enum.reduce({[], [], [], []}, fn fmodel, {anchor_acc, order_acc, key_acc, file_id_acc} ->
+        {:ok, uuid} = Ecto.UUID.dump(fmodel.anchor)
+        anchor_acc = [uuid | anchor_acc]
+        order_acc = [fmodel.order | order_acc]
+        key_acc = [fmodel.key | key_acc]
+        file_id_acc = [fmodel.file_id | file_id_acc]
+        {anchor_acc, order_acc, key_acc, file_id_acc}
+      end)
+
+    reorder_fmodels = ~s"""
+      UPDATE fmodels
+      SET "order" = tmp.order, key = tmp.key
+      FROM
+        (SELECT unnest($1::uuid[]) AS anchor,
+                unnest($2::integer[]) AS order,
+                unnest($3::varchar[]) AS key,
+                unnest($4::bigint[]) AS file_id
+        ) AS tmp
+      WHERE fmodels.anchor = tmp.anchor
+      RETURNING *
+    """
+
+    reorder_fmodels_query = fn repo, _ ->
+      Ecto.Adapters.SQL.query(repo, reorder_fmodels, [anchors, orders, keys, file_ids])
+    end
 
     multi =
       multi
@@ -225,12 +253,44 @@ defmodule Fset.Fmodels do
         conflict_target: [:anchor],
         on_conflict: {:replace, [:key, :order]}
       )
-      |> Ecto.Multi.insert_all(:reorder_fmodels, Fmodel, fmodels,
-        conflict_target: [:anchor],
-        on_conflict: {:replace, [:key, :order]}
-      )
+      |> Ecto.Multi.run(:reorder_fmodels, reorder_fmodels_query)
 
     {multi, project}
+  end
+
+  def persisted_diff_result({:ok, persisted_diff}, project) do
+    {count, fmodels} = persisted_diff.insert_fmodels
+
+    to_fmodel_sch_with_file_id = fn fmodels ->
+      Enum.map(fmodels || [], fn fmodel ->
+        Map.put(to_fmodel_sch(fmodel), :file_id, fmodel.file_id)
+      end)
+    end
+
+    added = %{
+      "fmodels" => put_file_anchor(to_fmodel_sch_with_file_id.(fmodels), project),
+      "fmodels_count" => count
+    }
+
+    {count, fmodels} = persisted_diff.delete_fmodels |> IO.inspect()
+
+    removed = %{
+      "fmodels" => put_file_anchor(to_fmodel_sch_with_file_id.(fmodels), project),
+      "fmodels_count" => count
+    }
+
+    {count, fmodels} = persisted_diff.update_fmodels
+
+    changed = %{
+      "fmodels" => Enum.map(fmodels || [], &to_fmodel_sch/1),
+      "fmodels_count" => count
+    }
+
+    %{
+      "added" => added,
+      "removed" => removed,
+      "changed" => changed
+    }
   end
 
   def from_project_sch(nil), do: %{}
@@ -329,7 +389,22 @@ defmodule Fset.Fmodels do
         fmodel = Map.put(fmodel, :file_id, file.id)
         [fmodel | acc]
       else
-        raise "fild_id not found for #{inspect(fmodel)}"
+        raise "file_id not found for #{inspect(fmodel)}"
+      end
+    end)
+  end
+
+  defp put_file_anchor(fmodels, project) when is_list(fmodels) do
+    Enum.reduce(fmodels, [], fn fmodel_sch, acc ->
+      {fmodel_file_id, fmodel_sch} = Map.pop(fmodel_sch, :file_id)
+
+      file = Enum.find(project.files, fn file -> file.id == fmodel_file_id end)
+
+      if file do
+        fmodel_sch = Map.put(fmodel_sch, "pa", file.anchor)
+        [fmodel_sch | acc]
+      else
+        raise "file_anchor not found for #{inspect(fmodel_sch)}"
       end
     end)
   end
@@ -356,6 +431,7 @@ defmodule Fset.Fmodels do
     fmodel.sch
     |> Map.put(@f_anchor, fmodel.anchor)
     |> Map.put("key", fmodel.key)
+    |> Map.put("index", fmodel.order)
     |> map_put("isEntry", fmodel.is_entry)
   end
 

@@ -3,6 +3,8 @@ defmodule FsetWeb.MainChannel do
   alias Fset.Projects
   alias Fset.Payments
 
+  @diffed_topic "project_diffs_result:"
+
   def join("project:" <> project_name, params, socket) do
     {:ok, project_name} = Phoenix.Token.verify(socket, "project name", project_name)
     # TODO: handle session from token expired
@@ -11,6 +13,7 @@ defmodule FsetWeb.MainChannel do
 
     case Projects.get_project(project_name) do
       {:ok, project} ->
+        Phoenix.PubSub.subscribe(Fset.PubSub, @diffed_topic <> project.anchor)
         send(self(), {:build_ids_lookup_table, project})
         t2 = inspect_time_from(t1, "get_project")
 
@@ -52,17 +55,28 @@ defmodule FsetWeb.MainChannel do
     user_id = Map.get(socket.assigns, :current_user)
 
     if authorized(project, user_id) do
-      {_persisted_diff, _project_ids_lookup} = Projects.persist_diff(diff, project)
-      {:ok, project} = Projects.get_project(project.key)
+      {persisted_diff_result, _project_ids_lookup} = Projects.persist_diff(diff, project)
 
-      send(self(), {:build_ids_lookup_table, project})
-      project_sch = Projects.to_project_sch(project)
-      send(self(), {:prune_sch_metas, project_sch, project.id})
+      Phoenix.PubSub.broadcast_from!(
+        Fset.PubSub,
+        self(),
+        @diffed_topic <> project.anchor,
+        {:persisted_diff_result, persisted_diff_result}
+      )
 
-      {:reply, {:ok, project_sch}, socket}
+      send(self(), {:post_persisted_task, project.key})
+
+      {:reply, {:ok, persisted_diff_result}, socket}
     else
       {:noreply, socket}
     end
+  end
+
+  def handle_info({:post_persisted_task, project_key}, socket) do
+    {:ok, project} = Projects.get_project(project_key)
+    send(self(), {:build_ids_lookup_table, project})
+    send(self(), {:prune_sch_metas, project, project.id})
+    {:noreply, socket}
   end
 
   def handle_info({:build_ids_lookup_table, project}, socket) do
@@ -102,8 +116,14 @@ defmodule FsetWeb.MainChannel do
     {:noreply, socket}
   end
 
-  def handle_info({:prune_sch_metas, project_sch, project_id}, socket) do
+  def handle_info({:prune_sch_metas, project, project_id}, socket) do
+    project_sch = Projects.to_project_sch(project)
     Projects.prune_sch_metas(project_id, project_sch)
+    {:noreply, socket}
+  end
+
+  def handle_info({:persisted_diff_result, persisted_diff_result}, socket) do
+    push(socket, "persisted_diff_result", persisted_diff_result)
     {:noreply, socket}
   end
 

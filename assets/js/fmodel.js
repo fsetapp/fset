@@ -1,19 +1,8 @@
 import { ProjectTree, Project, Diff } from "./vendor/fbox.min.js"
+import { buffer, throttle } from "./utils.js"
 
 var projectStore = Project.createProjectStore()
 var projectBaseStore
-
-const buffer = function (func, wait, scope) {
-  var timer = null;
-  return function () {
-    if (timer) clearTimeout(timer)
-    var args = arguments
-    timer = setTimeout(function () {
-      timer = null
-      func.apply(scope, args)
-    }, wait)
-  }
-}
 
 export const start = ({ channel }) => {
   customElements.define("project-store", class extends HTMLElement {
@@ -23,17 +12,17 @@ export const start = ({ channel }) => {
       this.off = this.removeEventListener
     }
     connectedCallback() {
-      this.on("remote-connected", this.handleRemoteConnected)
+      this.on("remote-connected", this.handleRemoteConnected.bind(this))
       this.on("tree-command", buffer(this.handleTreeCommand.bind(this), 5))
-      this.on("tree-command", buffer(this.handleRemotePush.bind(this), 1000))
+      this.on("tree-command", this.handleRemotePush.bind(this))
       this.on("search-selected", this.handleSearchSelected.bind(this), true)
       this.on("tree-command", buffer(this.handlePostTreeCommand.bind(this), 5))
       this.on("sch-update", this.handleSchUpdate)
     }
     disconnectedCallback() {
-      this.off("remote-connected", this.handleRemoteConnected)
+      this.off("remote-connected", this.handleRemoteConnected.bind(this))
       this.off("tree-command", buffer(this.handleTreeCommand.bind(this), 5))
-      this.off("tree-command", buffer(this.handleRemotePush.bind(this), 1000))
+      this.off("tree-command", this.handleRemotePush.bind(this))
       this.off("search-selected", this.handleSearchSelected.bind(this), true)
       this.off("tree-command", buffer(this.handlePostTreeCommand.bind(this), 5))
       this.off("sch-update", this.handleSchUpdate)
@@ -43,12 +32,18 @@ export const start = ({ channel }) => {
       channel.off("each_batch")
       channel.off("each_batch_finished")
       channel.off("sch_metas_map")
+      channel.off("persisted_diff_result")
     }
     handleRemoteConnected(e) {
       this.channelOff()
       let project = e.detail.project
       this._projectStore = Project.projectToStore(project, projectStore)
 
+      channel.on("persisted_diff_result", (saved_diffs) => {
+        Diff.mergeToCurrent(projectStore, saved_diffs)
+        Diff.mergeToBase(projectBaseStore, saved_diffs)
+        this.diffRender()
+      })
       channel.on("each_batch", ({ batch }) => {
         for (let file of batch)
           this._projectStore.fields.push(Project.fileToStore(file))
@@ -74,14 +69,24 @@ export const start = ({ channel }) => {
     }
     handleRemotePush(e) {
       if (!window.userToken && !window.isUnclaimed) return
-      if (!Project.isDiffableCmd(e.detail.command.name)) return
+      this.cmdQueue ||= []
+      this.cmdQueue.push(e)
 
-      this.diffRender(e)
+      this.push = buffer(() => {
+        if (this.cmdQueue.find(cmd => Project.isDiffableCmd(cmd.detail.command.name))) {
+          this.pushToRemote(e)
+          this.cmdQueue = []
+        }
+      }, 500)
+      this.push()
+    }
+    pushToRemote(e) {
+      this.diffRender()
       Project.taggedDiff(projectStore, (diff) => {
         channel.push("push_project", diff, 30_000)
-          .receive("ok", (updated_project) => {
-            projectBaseStore = JSON.parse(JSON.stringify(projectStore))
-            Diff.buildBaseIndices(projectBaseStore)
+          .receive("ok", (saved_diffs) => {
+            Diff.mergeToBase(projectBaseStore, saved_diffs)
+            this.diffRender()
           })
           .receive("error", (reasons) => console.log("update project failed", reasons))
           .receive("noop", (a) => a)
@@ -91,11 +96,9 @@ export const start = ({ channel }) => {
     runDiff() {
       return Diff.diff(projectStore, projectBaseStore)
     }
-    diffRender(e) {
+    diffRender() {
       Object.defineProperty(this._projectStore, "_diffToRemote", { value: this.runDiff(), writable: true })
-      let file = e.detail.target.closest("[data-tag='file']")
-      let filename = file?.key
-      let fileStore = Project.getFileStore(this._projectStore, filename)
+      let fileStore = Project.getFileStore(this._projectStore, this.currentFileKey || project.currentFileKey)
       fileStore?.render()
     }
     handleSchUpdate(e) {
@@ -125,9 +128,11 @@ export const start = ({ channel }) => {
       for (let commbobox of this.querySelectorAll("combo-box"))
         commbobox.dispatchEvent(new CustomEvent("data-push", { detail: { _models: Project.anchorsModels(this._projectStore) } }))
     }
-    changeUrlSSR() {
-      if (project.currentFileKey && project.currentFileKey != "")
-        history.replaceState(null, "", `${window.project_path}/m/${project.currentFileKey}${location.hash}`)
+    changeUrlSSR(project) {
+      if (project.currentFileKey && project.currentFileKey != "") {
+        history.replaceState(null, "", `${window.project_path}/m/${encodeURIComponent(project.currentFileKey)}${encodeURIComponent(location.hash)}`)
+        this.currentFileKey = project.currentFileKey
+      }
     }
     changeUrl() {
       let file = document.querySelector("[id='project'] [role='tree']")?._walker.currentNode
@@ -137,16 +142,16 @@ export const start = ({ channel }) => {
       let fileIsFile = file.getAttribute("data-tag") == "file"
       let fmodelIsNotFile = fmodel.getAttribute("data-tag") != "file"
 
+      this.currentFileKey = file.key
       switch (true) {
         case !!(fileIsFile && file.key) && !!(fmodelIsNotFile && fmodel.id):
-          history.replaceState(null, "", `${window.project_path}/m/${file.key}#${fmodel.id}`)
+          history.replaceState(null, "", `${window.project_path}/m/${encodeURIComponent(file.key)}#${encodeURIComponent(fmodel.id)}`)
           break
         case !!(fileIsFile && file.key):
-          history.replaceState(null, "", `${window.project_path}/m/${file.key}`)
+          history.replaceState(null, "", `${window.project_path}/m/${encodeURIComponent(file.key)}`)
           break
       }
     }
-
   })
 
   customElements.define("action-listener", class extends HTMLElement {
