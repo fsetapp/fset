@@ -100,6 +100,7 @@ export const start = ({ channel }) => {
       Object.defineProperty(this._projectStore, "_diffToRemote", { value: this.runDiff(), writable: true })
       let fileStore = Project.getFileStore(this._projectStore, this.currentFileKey || project.currentFileKey)
       fileStore?.render()
+      this._projectStore.render()
     }
     handleSchUpdate(e) {
       let { detail, target } = e

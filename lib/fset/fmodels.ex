@@ -121,17 +121,7 @@ defmodule Fset.Fmodels do
 
     fmodels_after_files = fn
       %{insert_files: {_n, inserted_files}} ->
-        new_files =
-          Enum.reduce(inserted_files, project.files, fn file, acc ->
-            [
-              file
-              |> Map.from_struct()
-              |> Map.take([:id, :anchor])
-              | acc
-            ]
-          end)
-
-        project = %{project | files: new_files}
+        project = collect_file_ids(inserted_files, project)
         put_required_file_id(ready_fmodels, project)
     end
 
@@ -240,18 +230,22 @@ defmodule Fset.Fmodels do
                 unnest($4::bigint[]) AS file_id
         ) AS tmp
       WHERE fmodels.anchor = tmp.anchor
-      RETURNING *
+      RETURNING tmp.anchor, tmp.file_id, tmp.key, tmp.order
     """
 
     reorder_fmodels_query = fn repo, _ ->
-      Ecto.Adapters.SQL.query(repo, reorder_fmodels, [anchors, orders, keys, file_ids])
+      {:ok, %{rows: rows, num_rows: n, columns: cols}} =
+        Ecto.Adapters.SQL.query(repo, reorder_fmodels, [anchors, orders, keys, file_ids])
+
+      {:ok, {n, Enum.map(rows, fn row -> Repo.load(Fmodel, {cols, row}) end)}}
     end
 
     multi =
       multi
       |> Ecto.Multi.insert_all(:reorder_files, File, files,
         conflict_target: [:anchor],
-        on_conflict: {:replace, [:key, :order]}
+        on_conflict: {:replace, [:key, :order]},
+        returning: true
       )
       |> Ecto.Multi.run(:reorder_fmodels, reorder_fmodels_query)
 
@@ -259,38 +253,65 @@ defmodule Fset.Fmodels do
   end
 
   def persisted_diff_result({:ok, persisted_diff}, project) do
-    {count, fmodels} = persisted_diff.insert_fmodels
-
     to_fmodel_sch_with_file_id = fn fmodels ->
       Enum.map(fmodels || [], fn fmodel ->
         Map.put(to_fmodel_sch(fmodel), :file_id, fmodel.file_id)
       end)
     end
 
+    {_, fmodels} = persisted_diff.insert_fmodels
+    {_, files} = persisted_diff.insert_files
+
+    # The following line is needed when we allow cloning files. Currently we don't.
+    #
+    # project = collect_file_ids(files || [], project)
+
     added = %{
       "fmodels" => put_file_anchor(to_fmodel_sch_with_file_id.(fmodels), project),
-      "fmodels_count" => count
+      "files" =>
+        Enum.map(files || [], fn f ->
+          Map.put(to_file_sch(%{f | fmodels: []}), "pa", project.anchor)
+        end)
     }
 
-    {count, fmodels} = persisted_diff.delete_fmodels |> IO.inspect()
+    {_, fmodels} = persisted_diff.delete_fmodels
+    {_, files} = persisted_diff.delete_files
 
     removed = %{
       "fmodels" => put_file_anchor(to_fmodel_sch_with_file_id.(fmodels), project),
-      "fmodels_count" => count
+      "files" =>
+        Enum.map(files || [], fn f ->
+          Map.put(to_file_sch(%{f | fmodels: []}), "pa", project.anchor)
+        end)
     }
 
-    {count, fmodels} = persisted_diff.update_fmodels
+    {_, fmodels} = persisted_diff.update_fmodels
+    {_, files} = persisted_diff.update_files
 
     changed = %{
       "fmodels" => Enum.map(fmodels || [], &to_fmodel_sch/1),
-      "fmodels_count" => count
+      "files" => Enum.map(files || [], fn f -> to_file_sch(%{f | fmodels: []}) end)
+    }
+
+    {_, fmodels} = persisted_diff.reorder_fmodels
+    {_, files} = persisted_diff.reorder_files
+
+    reordered = %{
+      "fmodels" => put_file_anchor(to_fmodel_sch_with_file_id.(fmodels), project),
+      "files" =>
+        Enum.map(files || [], fn f ->
+          Map.put(to_file_sch(%{f | fmodels: []}), "pa", project.anchor)
+        end)
     }
 
     %{
+      "type" => "saved_diff",
       "added" => added,
       "removed" => removed,
-      "changed" => changed
+      "changed" => changed,
+      "reorder" => reordered
     }
+    |> IO.inspect()
   end
 
   def from_project_sch(nil), do: %{}
@@ -380,7 +401,7 @@ defmodule Fset.Fmodels do
   # Any fmodel that does not belong to a file will be excluded
   defp put_required_file_id(fmodels, project) when is_list(fmodels) do
     Enum.reduce(fmodels, [], fn fmodel, acc ->
-      {fmodel_parent_anchor, sch} = Map.pop(fmodel.sch, "pa")
+      {fmodel_parent_anchor, sch} = Map.pop!(fmodel.sch, "pa")
       fmodel = %{fmodel | sch: sch}
 
       file = Enum.find(project.files, fn file -> file.anchor == fmodel_parent_anchor end)
@@ -409,6 +430,20 @@ defmodule Fset.Fmodels do
     end)
   end
 
+  defp collect_file_ids(new_files, project) do
+    new_files =
+      Enum.reduce(new_files, project.files, fn file, acc ->
+        [
+          file
+          |> Map.from_struct()
+          |> Map.take([:id, :anchor])
+          | acc
+        ]
+      end)
+
+    %{project | files: new_files}
+  end
+
   def to_project_sch(%Project{} = project, params \\ %{}) do
     %{}
     |> Map.put(@f_anchor, project.anchor)
@@ -423,6 +458,7 @@ defmodule Fset.Fmodels do
     %{}
     |> Map.put(@f_anchor, file.anchor)
     |> Map.put("key", file.key)
+    |> Map.put("index", file.order)
     |> Map.put(@f_type, @f_record)
     |> Map.put("fields", Enum.map(file.fmodels, &to_fmodel_sch/1))
   end

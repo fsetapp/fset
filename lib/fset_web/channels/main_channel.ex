@@ -123,6 +123,7 @@ defmodule FsetWeb.MainChannel do
   end
 
   def handle_info({:persisted_diff_result, persisted_diff_result}, socket) do
+    send(self(), {:post_persisted_task, socket.assigns.project.key})
     push(socket, "persisted_diff_result", persisted_diff_result)
     {:noreply, socket}
   end
