@@ -59,7 +59,7 @@ defmodule Fset.Accounts.User do
       message: "must be a mix of A-Z, a-z, 0-9, dash (-), or underscore (_)"
     )
     |> validate_length(:username, max: 160)
-    |> unsafe_validate_unique(:username, Fset.Repo)
+    # |> unsafe_validate_unique(:username, Fset.Repo)
     |> unique_constraint(:username)
   end
 

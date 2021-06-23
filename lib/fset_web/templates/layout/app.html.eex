@@ -9,7 +9,7 @@
       <meta name="myuser" content="<%= @current_user.username %>"/>
     <% end %>
     <%= csrf_meta_tag() %>
-    <title>Fsetapp</title>
+    <%= title(assigns) %>
     <link rel="stylesheet" href="<%= Routes.static_path(@conn, "/css/app.css") %>"/>
     <%= if Application.get_env(:fset, :environment) == :dev do %>
       <script src="https://unpkg.com/tailwindcss-jit-cdn"></script>

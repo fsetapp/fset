@@ -64,7 +64,7 @@ defmodule FsetWeb.ProjectController do
   defp find_project_user(project, username) do
     case project.users do
       [] -> %{username: "public", email: nil}
-      _ -> Enum.find(project.users, &(&1.username == username))
+      _ -> Enum.find(project.users, &(String.downcase(&1.username) == String.downcase(username)))
     end
   end
 
