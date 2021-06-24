@@ -45,10 +45,10 @@
     "@nodelib/fs.scandir" "2.1.4"
     fastq "^1.6.0"
 
-"@tarekraafat/autocomplete.js@^10.1.2":
-  version "10.1.2"
-  resolved "https://registry.yarnpkg.com/@tarekraafat/autocomplete.js/-/autocomplete.js-10.1.2.tgz#f9b5ed84b41ace9ef86feedf97e688873b4424bd"
-  integrity sha512-A1e6FWvPazVe7mQ2ILVhLvxW1K/yo+7EN1zajkpqH6LZZLWov28uDSpZU0ZC3xBDXBiNMzqELidVGuI2vKJJwg==
+"@tarekraafat/autocomplete.js@^10.1.5":
+  version "10.1.5"
+  resolved "https://registry.yarnpkg.com/@tarekraafat/autocomplete.js/-/autocomplete.js-10.1.5.tgz#0a2c9ac9037acd36ac8163b961b1b183bcbf1018"
+  integrity sha512-GXkEQfDnMqQR0L5o10ZduDkvQGdCyPIfajvrRul95WtvXE0pU4zsyfRwRNAyfsW6+Mzc5hC4eHYw6drfJ6FUzw==
 
 acorn-node@^1.6.1:
   version "1.8.2"

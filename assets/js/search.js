@@ -1,19 +1,22 @@
 import { Project, tstr } from "./vendor/fbox.min.js"
 import autoComplete from "@tarekraafat/autocomplete.js"
 
-const typeSearch = (selector, anchorsModels, opts = {}) => {
+const typeSearch = (selector, modelsGetter, opts = {}) => {
   let comboboxOpts = commonComboboxOpts({ maxResults: 15, placeHolder: opts.placeHolder })
   let types = Project.allSchs
     .map(a => tstr(a().t)).filter(t => t != "value")
     .reduce((acc, t) => Object.assign(acc, { [t]: { display: t } }), {})
 
-  let data = Object.assign({}, types, anchorsModels)
-  let datalist = dataList(data)
+  const modelsToDataList = (anchorsModels) => {
+    let data = Object.assign({}, types, anchorsModels)
+    let datalist = dataList(data)
+    return datalist
+  }
 
-  return new autoComplete({ ...comboboxOpts, selector: selector, data: { src: datalist, keys: ["display"] } })
+  return new autoComplete({ ...comboboxOpts, selector: selector, data: { src: modelsGetter(modelsToDataList), keys: ["display"] } })
 }
 
-const projectSearch = (selector, anchorsModels, opts = {}) => {
+const projectSearch = (selector, modelsGetter, opts = {}) => {
   let comboboxOpts = commonComboboxOpts({
     maxResults: 30,
     placeHolder: opts.placeHolder,
@@ -22,10 +25,13 @@ const projectSearch = (selector, anchorsModels, opts = {}) => {
     }
   })
 
-  let data = anchorsModels
-  let datalist = dataList(data)
+  const modelsToDataList = (anchorsModels) => {
+    let data = anchorsModels
+    let datalist = dataList(data)
+    return datalist
+  }
 
-  return new autoComplete({ ...comboboxOpts, selector: selector, data: { src: datalist, keys: ["display"] } })
+  return new autoComplete({ ...comboboxOpts, selector: selector, data: { src: modelsGetter(modelsToDataList), keys: ["display"] } })
 }
 
 export const start = () => {
@@ -36,19 +42,19 @@ export const start = () => {
     }
     handleDataPush(e) {
       e.stopPropagation()
-      this.models = e.detail._models
+      this.datalist = e.detail._models
       this.createAutoComplete()
     }
     createAutoComplete() {
-      this._autocomplete?.unInit()
       let input = this.querySelector("textarea, input")
+      const dataList = f => async (query) => f(this.datalist)
 
       switch (this.getAttribute("list")) {
         case "typesearch":
-          if (input.id) this._autocomplete = typeSearch(`#${input.id}`, this.models, { placeHolder: this.getAttribute("placeholder") })
+          if (input.id) this._autocomplete ||= typeSearch(`#${input.id}`, dataList, { placeHolder: this.getAttribute("placeholder") })
           break
         case "jumptotype":
-          if (input.id) this._autocomplete = projectSearch(`#${input.id}`, this.models, { placeHolder: this.getAttribute("placeholder") })
+          if (input.id) this._autocomplete ||= projectSearch(`#${input.id}`, dataList, { placeHolder: this.getAttribute("placeholder") })
           break
       }
     }
@@ -105,6 +111,7 @@ const dataList = (data) => {
     data[anchors[i]].display = data[anchors[i]].display.replace(/</g, "&lt;")
     datalist.push(Object.assign({ anchor: anchors[i], fmodelname: fmodelname, }, data[anchors[i]]))
   }
+
   return datalist
 }
 

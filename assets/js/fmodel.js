@@ -43,6 +43,7 @@ export const start = ({ channel }) => {
         Diff.mergeToCurrent(projectStore, saved_diffs)
         Diff.mergeToBase(projectBaseStore, saved_diffs)
         this.diffRender()
+        buffer(this.pushChanged.bind(this), 100)()
       })
       channel.on("each_batch", ({ batch }) => {
         for (let file of batch)
@@ -131,7 +132,7 @@ export const start = ({ channel }) => {
     }
     changeUrlSSR(project) {
       if (project.currentFileKey && project.currentFileKey != "") {
-        history.replaceState(null, "", `${window.project_path}/m/${encodeURIComponent(project.currentFileKey)}${encodeURIComponent(location.hash)}`)
+        history.replaceState(null, "", `${window.project_path}/m/${encodeURIComponent(project.currentFileKey)}${location.hash}`)
         this.currentFileKey = project.currentFileKey
       }
     }
@@ -146,7 +147,7 @@ export const start = ({ channel }) => {
       this.currentFileKey = file.key
       switch (true) {
         case !!(fileIsFile && file.key) && !!(fmodelIsNotFile && fmodel.id):
-          history.replaceState(null, "", `${window.project_path}/m/${encodeURIComponent(file.key)}#${encodeURIComponent(fmodel.id)}`)
+          history.replaceState(null, "", `${window.project_path}/m/${encodeURIComponent(file.key)}#${fmodel.id}`)
           break
         case !!(fileIsFile && file.key):
           history.replaceState(null, "", `${window.project_path}/m/${encodeURIComponent(file.key)}`)
