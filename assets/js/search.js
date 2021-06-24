@@ -4,12 +4,12 @@ import autoComplete from "@tarekraafat/autocomplete.js"
 const typeSearch = (selector, modelsGetter, opts = {}) => {
   let comboboxOpts = commonComboboxOpts({ maxResults: 15, placeHolder: opts.placeHolder })
   let types = Project.allSchs
-    .map(a => tstr(a().t)).filter(t => t != "value")
-    .reduce((acc, t) => Object.assign(acc, { [t]: { display: t } }), {})
+    .map(a => a()).filter(sch => tstr(sch.t) != "value" || tstr(sch.t) != "ref")
+    .reduce((acc, sch) => Object.assign(acc, { [tstr(sch.t)]: { display: tstr(sch.t), sch: sch, primitive: true } }), {})
 
   const modelsToDataList = (anchorsModels) => {
     let data = Object.assign({}, types, anchorsModels)
-    let datalist = dataList(data)
+    let datalist = dataList(data, opts)
     return datalist
   }
 
@@ -51,7 +51,7 @@ export const start = () => {
 
       switch (this.getAttribute("list")) {
         case "typesearch":
-          if (input.id) this._autocomplete ||= typeSearch(`#${input.id}`, dataList, { placeHolder: this.getAttribute("placeholder") })
+          if (input.id) this._autocomplete ||= typeSearch(`#${input.id}`, dataList, { placeHolder: this.getAttribute("placeholder"), only: input.opts.allowedTs })
           break
         case "jumptotype":
           if (input.id) this._autocomplete ||= projectSearch(`#${input.id}`, dataList, { placeHolder: this.getAttribute("placeholder") })
@@ -76,7 +76,16 @@ const commonComboboxOpts = ({ maxResults, placeHolder, postSelection }) => {
     resultItem: {
       class: "autoComplete_result",
       highlight: "autoComplete_highlighted",
-      selected: "autoComplete_selected"
+      selected: "autoComplete_selected",
+      element: (item, data) => {
+        if (!data.value.primitive) {
+          let t = document.createRange().createContextualFragment(`
+            <span class="mx-1 text-gray-600">–</span>
+            <span class="autoComplete_result_t">${tstr(data.value.sch.t)}</span>
+          `)
+          item.appendChild(t)
+        }
+      }
     },
     wrapper: false,
     query: input => input.replace(/</g, "&lt;"),
@@ -102,14 +111,24 @@ const commonComboboxOpts = ({ maxResults, placeHolder, postSelection }) => {
   }
 }
 
-const dataList = (data) => {
+const dataList = (data, opts = {}) => {
   let anchors = Object.keys(data)
   let datalist = []
 
   for (let i = 0; i < anchors.length; i++) {
-    let fmodelname = data[anchors[i]].display
-    data[anchors[i]].display = data[anchors[i]].display.replace(/</g, "&lt;")
-    datalist.push(Object.assign({ anchor: anchors[i], fmodelname: fmodelname, }, data[anchors[i]]))
+    let fmodel = data[anchors[i]]
+    let fmodelname = fmodel.display
+    fmodel.display = fmodel.display.replace(/</g, "&lt;")
+
+    if (!opts.only)
+      datalist.push(Object.assign({ anchor: anchors[i], fmodelname: fmodelname, }, fmodel))
+    else
+      if (opts.only.find(sch => {
+        if (sch.to) return sch.to.t == fmodel.sch.t
+        else return sch.t == fmodel.sch.t
+      }))
+        datalist.push(Object.assign({ anchor: anchors[i], fmodelname: fmodelname, }, fmodel))
+
   }
 
   return datalist

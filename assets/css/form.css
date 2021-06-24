@@ -111,10 +111,11 @@ a:any-link:hover {
 /* w-full px-2 py-1 text-sm rounded bg-matte-black border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500 */
 .autoComplete_list {
   max-height: 50vh;
-  @apply mt-1 z-50 absolute text-gray-100 w-full bg-gray-800 border border-gray-700 shadow-2xl overflow-auto divide-y divide-gray-700;
+  @apply mt-1 p-0.5 z-50 absolute text-gray-100 w-full bg-gray-800 border border-gray-700 shadow-2xl overflow-auto divide-y divide-gray-900;
 }
-.autoComplete_result { @apply px-2 py-1 text-xs font-light text-gray-200 }
+.autoComplete_result { @apply px-2 py-1 my-px text-xs font-light text-gray-200 tracking-wide }
 .autoComplete_result:hover { @apply bg-matte-black bg-opacity-50 }
 .autoComplete_result mark { @apply bg-transparent text-indigo-400 font-semibold }
+.autoComplete_result_t { @apply text-gray-500 font-normal }
 .autoComplete_selected.notfound { @apply border-gray-400 bg-gray-200 }
 .autoComplete_selected { @apply bg-matte-black bg-opacity-50 }
