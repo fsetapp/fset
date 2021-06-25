@@ -70,12 +70,13 @@ defmodule Fset.Fmodels do
         |> Map.put(:updated_at, timestamp())
       end)
 
-    fmodels =
-      Enum.map(changed[@fmodel_diff] || [], fn {_key, fmodel_sch} ->
-        {_, fmodel} = from_fmodel_sch(fmodel_sch, project.id)
-        fmodel
+    {sch_metas_from_fmodels, fmodels} =
+      Enum.flat_map_reduce(changed[@fmodel_diff] || [], [], fn {_key, fmodel_sch}, acc ->
+        {sch_metas, fmodel} = from_fmodel_sch(fmodel_sch, project.id)
+        {sch_metas, [fmodel | acc]}
       end)
-      |> put_required_file_id(project)
+
+    fmodels = put_required_file_id(fmodels, project)
 
     multi =
       multi
@@ -90,6 +91,16 @@ defmodule Fset.Fmodels do
         on_conflict: {:replace, [:key, :order, :is_entry, :sch]},
         returning: true
       )
+
+    multi =
+      sch_metas_from_fmodels
+      |> Enum.chunk_every(5_000)
+      |> Enum.reduce(multi, fn [%{anchor: head} | _] = fmodels_batch, multi_acc ->
+        Ecto.Multi.insert_all(multi_acc, {:insert_sch_metas, head}, SchMeta, fmodels_batch,
+          conflict_target: [:anchor],
+          on_conflict: {:replace, [:title, :description, :metadata]}
+        )
+      end)
 
     {multi, project}
   end
@@ -311,7 +322,6 @@ defmodule Fset.Fmodels do
       "changed" => changed,
       "reorder" => reordered
     }
-    |> IO.inspect()
   end
 
   def from_project_sch(nil), do: %{}

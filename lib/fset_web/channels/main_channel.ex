@@ -76,6 +76,9 @@ defmodule FsetWeb.MainChannel do
     {:ok, project} = Projects.get_project(project_key)
     send(self(), {:build_ids_lookup_table, project})
     send(self(), {:prune_sch_metas, project, project.id})
+    # TODO: only push changed sch_metas as a part of persisted_diff_result
+    # And mergeSchMetas on client (at the end of persisted_diff_result)
+    send(self(), {:push_sch_metas, :post_persisted})
     {:noreply, socket}
   end
 
@@ -100,7 +103,7 @@ defmodule FsetWeb.MainChannel do
 
   def handle_info({:push_each_batch, []}, socket) do
     push(socket, "each_batch_finished", %{batch: []})
-    send(self(), {:push_sch_metas})
+    send(self(), {:push_sch_metas, :initial})
     {:noreply, socket}
   end
 
@@ -110,9 +113,9 @@ defmodule FsetWeb.MainChannel do
     {:noreply, socket}
   end
 
-  def handle_info({:push_sch_metas}, socket) do
+  def handle_info({:push_sch_metas, phase}, socket) do
     sch_metas_map = Projects.sch_metas_map(socket.assigns.project)
-    push(socket, "sch_metas_map", %{schMetas: sch_metas_map})
+    push(socket, "sch_metas_map", %{schMetas: sch_metas_map, phase: phase})
     {:noreply, socket}
   end
 

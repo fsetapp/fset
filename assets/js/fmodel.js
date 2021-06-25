@@ -59,9 +59,10 @@ export const start = ({ channel }) => {
         Diff.buildBaseIndices(projectBaseStore)
         this.pushChanged()
       })
-      channel.on("sch_metas_map", ({ schMetas }) => {
+      channel.on("sch_metas_map", ({ schMetas, phase }) => {
         Project.mergeSchMetas(this._projectStore, schMetas)
-        Project.changeFile(this._projectStore, project.currentFileKey, decodeURIComponent(location.hash.replace("#", "")))
+        if (phase == "initial")
+          Project.changeFile(this._projectStore, project.currentFileKey, decodeURIComponent(location.hash.replace("#", "")))
       })
     }
     handleTreeCommand(e) {
