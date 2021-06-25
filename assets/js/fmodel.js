@@ -52,8 +52,8 @@ export const start = ({ channel }) => {
       channel.on("each_batch_finished", nothing => {
         this.changeUrlSSR(project)
 
-        ProjectTree({ store: projectStore, target: "[id='project']", select: `[${project.currentFileKey}]` })
-        Project.changeFile(projectStore, project.currentFileKey, location.hash.replace("#", ""))
+        ProjectTree({ store: projectStore, target: "[id='project']", select: decodeURIComponent(`[${project.currentFileKey}]`) })
+        Project.changeFile(projectStore, project.currentFileKey, decodeURIComponent(location.hash.replace("#", "")))
 
         projectBaseStore = JSON.parse(JSON.stringify(this._projectStore))
         Diff.buildBaseIndices(projectBaseStore)
@@ -61,7 +61,7 @@ export const start = ({ channel }) => {
       })
       channel.on("sch_metas_map", ({ schMetas }) => {
         Project.mergeSchMetas(this._projectStore, schMetas)
-        Project.changeFile(this._projectStore, project.currentFileKey, location.hash.replace("#", ""))
+        Project.changeFile(this._projectStore, project.currentFileKey, decodeURIComponent(location.hash.replace("#", "")))
       })
     }
     handleTreeCommand(e) {
@@ -122,8 +122,8 @@ export const start = ({ channel }) => {
       let filename = e.detail.value.file
       let fmodelname = e.detail.value.fmodel
 
-      Project.changeFile(this._projectStore, filename, `[${fmodelname}]`, true)
-      ProjectTree({ store: projectStore, target: "[id='project']", select: `[${filename}]`, focus: false })
+      Project.changeFile(this._projectStore, filename, decodeURIComponent(`[${fmodelname}]`), true)
+      ProjectTree({ store: projectStore, target: "[id='project']", select: decodeURIComponent(`[${filename}]`), focus: false })
       this.changeUrl()
     }
     pushChanged() {
