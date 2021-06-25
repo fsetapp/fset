@@ -2,7 +2,7 @@ import { Project, tstr } from "./vendor/fbox.min.js"
 import autoComplete from "@tarekraafat/autocomplete.js"
 
 const typeSearch = (selector, modelsGetter, opts = {}) => {
-  let comboboxOpts = commonComboboxOpts({ maxResults: 15, placeHolder: opts.placeHolder })
+  let comboboxOpts = commonComboboxOpts({ maxResults: 100, placeHolder: opts.placeHolder })
   let types = Project.allSchs
     .map(a => a()).filter(sch => tstr(sch.t) != "value" || tstr(sch.t) != "ref")
     .reduce((acc, sch) => Object.assign(acc, { [tstr(sch.t)]: { display: tstr(sch.t), sch: sch, primitive: true } }), {})
@@ -18,7 +18,7 @@ const typeSearch = (selector, modelsGetter, opts = {}) => {
 
 const projectSearch = (selector, modelsGetter, opts = {}) => {
   let comboboxOpts = commonComboboxOpts({
-    maxResults: 30,
+    maxResults: 100,
     placeHolder: opts.placeHolder,
     postSelection: (target, feedback) => {
       target.dispatchEvent(new CustomEvent("search-selected", { detail: { selector, value: feedback.selection.value } }))
