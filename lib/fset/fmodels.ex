@@ -3,7 +3,7 @@ defmodule Fset.Fmodels do
   alias Fset.Repo
 
   alias Fset.Projects.Project
-  alias Fset.Fmodels.{File, Fmodel, SchMeta}
+  alias Fset.Fmodels.{File, Fmodel, SchMeta, Referrer}
   alias Fset.Sch
 
   use Fset.Fmodels.Vocab
@@ -55,7 +55,50 @@ defmodule Fset.Fmodels do
     {persisted_diff_result, project}
   end
 
-  # Currently support "type", "key", "order" changes.
+  defp insert_added_diff({multi, project}, %{"added" => added}) do
+    files =
+      Enum.map(added[@file_diff] || [], fn {_key, file_sch} ->
+        from_file_sch(file_sch)
+        |> Map.put(:project_id, project.id)
+        |> Map.put(:inserted_at, timestamp())
+        |> Map.put(:updated_at, timestamp())
+      end)
+
+    %{sch_metas: sch_metas_from_fmodels, fmodels: ready_fmodels, referrers: referrers} =
+      if added["sch_metas"] do
+        fmodel_acc = reduce_from_fmodel_sch(added[@fmodel_diff], project)
+        %{fmodel_acc | sch_metas: added["sch_metas"]}
+      else
+        reduce_from_fmodel_sch(added[@fmodel_diff], project)
+      end
+
+    fmodels_after_files = fn
+      %{insert_files: {_n, inserted_files}} ->
+        project = collect_file_ids(inserted_files, project)
+        put_required_file_id(ready_fmodels, project)
+    end
+
+    multi_upsert_referrers_ = fn
+      %{insert_fmodels: {_n, inserted_fmodels}} ->
+        fmodel_anchor_to_id =
+          Enum.reduce(inserted_fmodels, %{}, fn fmodel, acc ->
+            Map.put(acc, fmodel.anchor, fmodel.id)
+          end)
+
+        multi2 = Ecto.Multi.new()
+        multi_upsert_referrers(multi2, :upsert_referrers, referrers, fmodel_anchor_to_id, project)
+    end
+
+    multi =
+      multi
+      |> multi_upsert_files(:insert_files, files)
+      |> multi_upsert_fmodels(:insert_fmodels, fmodels_after_files)
+      |> multi_upsert_sch_metas(:upsert_sch_metas, sch_metas_from_fmodels)
+      |> Ecto.Multi.merge(multi_upsert_referrers_)
+
+    {multi, project}
+  end
+
   defp update_changed_diff({multi, project}, %{"changed" => changed}) do
     project_attrs =
       changed[@project_diff]
@@ -70,94 +113,34 @@ defmodule Fset.Fmodels do
         |> Map.put(:updated_at, timestamp())
       end)
 
-    {sch_metas_from_fmodels, fmodels} =
-      Enum.flat_map_reduce(changed[@fmodel_diff] || [], [], fn {_key, fmodel_sch}, acc ->
-        {sch_metas, fmodel} = from_fmodel_sch(fmodel_sch, project.id)
-        {sch_metas, [fmodel | acc]}
-      end)
+    %{sch_metas: sch_metas_from_fmodels, fmodels: fmodels, referrers: referrers} =
+      reduce_from_fmodel_sch(changed[@fmodel_diff], project)
 
     fmodels = put_required_file_id(fmodels, project)
 
-    multi =
-      multi
-      |> Ecto.Multi.update(:update_project, Ecto.Changeset.change(project, project_attrs))
-      |> Ecto.Multi.insert_all(:update_files, File, files,
-        conflict_target: [:anchor],
-        on_conflict: {:replace, [:key, :order]},
-        returning: true
-      )
-      |> Ecto.Multi.insert_all(:update_fmodels, Fmodel, fmodels,
-        conflict_target: [:anchor],
-        on_conflict: {:replace, [:key, :order, :is_entry, :sch]},
-        returning: true
-      )
-
-    multi =
-      sch_metas_from_fmodels
-      |> Enum.chunk_every(5_000)
-      |> Enum.reduce(multi, fn [%{anchor: head} | _] = fmodels_batch, multi_acc ->
-        Ecto.Multi.insert_all(multi_acc, {:insert_sch_metas, head}, SchMeta, fmodels_batch,
-          conflict_target: [:anchor],
-          on_conflict: {:replace, [:title, :description, :metadata]}
-        )
+    fmodel_anchor_to_id =
+      Enum.reduce(project.files, %{}, fn file, acc ->
+        file.fmodels
+        |> Enum.reduce(acc, fn fmodel, acc -> Map.put(acc, fmodel.anchor, fmodel.id) end)
       end)
 
-    {multi, project}
-  end
-
-  defp insert_added_diff({multi, project}, %{"added" => added}) do
-    files =
-      Enum.map(added[@file_diff] || [], fn {_key, file_sch} ->
-        from_file_sch(file_sch)
-        |> Map.put(:project_id, project.id)
-        |> Map.put(:inserted_at, timestamp())
-        |> Map.put(:updated_at, timestamp())
-      end)
-
-    {sch_metas_from_fmodels, ready_fmodels} =
-      if added["sch_metas"] do
-        fmodels =
-          Enum.map(added[@fmodel_diff] || [], fn {_key, fmodel_sch} ->
-            {_, fmodel} = from_fmodel_sch(fmodel_sch, project.id)
-            fmodel
-          end)
-
-        {added["sch_metas"], fmodels}
-      else
-        Enum.flat_map_reduce(added[@fmodel_diff] || [], [], fn {_key, fmodel_sch}, acc ->
-          {sch_metas, fmodel} = from_fmodel_sch(fmodel_sch, project.id)
-          {sch_metas, [fmodel | acc]}
+    multi_upsert_referrers_ = fn %{update_fmodels: {_n, updated_fmodels}} ->
+      fmodel_anchor_to_id =
+        Enum.reduce(updated_fmodels, fmodel_anchor_to_id, fn fmodel, acc ->
+          Map.put(acc, fmodel.anchor, fmodel.id)
         end)
-      end
 
-    fmodels_after_files = fn
-      %{insert_files: {_n, inserted_files}} ->
-        project = collect_file_ids(inserted_files, project)
-        put_required_file_id(ready_fmodels, project)
+      multi2 = Ecto.Multi.new()
+      multi_upsert_referrers(multi2, :upsert_referrers, referrers, fmodel_anchor_to_id, project)
     end
 
     multi =
       multi
-      |> Ecto.Multi.insert_all(:insert_files, File, files,
-        conflict_target: [:anchor],
-        on_conflict: {:replace, [:key, :order]},
-        returning: true
-      )
-      |> Ecto.Multi.insert_all(:insert_fmodels, Fmodel, fmodels_after_files,
-        conflict_target: [:anchor],
-        on_conflict: {:replace, [:key, :order, :is_entry, :sch]},
-        returning: true
-      )
-
-    multi =
-      sch_metas_from_fmodels
-      |> Enum.chunk_every(5_000)
-      |> Enum.reduce(multi, fn [%{anchor: head} | _] = fmodels_batch, multi_acc ->
-        Ecto.Multi.insert_all(multi_acc, {:insert_sch_metas, head}, SchMeta, fmodels_batch,
-          conflict_target: [:anchor],
-          on_conflict: {:replace, [:title, :description, :metadata]}
-        )
-      end)
+      |> Ecto.Multi.update(:update_project, Ecto.Changeset.change(project, project_attrs))
+      |> multi_upsert_files(:update_files, files)
+      |> multi_upsert_fmodels(:update_fmodels, fmodels)
+      |> multi_upsert_sch_metas(:upsert_sch_metas, sch_metas_from_fmodels)
+      |> Ecto.Multi.merge(multi_upsert_referrers_)
 
     {multi, project}
   end
@@ -177,7 +160,10 @@ defmodule Fset.Fmodels do
         Map.get(fmodel_sch, @f_anchor)
       end)
 
-    delete_fmodels_query = from f in Fmodel, where: f.anchor in ^fmodels_anchors, select: f
+    delete_fmodels_query =
+      from f in Fmodel,
+        where: f.anchor in ^fmodels_anchors,
+        select: f
 
     delete_sch_metas_query = fn %{delete_fmodels: {_, delete_fmodels}} ->
       sch_metas_anchors =
@@ -218,7 +204,7 @@ defmodule Fset.Fmodels do
 
     {anchors, orders, keys, file_ids} =
       Enum.map(reorder[@fmodel_diff] || [], fn {_key, fmodel_sch} ->
-        {_, fmodel} = from_fmodel_sch(fmodel_sch, project.id)
+        {fmodel, _} = from_fmodel_sch(fmodel_sch, project.id)
         fmodel
       end)
       |> put_required_file_id(project)
@@ -231,7 +217,7 @@ defmodule Fset.Fmodels do
         {anchor_acc, order_acc, key_acc, file_id_acc}
       end)
 
-    reorder_fmodels = ~s"""
+    reorder_fmodels_query = ~s"""
       UPDATE fmodels
       SET "order" = tmp.order, key = tmp.key
       FROM
@@ -244,23 +230,70 @@ defmodule Fset.Fmodels do
       RETURNING tmp.anchor, tmp.file_id, tmp.key, tmp.order
     """
 
-    reorder_fmodels_query = fn repo, _ ->
+    reorder_fmodels = fn repo, _ ->
       {:ok, %{rows: rows, num_rows: n, columns: cols}} =
-        Ecto.Adapters.SQL.query(repo, reorder_fmodels, [anchors, orders, keys, file_ids])
+        Ecto.Adapters.SQL.query(repo, reorder_fmodels_query, [anchors, orders, keys, file_ids])
 
       {:ok, {n, Enum.map(rows, fn row -> Repo.load(Fmodel, {cols, row}) end)}}
     end
 
     multi =
       multi
-      |> Ecto.Multi.insert_all(:reorder_files, File, files,
-        conflict_target: [:anchor],
-        on_conflict: {:replace, [:key, :order]},
-        returning: true
-      )
-      |> Ecto.Multi.run(:reorder_fmodels, reorder_fmodels_query)
+      |> multi_upsert_files(:reorder_files, files)
+      |> Ecto.Multi.run(:reorder_fmodels, reorder_fmodels)
 
     {multi, project}
+  end
+
+  defp multi_upsert_files(multi, key, files) do
+    Ecto.Multi.insert_all(multi, key, File, files,
+      conflict_target: [:anchor],
+      on_conflict: {:replace, [:key, :order]},
+      returning: true
+    )
+  end
+
+  defp multi_upsert_fmodels(multi, key, fmodels) do
+    Ecto.Multi.insert_all(multi, key, Fmodel, fmodels,
+      conflict_target: [:anchor],
+      on_conflict: {:replace, [:key, :order, :is_entry, :sch]},
+      returning: true
+    )
+  end
+
+  defp multi_upsert_sch_metas(multi, key, sch_metas) do
+    sch_metas
+    |> Enum.chunk_every(5_000)
+    |> Enum.reduce(multi, fn [%{anchor: head} | _] = fmodels_batch, multi_acc ->
+      Ecto.Multi.insert_all(multi_acc, {key, head}, SchMeta, fmodels_batch,
+        conflict_target: [:anchor],
+        on_conflict: {:replace, [:title, :description, :metadata]}
+      )
+    end)
+  end
+
+  defp multi_upsert_referrers(multi, key, referrers, refs_lookup, project) do
+    referrers
+    |> Enum.chunk_every(5_000)
+    |> Enum.reduce(multi, fn [{head, _} | _] = referrers_batch, multi_acc ->
+      refrers =
+        Enum.flat_map(referrers_batch, fn {fmodel_anchor, referrer_list} ->
+          Enum.reduce(referrer_list, [], fn referrer_anchor, acc ->
+            case Map.fetch(refs_lookup, fmodel_anchor) do
+              {:ok, fmodel_id} ->
+                [%{fmodel_id: fmodel_id, anchor: referrer_anchor, project_id: project.id} | acc]
+
+              _ ->
+                acc
+            end
+          end)
+        end)
+
+      Ecto.Multi.insert_all(multi_acc, {key, head}, Referrer, refrers,
+        conflict_target: [:anchor],
+        on_conflict: {:replace, [:fmodel_id]}
+      )
+    end)
   end
 
   def persisted_diff_result({:ok, persisted_diff}, project) do
@@ -273,9 +306,7 @@ defmodule Fset.Fmodels do
     {_, fmodels} = persisted_diff.insert_fmodels
     {_, files} = persisted_diff.insert_files
 
-    # The following line is needed when we allow cloning files. Currently we don't.
-    #
-    # project = collect_file_ids(files || [], project)
+    project = collect_file_ids(files || [], project)
 
     added = %{
       "fmodels" => put_file_anchor(to_fmodel_sch_with_file_id.(fmodels), project),
@@ -330,39 +361,69 @@ defmodule Fset.Fmodels do
     %{}
     |> put_from!(:anchor, {project_sch, @f_anchor})
     |> put_from(:description, {project_sch, "description"})
-    |> put_from!(:key, {project_sch, "key"})
+    |> put_from!(:key, {project_sch, @f_key})
   end
 
   defp from_file_sch(file_sch) when is_map(file_sch) do
     %{}
     |> put_from!(:anchor, {file_sch, @f_anchor})
-    |> put_from(:key, {file_sch, "key"})
+    |> put_from(:key, {file_sch, @f_key})
     |> put_from(:order, {file_sch, "index"})
   end
 
-  defp from_fmodel_sch(fmodel_sch, project_id) when is_map(fmodel_sch) do
-    {sch_metas, sch} = pop_sch_metas(fmodel_sch, project_id: project_id)
+  defp from_fmodel_sch(fmodel_sch, project_id, opts \\ []) when is_map(fmodel_sch) do
+    {sch, acc} = reduce_fmodel(fmodel_sch, [{:project_id, project_id} | opts])
 
     fmodel =
       %{}
       |> put_from!(:anchor, {fmodel_sch, @f_anchor})
-      |> put_from(:key, {fmodel_sch, "key"})
+      |> put_from(:key, {fmodel_sch, @f_key})
       |> put_from(:order, {fmodel_sch, "index"})
       |> Map.put(:is_entry, Map.get(fmodel_sch, "isEntry", false))
       |> Map.put(:sch, %{@f_anchor => _, @f_type => _} = sch)
 
-    {sch_metas, fmodel}
+    {fmodel, acc}
   end
 
-  defp pop_sch_metas(fmodel_sch, opts) do
-    {sch, sch_meta_acc} =
-      Sch.walk(fmodel_sch, [], fn a, _m, acc ->
-        acc = [from_sch_meta(a, opts) | acc]
+  defp reduce_from_fmodel_sch(nil, project), do: reduce_from_fmodel_sch([], project)
+
+  defp reduce_from_fmodel_sch(fmodels, project) do
+    fmodel_acc = %{fmodels: [], sch_metas: [], referrers: %{}}
+
+    Enum.reduce(fmodels, fmodel_acc, fn {_key, fmodel_sch}, acc ->
+      {fmodel, fmodel_acc} = from_fmodel_sch(fmodel_sch, project.id)
+      acc = %{acc | fmodels: [fmodel | acc.fmodels]}
+
+      acc = %{
+        acc
+        | referrers: Map.merge(fmodel_acc.referrers, acc.referrers, fn _k, v1, v2 -> v1 ++ v2 end)
+      }
+
+      _acc = %{acc | sch_metas: fmodel_acc.sch_metas ++ acc.sch_metas}
+    end)
+  end
+
+  defp reduce_fmodel(fmodel_sch, opts) do
+    {_sch, _acc} =
+      Sch.walk(fmodel_sch, %{sch_metas: [], referrers: %{}}, fn a, _m, acc ->
+        sch_meta_acc = [from_sch_meta(a, opts) | acc.sch_metas]
+        acc = %{acc | sch_metas: sch_meta_acc}
+
+        acc =
+          if ref = Map.get(a, @f_ref) do
+            referrer_acc =
+              Map.update(acc.referrers, ref, [Map.fetch!(a, @f_anchor)], fn v ->
+                [Map.fetch!(a, @f_anchor) | v]
+              end)
+
+            %{acc | referrers: referrer_acc}
+          else
+            acc
+          end
+
         a = Map.drop(a, ["index", "isEntry", "metadata"])
         {:cont, {a, acc}}
       end)
-
-    {sch_meta_acc, sch}
   end
 
   def from_sch_meta(sch, opts \\ []) when is_map(sch) do
@@ -457,7 +518,7 @@ defmodule Fset.Fmodels do
   def to_project_sch(%Project{} = project, params \\ %{}) do
     %{}
     |> Map.put(@f_anchor, project.anchor)
-    |> Map.put("key", project.key)
+    |> Map.put(@f_key, project.key)
     |> Map.put("schMetas", [])
     |> Map.put(@f_type, @f_record)
     |> Map.put("fields", Enum.map(project.files, &to_file_sch/1))
@@ -467,7 +528,7 @@ defmodule Fset.Fmodels do
   defp to_file_sch(%File{} = file) do
     %{}
     |> Map.put(@f_anchor, file.anchor)
-    |> Map.put("key", file.key)
+    |> Map.put(@f_key, file.key)
     |> Map.put("index", file.order)
     |> Map.put(@f_type, @f_record)
     |> Map.put("fields", Enum.map(file.fmodels, &to_fmodel_sch/1))
@@ -476,7 +537,7 @@ defmodule Fset.Fmodels do
   defp to_fmodel_sch(%{anchor: _, key: _} = fmodel) do
     fmodel.sch
     |> Map.put(@f_anchor, fmodel.anchor)
-    |> Map.put("key", fmodel.key)
+    |> Map.put(@f_key, fmodel.key)
     |> Map.put("index", fmodel.order)
     |> map_put("isEntry", fmodel.is_entry)
   end
@@ -491,7 +552,7 @@ defmodule Fset.Fmodels do
         p
 
       %{"fields" => [file | _]} = p ->
-        Map.put(p, "currentFileKey", params["filename"] || Map.get(file, "key"))
+        Map.put(p, "currentFileKey", params["filename"] || Map.get(file, @f_key))
     end
   end
 
@@ -506,6 +567,20 @@ defmodule Fset.Fmodels do
         |> Map.merge(m.metadata || %{})
 
       if s == %{}, do: acc, else: Map.put(acc, m.anchor, s)
+    end)
+  end
+
+  def referrers_map(project) do
+    refers_query =
+      from f in Fmodel,
+        join: r in assoc(f, :referrers),
+        where: r.project_id == ^project.id,
+        select: %{referer: r.anchor, fmodel_anchor: f.anchor}
+
+    referrers = Repo.all(refers_query)
+
+    Enum.group_by(referrers, fn r -> r.fmodel_anchor end, fn r ->
+      r.referer
     end)
   end
 

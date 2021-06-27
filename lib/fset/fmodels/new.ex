@@ -1,17 +1,17 @@
 defmodule Fset.Fmodels.New do
   use Fset.Fmodels.Vocab
 
-  def record(fields \\ []), do: %{@f_type => @f_record, "fields" => fields}
-  def list(sch), do: %{@f_type => @f_list, "sch" => sch}
-  def e_record(schs), do: %{@f_type => @f_e_record, "schs" => schs}
-  def tuple(schs), do: %{@f_type => @f_tuple, "schs" => schs}
-  def dict(schs), do: %{@f_type => @f_dict, "schs" => schs}
-  def union(schs), do: %{@f_type => @f_union, "schs" => schs}
+  def record(fields \\ []), do: %{@f_type => @f_record, @f_fields => fields}
+  def list(sch), do: %{@f_type => @f_list, @f_sch => sch}
+  def e_record(schs), do: %{@f_type => @f_e_record, @f_schs => schs}
+  def tuple(schs), do: %{@f_type => @f_tuple, @f_schs => schs}
+  def dict(schs), do: %{@f_type => @f_dict, @f_schs => schs}
+  def union(schs), do: %{@f_type => @f_union, @f_schs => schs}
 
   def tagged_union(fields) do
     %{}
     |> Map.put(@f_type, @f_tagged_union)
-    |> Map.put("fields", fields)
+    |> Map.put(@f_fields, fields)
     |> Map.put("keyPrefix", "tag")
     |> Map.put("tagname", "tagname")
     |> Map.put("allowedSchs", [record()])

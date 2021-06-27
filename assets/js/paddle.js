@@ -47,7 +47,6 @@ customElements.define("paddle-checkout", class extends HTMLElement {
         </li>
       `
     }
-    console.log(e)
     switch (e.event) {
       case "Checkout.Complete":
         this.querySelector("[id='purchased']").classList.remove("hidden")

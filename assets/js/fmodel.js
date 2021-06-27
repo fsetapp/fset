@@ -32,6 +32,7 @@ export const start = ({ channel }) => {
       channel.off("each_batch")
       channel.off("each_batch_finished")
       channel.off("sch_metas_map")
+      channel.off("referrers_map")
       channel.off("persisted_diff_result")
     }
     handleRemoteConnected(e) {
@@ -61,6 +62,11 @@ export const start = ({ channel }) => {
       })
       channel.on("sch_metas_map", ({ schMetas, phase }) => {
         Project.mergeSchMetas(this._projectStore, schMetas)
+        if (phase == "initial")
+          Project.changeFile(this._projectStore, project.currentFileKey, decodeURIComponent(location.hash.replace("#", "")))
+      })
+      channel.on("referrers_map", ({ referrers, phase }) => {
+        Project.mergeReferrers(this._projectStore, referrers)
         if (phase == "initial")
           Project.changeFile(this._projectStore, project.currentFileKey, decodeURIComponent(location.hash.replace("#", "")))
       })

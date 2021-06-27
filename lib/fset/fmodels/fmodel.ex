@@ -9,5 +9,6 @@ defmodule Fset.Fmodels.Fmodel do
     field :is_entry, :boolean
 
     belongs_to :file, Fset.Fmodels.File
+    has_many :referrers, Fset.Fmodels.Referrer
   end
 end

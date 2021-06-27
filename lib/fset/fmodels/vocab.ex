@@ -6,6 +6,7 @@ defmodule Fset.Fmodels.Vocab do
       @f_anchor "$a"
       @f_ref "$r"
       @f_const "v"
+      @f_key "key"
       #
       @f_fields "fields"
       @f_schs "schs"

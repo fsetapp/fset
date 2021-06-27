@@ -10,6 +10,7 @@ defmodule Fset.Projects do
   defdelegate to_project_sch(project, params \\ %{}), to: Fset.Fmodels
   defdelegate prune_sch_metas(project_sch, project_id), to: Fset.Fmodels
   defdelegate sch_metas_map(project), to: Fset.Fmodels
+  defdelegate referrers_map(project), to: Fset.Fmodels
 
   defdelegate change_info(project, attrs \\ %{}), to: Fset.Projects.Project
   defdelegate apply_info(project, attrs \\ %{}), to: Fset.Projects.Project
@@ -93,11 +94,19 @@ defmodule Fset.Projects do
     # Repo.get_by!(Fset.Projects.Project, key: projectname)
     project_files = from f in Fset.Fmodels.File, where: f.project_id == ^project.id
     project_sch_metas = from m in Fset.Fmodels.SchMeta, where: m.project_id == ^project.id
+    project_referreres = from r in Fset.Fmodels.Referrer, where: r.project_id == ^project.id
 
-    multi = Ecto.Multi.delete_all(Ecto.Multi.new(), :replace_files, project_files)
+    multi = Ecto.Multi.new()
+    multi = Ecto.Multi.delete_all(multi, :replace_referrers, project_referreres)
+
+    multi =
+      Ecto.Multi.delete_all(multi, :replace_files, fn %{replace_referrers: {_n, _refrers}} ->
+        project_files
+      end)
+
     multi = Ecto.Multi.delete_all(multi, :replace_sch_metas, project_sch_metas)
 
-    schema = Map.put(schema, :key, project.key)
+    schema = Map.put(schema, "key", project.key)
     Fset.Fmodels.persist_diff(to_diff(schema, acc), build_ids(project), multi: multi)
   end
 
@@ -120,7 +129,13 @@ defmodule Fset.Projects do
 
   defp to_diff(schema, acc) do
     {files, project} = Map.pop!(schema, "fields")
-    diff = %{"changed" => %{"project" => project}, "added" => %{}, "removed" => %{}}
+
+    diff = %{
+      "changed" => %{"project" => project},
+      "added" => %{},
+      "removed" => %{},
+      "reorder" => %{}
+    }
 
     diff =
       put_in(
