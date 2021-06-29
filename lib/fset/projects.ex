@@ -8,7 +8,7 @@ defmodule Fset.Projects do
   defdelegate persist_metadata(sch, project), to: Fset.Fmodels
   defdelegate persist_diff(diff, project), to: Fset.Fmodels
   defdelegate to_project_sch(project, params \\ %{}), to: Fset.Fmodels
-  defdelegate prune_sch_metas(project_sch, project_id), to: Fset.Fmodels
+  defdelegate cleanup_project_sch(project_sch, project_id), to: Fset.Fmodels
   defdelegate sch_metas_map(project), to: Fset.Fmodels
   defdelegate referrers_map(project), to: Fset.Fmodels
 

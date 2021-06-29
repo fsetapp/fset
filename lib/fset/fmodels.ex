@@ -30,25 +30,44 @@ defmodule Fset.Fmodels do
         end).()
   end
 
-  def prune_sch_metas(project_id, project_sch) do
-    {_, sch_metas_anchors} =
-      Sch.walk(project_sch, [], fn a, _m, acc_ ->
-        {:cont, {a, [Map.get(a, @f_anchor) | acc_]}}
+  def cleanup_project_sch(project_id, project_sch) do
+    acc = %{anchors: [], referrers: []}
+
+    {_, acc} =
+      Sch.walk(project_sch, acc, fn a, _m, acc_ ->
+        acc_ =
+          if Map.get(a, @f_ref) do
+            %{acc_ | referrers: [Map.get(a, @f_anchor) | acc_.referrers]}
+          else
+            acc_
+          end
+
+        acc_ = %{acc_ | anchors: [Map.get(a, @f_anchor) | acc_.anchors]}
+
+        {:cont, {a, acc_}}
       end)
 
     delete_sch_meta_query =
       from m in SchMeta,
-        where: m.anchor not in ^sch_metas_anchors and m.project_id == ^project_id
+        where: m.anchor not in ^acc.anchors and m.project_id == ^project_id
+
+    delete_referrer_query =
+      from r in Referrer,
+        where: r.anchor not in ^acc.referrers and r.project_id == ^project_id
 
     Repo.delete_all(delete_sch_meta_query)
+    Repo.delete_all(delete_referrer_query)
   end
 
   def persist_diff(diff, %Project{id: _} = project, opts \\ []) do
+    diff = infer_moved_diff(diff)
+
     {multi, project} =
       {opts[:multi] || Ecto.Multi.new(), project}
       |> update_changed_diff(diff)
       |> delete_removed_diff(diff)
       |> insert_added_diff(diff)
+      |> update_moved_diff(diff)
       |> update_reorder_diff(diff)
 
     persisted_diff_result = persisted_diff_result(Repo.transaction(multi), project)
@@ -134,6 +153,8 @@ defmodule Fset.Fmodels do
       multi_upsert_referrers(multi2, :upsert_referrers, referrers, fmodel_anchor_to_id, project)
     end
 
+    IO.inspect(fmodels)
+
     multi =
       multi
       |> Ecto.Multi.update(:update_project, Ecto.Changeset.change(project, project_attrs))
@@ -202,45 +223,51 @@ defmodule Fset.Fmodels do
         |> Map.put(:updated_at, timestamp())
       end)
 
-    {anchors, orders, keys, file_ids} =
-      Enum.map(reorder[@fmodel_diff] || [], fn {_key, fmodel_sch} ->
-        {fmodel, _} = from_fmodel_sch(fmodel_sch, project.id)
-        fmodel
-      end)
-      |> put_required_file_id(project)
-      |> Enum.reduce({[], [], [], []}, fn fmodel, {anchor_acc, order_acc, key_acc, file_id_acc} ->
-        {:ok, uuid} = Ecto.UUID.dump(fmodel.anchor)
-        anchor_acc = [uuid | anchor_acc]
-        order_acc = [fmodel.order | order_acc]
-        key_acc = [fmodel.key | key_acc]
-        file_id_acc = [fmodel.file_id | file_id_acc]
-        {anchor_acc, order_acc, key_acc, file_id_acc}
-      end)
-
-    reorder_fmodels_query = ~s"""
-      UPDATE fmodels
-      SET "order" = tmp.order, key = tmp.key
-      FROM
-        (SELECT unnest($1::uuid[]) AS anchor,
-                unnest($2::integer[]) AS order,
-                unnest($3::varchar[]) AS key,
-                unnest($4::bigint[]) AS file_id
-        ) AS tmp
-      WHERE fmodels.anchor = tmp.anchor
-      RETURNING tmp.anchor, tmp.file_id, tmp.key, tmp.order
-    """
-
-    reorder_fmodels = fn repo, _ ->
-      {:ok, %{rows: rows, num_rows: n, columns: cols}} =
-        Ecto.Adapters.SQL.query(repo, reorder_fmodels_query, [anchors, orders, keys, file_ids])
-
-      {:ok, {n, Enum.map(rows, fn row -> Repo.load(Fmodel, {cols, row}) end)}}
-    end
-
     multi =
       multi
       |> multi_upsert_files(:reorder_files, files)
-      |> Ecto.Multi.run(:reorder_fmodels, reorder_fmodels)
+      |> multi_upsert_fmodels_attrs(:reorder_fmodels, reorder[@fmodel_diff], project)
+
+    {multi, project}
+  end
+
+  defp infer_moved_diff(%{"removed" => removed, "added" => added} = diff) do
+    removing = removed[@fmodel_diff] || %{}
+    adding = added[@fmodel_diff] || %{}
+
+    accu = %{adding_acc: adding, deleting_acc: removing, moving_acc: %{}}
+
+    accu =
+      for {a_key, a} <- adding, {d_key, d} <- removing, reduce: accu do
+        acc ->
+          a_anchor = Map.get(a, @f_anchor)
+          d_anchor = Map.get(d, @f_anchor)
+
+          if a_anchor == d_anchor do
+            a = Map.put(a, "old", d)
+
+            acc = %{acc | adding_acc: Map.delete(acc.adding_acc, a_key)}
+            acc = %{acc | deleting_acc: Map.delete(acc.deleting_acc, d_key)}
+            _acc = %{acc | moving_acc: Map.put(acc.moving_acc, a_anchor, a)}
+          else
+            acc
+          end
+      end
+
+    diff = put_in(diff, ["removed", @fmodel_diff], accu.deleting_acc)
+    diff = put_in(diff, ["added", @fmodel_diff], accu.adding_acc)
+    _diff = put_in(diff, [Access.key("moved", %{}), @fmodel_diff], accu.moving_acc)
+  end
+
+  defp update_moved_diff({multi, project}, %{"moved" => moved}) do
+    moving_fmodels = moved[@fmodel_diff]
+
+    multi =
+      multi_upsert_fmodels_attrs(multi, :move_fmodels, moving_fmodels, project, [
+        :order,
+        :key,
+        :file_id
+      ])
 
     {multi, project}
   end
@@ -296,12 +323,58 @@ defmodule Fset.Fmodels do
     end)
   end
 
+  defp multi_upsert_fmodels_attrs(multi, key, fmodels, project, cols \\ [:order, :key]) do
+    {anchors, orders, keys, file_ids} =
+      Enum.map(fmodels || [], fn {_key, fmodel_sch} ->
+        {fmodel, _} = from_fmodel_sch(fmodel_sch, project.id)
+        fmodel
+      end)
+      |> put_required_file_id(project)
+      |> Enum.reduce({[], [], [], []}, fn fmodel, {anchor_acc, order_acc, key_acc, file_id_acc} ->
+        {:ok, uuid} = Ecto.UUID.dump(fmodel.anchor)
+        anchor_acc = [uuid | anchor_acc]
+        order_acc = [fmodel.order | order_acc]
+        key_acc = [fmodel.key | key_acc]
+        file_id_acc = [fmodel.file_id | file_id_acc]
+        {anchor_acc, order_acc, key_acc, file_id_acc}
+      end)
+
+    replace =
+      cols
+      |> Enum.map(fn col -> "\"#{col}\" = tmp.#{col}" end)
+      |> Enum.intersperse(", ")
+
+    fmodels_attrs_query = ~s"""
+      UPDATE fmodels
+      SET #{replace}
+      FROM
+        (SELECT unnest($1::uuid[]) AS anchor,
+                unnest($2::integer[]) AS order,
+                unnest($3::varchar[]) AS key,
+                unnest($4::bigint[]) AS file_id
+        ) AS tmp
+      WHERE fmodels.anchor = tmp.anchor
+      RETURNING tmp.anchor, tmp.file_id, tmp.key, tmp.order
+    """
+
+    update_fmodels_attrs = fn repo, _ ->
+      {:ok, %{rows: rows, num_rows: n, columns: cols}} =
+        Ecto.Adapters.SQL.query(repo, fmodels_attrs_query, [anchors, orders, keys, file_ids])
+
+      {:ok, {n, Enum.map(rows, fn row -> Repo.load(Fmodel, {cols, row}) end)}}
+    end
+
+    Ecto.Multi.run(multi, key, update_fmodels_attrs)
+  end
+
   def persisted_diff_result({:ok, persisted_diff}, project) do
     to_fmodel_sch_with_file_id = fn fmodels ->
       Enum.map(fmodels || [], fn fmodel ->
         Map.put(to_fmodel_sch(fmodel), :file_id, fmodel.file_id)
       end)
     end
+
+    {_, moved_fmodels} = persisted_diff.move_fmodels
 
     {_, fmodels} = persisted_diff.insert_fmodels
     {_, files} = persisted_diff.insert_files

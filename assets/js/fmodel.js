@@ -43,7 +43,7 @@ export const start = ({ channel }) => {
       channel.on("persisted_diff_result", (saved_diffs) => {
         Diff.mergeToCurrent(projectStore, saved_diffs)
         Diff.mergeToBase(projectBaseStore, saved_diffs)
-        this.diffRender()
+        this.diffRender({ anchorsModelsUpdate: true })
         buffer(this.pushChanged.bind(this), 100)()
       })
       channel.on("each_batch", ({ batch }) => {
@@ -104,9 +104,11 @@ export const start = ({ channel }) => {
     runDiff() {
       return Diff.diff(projectStore, projectBaseStore)
     }
-    diffRender() {
+    diffRender(opts = {}) {
       Object.defineProperty(this._projectStore, "_diffToRemote", { value: this.runDiff(), writable: true })
       let fileStore = Project.getFileStore(this._projectStore, this.currentFileKey || project.currentFileKey)
+      if (opts.anchorsModelsUpdate)
+        fileStore._models = Project.anchorsModels(this._projectStore)
       fileStore?.render()
       this._projectStore.render()
     }
