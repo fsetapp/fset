@@ -1,3 +1,20 @@
+/* https://developer.mozilla.org/en-US/docs/Web/CSS/:autofill */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 50px var(--gray-meta) inset !important;
+  border: 1px solid var(--gray-meta) !important;
+}
+input:autofill {
+  -webkit-box-shadow: 0 0 0 50px var(--gray-meta) inset !important;
+  border: 1px solid var(--gray-meta) !important;
+}
+input:-webkit-autofill {
+  -webkit-text-fill-color: var(--gray-300) !important;
+}
+/* Fix Chrome messing with our business */
+
 .fbox {
   display: flex;
   flex-wrap: wrap;
