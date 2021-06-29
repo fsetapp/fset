@@ -354,14 +354,24 @@ defmodule Fset.Fmodels do
                 unnest($4::bigint[]) AS file_id
         ) AS tmp
       WHERE fmodels.anchor = tmp.anchor
-      RETURNING tmp.anchor, tmp.file_id, tmp.key, tmp.order
+      RETURNING tmp.anchor, tmp.file_id, tmp.key, tmp.order, (select file_id from fmodels where anchor = tmp.anchor) as old_file_id, (select sch from fmodels where anchor = tmp.anchor) as sch
     """
 
     update_fmodels_attrs = fn repo, _ ->
       {:ok, %{rows: rows, num_rows: n, columns: cols}} =
         Ecto.Adapters.SQL.query(repo, fmodels_attrs_query, [anchors, orders, keys, file_ids])
 
-      {:ok, {n, Enum.map(rows, fn row -> Repo.load(Fmodel, {cols, row}) end)}}
+      cols = Enum.map(cols, &String.to_existing_atom/1)
+
+      loaded_fmodels =
+        Enum.map(rows, fn row ->
+          fmodel = struct(Fmodel, Enum.zip(cols, row))
+          {:ok, uuid} = Ecto.UUID.load(fmodel.anchor)
+          {:ok, sch} = Ecto.Term.load(fmodel.sch)
+          %{fmodel | anchor: uuid, sch: sch}
+        end)
+
+      {:ok, {n, loaded_fmodels}}
     end
 
     Ecto.Multi.run(multi, key, update_fmodels_attrs)
@@ -379,6 +389,8 @@ defmodule Fset.Fmodels do
     {_, fmodels} = persisted_diff.insert_fmodels
     {_, files} = persisted_diff.insert_files
 
+    fmodels = moved_fmodels ++ fmodels
+
     project = collect_file_ids(files || [], project)
 
     added = %{
@@ -391,6 +403,9 @@ defmodule Fset.Fmodels do
 
     {_, fmodels} = persisted_diff.delete_fmodels
     {_, files} = persisted_diff.delete_files
+
+    fmodels =
+      Enum.map(moved_fmodels, fn fmodel -> %{fmodel | file_id: fmodel.old_file_id} end) ++ fmodels
 
     removed = %{
       "fmodels" => put_file_anchor(to_fmodel_sch_with_file_id.(fmodels), project),
