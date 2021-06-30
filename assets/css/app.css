@@ -1,5 +1,6 @@
 @import "./tailwind.css";
 @import "./theme-vars.css";
+@import "./_normalize.css";
 
 @import "./tree.css";
 @import "./tab.css";
@@ -15,32 +16,6 @@
   background-color: var(--gray-meta);
 }
 
-details > summary { display: flex; }
-details > summary::marker,
-details > summary::-webkit-details-marker {
-  display: none;
-}
-details-menu { min-width: 22ch; z-index: 1;}
-
-[hidden] {
-  display: none !important;
-}
-sch-meta > form {
-  @apply text-xs;
-}
-
-.root-item {
-  margin: 0;
-}
-.root-item > [role='group'] {
-  margin-bottom: .5rem;
-}
-
-/* actions */
-[data-tree-action]:focus {
-  @apply outline-none ring-1 ring-gray-700
-}
-
 .bg-grid {
   background-image:
     linear-gradient(var(--grid-color) 2px, transparent 2px),
@@ -49,4 +24,14 @@ sch-meta > form {
     linear-gradient(90deg, var(--subgrid-color), 1px, transparent 1px);
   background-size: 200px 200px, 200px 200px, 20px 20px, 20px 20px;
   background-position: -2px -2px, -2px -2px, -1px -1px, -1px -1px;
+}
+
+details-menu { min-width: 22ch; z-index: 1;}
+sch-meta > form {
+  @apply text-xs;
+}
+
+/* actions */
+[data-tree-action]:focus {
+  @apply outline-none ring-1 ring-gray-700
 }
