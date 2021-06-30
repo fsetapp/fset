@@ -62,13 +62,11 @@ export const start = ({ channel }) => {
       })
       channel.on("sch_metas_map", ({ schMetas, phase }) => {
         Project.mergeSchMetas(this._projectStore, schMetas)
-        if (phase == "initial")
-          Project.changeFile(this._projectStore, project.currentFileKey, decodeURIComponent(location.hash.replace("#", "")))
+        this.rerenderCurrentFile()
       })
       channel.on("referrers_map", ({ referrers, phase }) => {
         Project.mergeReferrers(this._projectStore, referrers)
-        if (phase == "initial")
-          Project.changeFile(this._projectStore, project.currentFileKey, decodeURIComponent(location.hash.replace("#", "")))
+        this.rerenderCurrentFile()
       })
     }
     handleTreeCommand(e) {
@@ -93,6 +91,7 @@ export const start = ({ channel }) => {
       Project.taggedDiff(projectStore, (diff) => {
         channel.push("push_project", diff, 30_000)
           .receive("ok", (saved_diffs) => {
+            console.log(saved_diffs)
             Diff.mergeToBase(projectBaseStore, saved_diffs)
             this.diffRender()
           })
@@ -106,11 +105,17 @@ export const start = ({ channel }) => {
     }
     diffRender(opts = {}) {
       Object.defineProperty(this._projectStore, "_diffToRemote", { value: this.runDiff(), writable: true })
-      let fileStore = Project.getFileStore(this._projectStore, this.currentFileKey || project.currentFileKey)
-      if (opts.anchorsModelsUpdate)
-        fileStore._models = Project.anchorsModels(this._projectStore)
-      fileStore?.render()
+      this.rerenderCurrentFile(fileStore => {
+        if (opts.anchorsModelsUpdate)
+          fileStore._models = Project.anchorsModels(this._projectStore)
+      })
       this._projectStore.render()
+    }
+    rerenderCurrentFile(f) {
+      f ||= a => a
+      let fileStore = Project.getFileStore(this._projectStore, this.currentFileKey || project.currentFileKey)
+      f(fileStore)
+      fileStore?.render()
     }
     handleSchUpdate(e) {
       let { detail, target } = e

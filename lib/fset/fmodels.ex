@@ -153,8 +153,6 @@ defmodule Fset.Fmodels do
       multi_upsert_referrers(multi2, :upsert_referrers, referrers, fmodel_anchor_to_id, project)
     end
 
-    IO.inspect(fmodels)
-
     multi =
       multi
       |> Ecto.Multi.update(:update_project, Ecto.Changeset.change(project, project_attrs))
