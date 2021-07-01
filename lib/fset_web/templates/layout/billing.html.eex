@@ -13,9 +13,6 @@
     <link rel="stylesheet" href="<%= Routes.static_path(@conn, "/css/app.css") %>"/>
     <script src="https://cdn.paddle.com/paddle/paddle.js"></script>
     <script defer type="module" src="<%= Routes.static_path(@conn, "/js/paddle.js") %>"></script>
-    <%= if Application.get_env(:fset, :environment) == :dev do %>
-      <script src="https://unpkg.com/tailwindcss-jit-cdn"></script>
-    <% end %>
   </head>
   <body class="text-gray-300 bg-matte-black">
     <main role="main" class="min-h-screen">

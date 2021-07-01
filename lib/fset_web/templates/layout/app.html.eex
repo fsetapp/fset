@@ -11,9 +11,6 @@
     <%= csrf_meta_tag() %>
     <%= title(assigns) %>
     <link rel="stylesheet" href="<%= Routes.static_path(@conn, "/css/app.css") %>"/>
-    <%= if Application.get_env(:fset, :environment) == :dev do %>
-      <script src="https://unpkg.com/tailwindcss-jit-cdn"></script>
-    <% end %>
     <script>
       <%= if assigns[:project] do %>
         window.projectName = "<%= Phoenix.Token.sign(@conn, "project name", @project.key) %>";
