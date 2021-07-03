@@ -9,6 +9,7 @@
   --item-selected-header-bg-color: var(--gray-700);
 
   --key-color: var(--gray-300);
+  --key-pattern-font: var(--font-mono);
   --type-color: var(--pink-400);
   --ref-color: var(--indigo-400);
 

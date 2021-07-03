@@ -489,6 +489,9 @@ defmodule Fset.Fmodels do
     end)
   end
 
+  defp reduce_fmodel(%{@f_ref => r, @f_anchor => r}, _opts),
+    do: :error
+
   defp reduce_fmodel(fmodel_sch, opts) do
     {_sch, _acc} =
       Sch.walk(fmodel_sch, %{sch_metas: [], referrers: %{}}, fn a, _m, acc ->
@@ -661,12 +664,12 @@ defmodule Fset.Fmodels do
       from f in Fmodel,
         join: r in assoc(f, :referrers),
         where: r.project_id == ^project.id,
-        select: %{referer: r.anchor, fmodel_anchor: f.anchor}
+        select: %{referrer: r.anchor, fmodel_anchor: f.anchor}
 
     referrers = Repo.all(refers_query)
 
     Enum.group_by(referrers, fn r -> r.fmodel_anchor end, fn r ->
-      r.referer
+      r.referrer
     end)
   end
 

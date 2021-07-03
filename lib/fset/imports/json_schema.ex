@@ -158,20 +158,31 @@ defmodule Fset.Imports.JSONSchema do
   end
 
   defp put_children_info(a, _defs) do
-    case a do
-      %{@type_ => @object, @properties => props} ->
-        required = Map.get(a, @required, [])
+    props = Map.get(a, @properties)
+    pattern_props = Map.get(a, @pattern_properties)
 
-        props =
-          Map.new(props, fn {key, sch} ->
-            {key, update_metadata(sch, fn -> map_put(%{}, "required", key in required) end)}
-          end)
+    a = if props, do: collect_required_props(a, props), else: a
+    _a = if pattern_props, do: collect_pattern_props(a, pattern_props), else: a
+  end
 
-        Map.put(a, @properties, props)
+  defp collect_required_props(a, props) do
+    required = Map.get(a, @required, [])
 
-      _ ->
-        a
-    end
+    props =
+      Map.new(props, fn {key, sch} ->
+        {key, update_metadata(sch, fn -> map_put(%{}, "required", key in required) end)}
+      end)
+
+    Map.put(a, @properties, props)
+  end
+
+  defp collect_pattern_props(a, props) do
+    props =
+      Map.new(props, fn {key, sch} ->
+        {key, update_metadata(sch, fn -> map_put(%{}, "isKeyPattern", true) end)}
+      end)
+
+    Map.put(a, @pattern_properties, props)
   end
 
   defp new_possible_type(a, defs) do
@@ -202,7 +213,6 @@ defmodule Fset.Imports.JSONSchema do
     ordered_props =
       a
       |> Map.get(@pattern_properties, %{})
-      |> Map.new(fn {p_key, sch} -> {p_key, Map.put(sch, "isKeyPattern", true)} end)
       |> Map.merge(Map.get(a, @properties, %{}))
       |> Enum.sort_by(fn {key, sch} -> Map.get(sch, "order", key) end)
       |> Enum.map(fn {key, sch} -> Map.put(sch, "key", key) end)
@@ -274,15 +284,16 @@ defmodule Fset.Imports.JSONSchema do
   end
 
   defp new_tagged_union(a, _defs) do
-    fields =
-      a
-      |> Map.get(@one_of, [T.record()])
-      |> Enum.with_index()
-      |> Enum.map(fn {a, i} ->
-        a = Map.put(a, "key", "tag_#{i}")
-        T.put_anchor(a)
-      end)
+    fields = Map.get(a, @one_of, [T.record()])
 
+    fields
+    |> Enum.with_index()
+    |> Enum.map(fn {a, i} ->
+      a = Map.put(a, "key", "tag_#{i}")
+      T.put_anchor(a)
+    end)
+
+    # all_record = Enum.all?(tagged_things, fn thing -> Map.get(thing, @type_) == @object end)
     T.tagged_union(fields)
   end
 
@@ -310,8 +321,8 @@ defmodule Fset.Imports.JSONSchema do
     T.int32()
     |> put_metadata(fn ->
       %{}
-      |> map_put("min", max(Map.get(a, @minimum), -2_147_483_647))
-      |> map_put("max", min(Map.get(a, @maximum), 2_147_483_648))
+      |> map_put("min", Map.get(a, @minimum))
+      |> map_put("max", Map.get(a, @maximum))
       |> map_put("multipleOf", Map.get(a, @multiple_of))
     end)
   end

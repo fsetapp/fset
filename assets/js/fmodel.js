@@ -62,11 +62,11 @@ export const start = ({ channel }) => {
       })
       channel.on("sch_metas_map", ({ schMetas, phase }) => {
         Project.mergeSchMetas(this._projectStore, schMetas)
-        this.rerenderCurrentFile()
+        this.rerenderCurrentFile(null, phase)
       })
       channel.on("referrers_map", ({ referrers, phase }) => {
         Project.mergeReferrers(this._projectStore, referrers)
-        this.rerenderCurrentFile()
+        this.rerenderCurrentFile(null, phase)
       })
     }
     handleTreeCommand(e) {
@@ -111,11 +111,13 @@ export const start = ({ channel }) => {
       })
       this._projectStore.render()
     }
-    rerenderCurrentFile(f) {
+    rerenderCurrentFile(f, phase) {
       f ||= a => a
+
       let fileStore = Project.getFileStore(this._projectStore, this.currentFileKey || project.currentFileKey)
       f(fileStore)
       fileStore?.render()
+      fileStore?.renderSchMeta()
     }
     handleSchUpdate(e) {
       let { detail, target } = e
