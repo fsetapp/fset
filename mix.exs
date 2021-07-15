@@ -5,7 +5,7 @@ defmodule Fset.MixProject do
     [
       app: :fset,
       version: "0.1.0",
-      elixir: "~> 1.7",
+      elixir: "~> 1.11",
       elixirc_paths: elixirc_paths(Mix.env()),
       compilers: [:phoenix, :gettext] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
@@ -50,7 +50,8 @@ defmodule Fset.MixProject do
       {:finch, "~> 0.6"},
       {:timex, "~> 3.0"},
       {:benchee, "~> 1.0", only: :dev},
-      {:php_serializer, "~> 2.0"}
+      {:php_serializer, "~> 2.0"},
+      {:earmark, "~> 1.4"}
     ]
   end
 

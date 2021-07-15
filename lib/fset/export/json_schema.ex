@@ -5,9 +5,9 @@ defmodule Fset.Exports.JSONSchema do
 
   def json_schema(export_type, project_sch, opts \\ []) do
     sch_metas = Keyword.fetch!(opts, :sch_metas)
-    defs_index = defs_index(project_sch)
+    defs_index = defs_index(project_sch, opts)
 
-    get_meta = fn a -> Map.get(sch_metas, Map.fetch!(a, @f_anchor)) end
+    get_meta = fn a -> Map.get(sch_metas, Map.fetch!(a, @f_anchor), %{}) end
 
     pre_visit = fn
       %{@f_type => @f_record} = a, _, c ->
@@ -31,14 +31,10 @@ defmodule Fset.Exports.JSONSchema do
           |> Map.put(@properties, fields)
           |> map_put(@required, Map.get(a, @required))
 
-        # optional
         sch =
-          if sch_meta do
-            sch = map_put(sch, @min_properties, Map.get(sch_meta, "min"))
-            _sch = map_put(sch, @max_properties, Map.get(sch_meta, "max"))
-          else
-            sch
-          end
+          if Map.get(sch_meta, "strict"),
+            do: Map.put(sch, @unevaluated_properties, !Map.get(sch_meta, "strict")),
+            else: sch
 
         {sch, acc}
 
@@ -49,46 +45,36 @@ defmodule Fset.Exports.JSONSchema do
           %{}
           |> Map.put(@type_, @array)
           |> Map.put(@items, Map.fetch!(a, @f_sch))
-
-        # optional
-        sch =
-          if sch_meta do
-            sch = map_put(sch, @min_items, Map.get(sch_meta, "min", 1))
-            _sch = map_put(sch, @max_items, Map.get(sch_meta, "max"))
-          else
-            sch
-          end
+          |> map_put(@min_items, Map.get(sch_meta, "min"))
+          |> map_put(@max_items, Map.get(sch_meta, "max"))
 
         {sch, acc}
 
       %{@f_type => @f_tuple} = a, _m, acc ->
-        sch_meta = get_meta.(a)
         items = Map.fetch!(a, @f_schs)
 
         sch =
           %{}
           |> Map.put(@type_, @array)
           |> Map.put(@prefix_items, items)
-
-        # optional
-        sch =
-          if sch_meta do
-            sch = map_put(sch, @min_items, Map.get(sch_meta, "min", Enum.count(items)))
-            _sch = map_put(sch, @max_items, Map.get(sch_meta, "max"))
-          else
-            sch
-          end
+          |> Map.put(@unevaluated_items, false)
 
         {sch, acc}
 
       %{@f_type => @f_union} = a, _m, acc ->
+        sch_metas = get_meta.(a)
+
         schs = Map.fetch!(a, @f_schs)
-        all_string = Enum.all?(schs, fn u -> Map.get(u, @type_) == @string end)
+        all_scalar = Enum.all?(schs, fn u -> Map.has_key?(u, @const) end)
+        as_union = Map.get(sch_metas, "asUnion")
 
         sch =
           cond do
-            all_string -> Map.put(%{}, @enum, Enum.map(schs, fn e -> Map.get(e, @const) end))
-            true -> Map.put(%{}, @any_of, schs)
+            all_scalar && !as_union ->
+              Map.put(%{}, @enum, Enum.map(schs, fn e -> Map.get(e, @const) end))
+
+            true ->
+              Map.put(%{}, @any_of, schs)
           end
 
         {sch, acc}
@@ -99,44 +85,62 @@ defmodule Fset.Exports.JSONSchema do
         sch =
           %{}
           |> Map.put(@type_, @string)
-
-        # optional
-        sch =
-          if sch_meta do
-            sch = map_put(sch, @min_length, Map.get(sch_meta, "min"))
-            sch = map_put(sch, @max_length, Map.get(sch_meta, "max"))
-            _sch = map_put(sch, @pattern, Map.get(sch_meta, "pattern"))
-          else
-            sch
-          end
+          |> map_put(@min_length, Map.get(sch_meta, "min"))
+          |> map_put(@max_length, Map.get(sch_meta, "max"))
+          |> map_put(@pattern, Map.get(sch_meta, "pattern"))
+          |> map_put(@default, Map.get(sch_meta, "default"))
 
         {sch, acc}
 
-      %{@f_type => num} = a, _m, acc when num in @f_number ->
+      %{@f_type => num} = a, _m, acc when num in @f__number ->
         sch_meta = get_meta.(a)
+        uint = fn degree -> Integer.pow(2, degree) end
+        int = fn degree -> div(uint.(degree), 2) end
 
-        num_type = if num in @f_integer, do: @integer, else: @number
+        {num_type, range} =
+          case num do
+            @f_int8 -> {@integer, %{min: -int.(8), max: int.(8) - 1}}
+            @f_int16 -> {@integer, %{min: -int.(16), max: int.(16) - 1}}
+            @f_int32 -> {@integer, %{min: -int.(32), max: int.(32) - 1}}
+            @f_uint8 -> {@integer, %{min: 0, max: uint.(8) - 1}}
+            @f_uint16 -> {@integer, %{min: 0, max: uint.(16) - 1}}
+            @f_uint32 -> {@integer, %{min: 0, max: uint.(32) - 1}}
+            @f_integer -> {@integer, %{min: nil, max: nil}}
+            _ -> {@number, %{min: nil, max: nil}}
+          end
+
+        min = range.min || Map.get(sch_meta, "min")
+        max = range.max || Map.get(sch_meta, "max")
+        default = Map.get(sch_meta, "default")
+
+        bound = fn
+          num, nil, nil -> num
+          num, min, nil -> max(num, min)
+          num, nil, max -> min(num, max)
+          num, min, max -> min(max(num, min), max)
+        end
 
         sch =
           %{}
           |> Map.put(@type_, num_type)
-
-        # optional
-        sch =
-          if sch_meta do
-            sch = map_put(sch, @minimum, Map.get(sch_meta, "min"))
-            sch = map_put(sch, @maximum, Map.get(sch_meta, "max"))
-            _sch = map_put(sch, @multiple_of, Map.get(sch_meta, "multipleOf"))
-          else
-            sch
-          end
+          |> map_put(@minimum, min)
+          |> map_put(@maximum, max)
+          |> map_put(@multiple_of, Map.get(sch_meta, "multipleOf"))
+          |> map_put(@default, default && bound.(default, min, max))
 
         {sch, acc}
 
-      %{@f_type => @f_boolean} = _a, _m, acc ->
+      %{@f_type => @f_boolean} = a, _m, acc ->
+        sch_meta = get_meta.(a)
+
+        sch = Map.put(%{}, @type_, @boolean)
+
         sch =
-          %{}
-          |> Map.put(@type_, @boolean)
+          case Map.get(sch_meta, "default") do
+            "f" -> Map.put(sch, @default, false)
+            "t" -> Map.put(sch, @default, true)
+            _ -> sch
+          end
 
         {sch, acc}
 
@@ -158,6 +162,8 @@ defmodule Fset.Exports.JSONSchema do
         %{path: file_dot_fmodel} = Map.get(defs_index, fmodel_anchor, %{path: fmodel_anchor})
         acc = Map.update(acc, :visit_defs, [], fn v -> [fmodel_anchor | v] end)
 
+        if !file_dot_fmodel, do: IO.inspect(a)
+
         ref =
           case export_type do
             :one_way -> "#/$defs/" <> file_dot_fmodel
@@ -178,12 +184,25 @@ defmodule Fset.Exports.JSONSchema do
         {sch, acc}
 
       %{@f_type => @f_dict} = a, _m, acc ->
-        [_dict_k, dict_v] = Map.fetch!(a, @f_schs)
+        sch_metas = get_meta.(a)
+        [dict_k, dict_v] = Map.fetch!(a, @f_schs)
 
         sch =
           %{}
           |> Map.put(@type_, @object)
           |> Map.put(@additional_properties, dict_v)
+          |> map_put(@min_properties, Map.get(sch_metas, "min"))
+          |> map_put(@max_properties, Map.get(sch_metas, "max"))
+          |> map_put(@property_name, Map.get(sch_metas, "max"))
+
+        sch =
+          case dict_k do
+            %{@type_ => @string} ->
+              map_put(sch, @property_names, dict_k)
+
+            _ ->
+              sch
+          end
 
         {sch, acc}
 
@@ -192,14 +211,25 @@ defmodule Fset.Exports.JSONSchema do
 
         sch =
           record
-          |> Map.put(@ref, extend)
+          |> Map.put(@ref, Map.get(extend, @ref))
 
         {sch, acc}
 
       %{@f_type => @f_tagged_union} = a, _m, acc ->
         tagged_things = Map.fetch!(a, @f_fields)
+        sch_meta = get_meta.(a)
 
-        all_record = Enum.all?(tagged_things, fn thing -> Map.get(thing, @type_) == @object end)
+        all_record =
+          Enum.all?(tagged_things, fn
+            %{@type_ => @object} = thing ->
+              true
+
+            %{@ref => "#/$defs/" <> ref} ->
+              Enum.find_value(defs_index, fn
+                {_, %{@f_type => @f_record, path: ^ref} = t} -> t
+                t -> false
+              end)
+          end)
 
         sch =
           cond do
@@ -207,7 +237,12 @@ defmodule Fset.Exports.JSONSchema do
               tagged_things =
                 Enum.map(tagged_things, fn thing ->
                   {key, thing} = Map.pop!(thing, "key")
-                  _thing = put_in(thing, [@properties, Map.fetch!(a, "tagname")], key)
+
+                  put_in(
+                    thing,
+                    [Access.key(@properties, %{}), Map.fetch!(sch_meta, "tagname")],
+                    %{@const => key}
+                  )
                 end)
 
               Map.put(%{}, @one_of, tagged_things)
@@ -217,11 +252,12 @@ defmodule Fset.Exports.JSONSchema do
               Map.put(%{}, @one_of, unkeyed)
           end
 
+        sch = Map.put(sch, @unevaluated_properties, false)
         {sch, acc}
 
       a, _m, acc ->
-        IO.inspect(a, label: "Unrecognized type :: ")
-        {%{}, acc}
+        acc = Map.update(acc, :unknown, [a], fn unknown -> [a | unknown] end)
+        {%{discard: true}, acc}
     end
 
     post_visit = fn a, m, acc ->
@@ -235,8 +271,8 @@ defmodule Fset.Exports.JSONSchema do
             a_
 
           sch_meta ->
-            a_ = map_put(a_, @description, Map.get(sch_meta, :description))
-            a_ = map_put(a_, @title, Map.get(sch_meta, :title))
+            a_ = map_put(a_, @description, Map.get(sch_meta, "description"))
+            a_ = map_put(a_, @title, Map.get(sch_meta, "title"))
 
             case Map.get(sch_meta, "rw") do
               "r" -> Map.put(a_, @read_only, true)
@@ -262,9 +298,9 @@ defmodule Fset.Exports.JSONSchema do
     end
 
     {mapped_sch, walk_acc} = Sch.walk(project_sch, %{}, pre_visit, post_visit)
+    IO.inspect(walk_acc)
 
-    schema = finalize(mapped_sch, walk_acc, opts)
-    Jason.encode!(schema, [{:pretty, true} | opts[:json] || []])
+    _schema = finalize(mapped_sch, walk_acc, opts)
   end
 
   defp map_put_required(%{@f_fields => fields} = map, sch_metas) when is_list(fields) do
@@ -280,16 +316,18 @@ defmodule Fset.Exports.JSONSchema do
   defp map_put(map, _k, v) when v in ["", nil, [], false], do: map
   defp map_put(map, k, v), do: Map.put(map, k, v)
 
-  defp defs_index(project_sch) do
+  defp defs_index(project_sch, params) do
+    delimeter = Keyword.get(params, :delimeter, "::")
+
     {_, lookup} =
       Sch.walk(project_sch, %{}, fn
         %{@f_anchor => anchor} = a, %{"level" => 3, "path" => path}, acc ->
           path =
             path
             |> String.split(:binary.compile_pattern(["[", "][", "]"]), trim: true)
-            |> Enum.join(".")
+            |> Enum.join(delimeter)
 
-          acc = Map.put(acc, anchor, %{path: path})
+          acc = Map.put(acc, anchor, Map.put(a, :path, path))
           {:cont, {a, acc}}
 
         a, _, acc ->
@@ -302,13 +340,14 @@ defmodule Fset.Exports.JSONSchema do
   defp finalize(project_sch, walk_acc, opts) do
     _defs_anchors = Map.get(walk_acc, :visit_defs, [])
     _tree_shake = opts[:tree_shake]
+    delimeter = Keyword.get(opts, :delimeter, "::")
 
     defs =
       for {prefix, file} <- Map.fetch!(project_sch, @properties), reduce: %{} do
         acc ->
           for {fmodel_name, fmodel} <- Map.fetch!(file, @properties), reduce: acc do
             acc_ ->
-              Map.put(acc_, "#{prefix}::#{fmodel_name}", fmodel)
+              Map.put(acc_, "#{prefix}#{delimeter}#{fmodel_name}", fmodel)
           end
       end
 

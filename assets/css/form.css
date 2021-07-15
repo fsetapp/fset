@@ -20,6 +20,7 @@
 .fbox .box-label.readonly input[readonly] {
   color: var(--gray-500);
 }
+.fbox .l + .l-2 { padding: 0 .5rem; }
 .fbox .l,
 .fbox .err {
   margin: 0;

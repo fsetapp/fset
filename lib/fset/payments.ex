@@ -6,11 +6,19 @@ defmodule Fset.Payments do
   @provider Fset.Payments.Paddle
 
   def transactions(sub_id, provider \\ @provider) do
-    provider.transactions(sub_id)
-    |> Enum.sort_by(
-      fn a -> DateTime.from_iso8601(Map.get(a, "created_at")) end,
-      {:desc, DateTime}
-    )
+    case provider.transactions(sub_id) do
+      :error ->
+        []
+
+      tx ->
+        Enum.sort_by(
+          tx,
+          fn a ->
+            DateTime.from_iso8601(Map.get(a, "created_at"))
+          end,
+          {:desc, DateTime}
+        )
+    end
   end
 
   def next_payment_due(sub, provider \\ @provider) do

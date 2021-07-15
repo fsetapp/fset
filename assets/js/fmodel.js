@@ -153,8 +153,8 @@ export const start = ({ channel }) => {
       }
     }
     changeUrl() {
-      let file = document.querySelector("[id='project'] [role='tree']")?._walker.currentNode
-      let fmodel = document.querySelector("[id='fmodel'] [role='tree']")?._walker.currentNode
+      let file = document.querySelector("[id='project'] [role='tree']")?._walker?.currentNode
+      let fmodel = document.querySelector("[id='fmodel'] [role='tree']")?._walker?.currentNode
       if (!file || !fmodel) return
 
       let fileIsFile = file.getAttribute("data-tag") == "file"

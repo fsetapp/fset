@@ -174,7 +174,8 @@ defmodule Fset.Projects do
     opts = [{:schema_id, schema_id} | opts]
     opts = [{:sch_metas, sch_metas_map(project)} | opts]
 
-    Exports.json_schema(:one_way, Fset.Fmodels.to_project_sch(project), opts)
+    schema = Exports.json_schema(:one_way, Fset.Fmodels.to_project_sch(project), opts)
+    Jason.encode!(schema, [{:pretty, true} | opts[:json] || []])
   end
 
   def export_as_binary(_, _), do: ""

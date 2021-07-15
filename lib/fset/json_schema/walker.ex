@@ -84,7 +84,10 @@ defmodule Fset.JSONSchema.Walker do
       nextMeta = nextMeta(sch_acc, meta, "#{meta["path"]}[#{k}]", i)
       {sch_, acc_} = walk(sch_, acc_, f1, f0, nextMeta)
 
-      sch_acc = put_in(sch_acc, [Access.key(container, %{}), k], sch_)
+      sch_acc =
+        if sch_[:discard],
+          do: sch_acc,
+          else: put_in(sch_acc, [Access.key(container, %{}), k], sch_)
 
       if sch_[:halt], do: {:halt, {sch_acc, acc_}}, else: {:cont, {sch_acc, acc_}}
     end)
@@ -97,7 +100,11 @@ defmodule Fset.JSONSchema.Walker do
       nextMeta = nextMeta(sch, meta, "#{meta["path"]}[][#{i}]", i)
       {sch_, acc_} = walk(sch_, acc_, f1, f0, nextMeta)
 
-      sch_acc = put_in(sch_acc, [Access.key(container, []), Access.at!(i)], sch_)
+      sch_acc =
+        if sch_[:discard],
+          do: sch_acc,
+          else: put_in(sch_acc, [Access.key(container, []), Access.at!(i)], sch_)
+
       if sch_[:halt], do: {:halt, {sch_acc, acc_}}, else: {:cont, {sch_acc, acc_}}
     end)
   end

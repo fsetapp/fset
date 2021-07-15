@@ -1,4 +1,4 @@
-import { Project, tstr } from "./vendor/fbox.min.js"
+import { Project, tstr, legitTs } from "./vendor/fbox.min.js"
 import autoComplete from "@tarekraafat/autocomplete.js"
 
 const typeSearch = (selector, modelsGetter, opts = {}) => {
@@ -123,12 +123,8 @@ const dataList = (data, opts = {}) => {
     if (!opts.only)
       datalist.push(Object.assign({ anchor: anchors[i], fmodelname: fmodelname, }, fmodel))
     else
-      if (opts.only.find(sch => {
-        if (sch.to) return sch.to.t == fmodel.sch.t
-        else return sch.t == fmodel.sch.t
-      }))
+      if (legitTs(opts.only, fmodel))
         datalist.push(Object.assign({ anchor: anchors[i], fmodelname: fmodelname, }, fmodel))
-
   }
 
   return datalist

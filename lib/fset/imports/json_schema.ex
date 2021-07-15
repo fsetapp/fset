@@ -161,8 +161,8 @@ defmodule Fset.Imports.JSONSchema do
     props = Map.get(a, @properties)
     pattern_props = Map.get(a, @pattern_properties)
 
-    a = if props, do: collect_required_props(a, props), else: a
-    _a = if pattern_props, do: collect_pattern_props(a, pattern_props), else: a
+    _a = if props, do: collect_required_props(a, props), else: a
+    # _a = if pattern_props, do: collect_pattern_props(a, pattern_props), else: a
   end
 
   defp collect_required_props(a, props) do

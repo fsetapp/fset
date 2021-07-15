@@ -56,7 +56,7 @@
             <h3>Import JSON Schema</h3>
             <p class="mb-3 text-gray-400">
               Coverting your json schema into
-              <a href="/docs/import/json_schema" target="_blank" class="text-blue-400">fset schema</a>
+              <a href="/docs#json_schema_to_fmodel" target="_blank" class="text-blue-400">fset schema</a>
             </p>
             <%= form_for :import, Routes.import_path(@conn, :create, @current_user.username, @project.key), [multipart: true, class: "fbox"], fn f -> %>
               <%= label class: "box-label w-full" do %>
@@ -72,7 +72,7 @@
             <h3>Export to JSON Schema</h3>
             <p class="mb-3 text-gray-400">
               Coverting
-              <a href="/docs/export/json_schema" target="_blank" class="text-blue-400">fset schema</a>
+              <a href="/docs#fmodel_to_json_schema" target="_blank" class="text-blue-400">fset schema</a>
               into json schema
             </p>
             <br>
@@ -124,7 +124,7 @@
       </action-listener>
       <div id="fmodel" class="flex-grow overflow-hidden h-full"></div>
     </section>
-    <sch-meta id ="fsch" class="overflow-auto m-px flex-1 bg-gray-900 px-2 pb-2 focus:outline-none" tabindex="-1">
+    <sch-meta id ="fsch" class="overflow-auto m-px _flex-1 bg-gray-900 px-2 pb-2 focus:outline-none" tabindex="-1" style="flex: 1.5">
     </sch-meta>
   </div>
 </project-store>

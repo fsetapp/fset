@@ -35,12 +35,12 @@ defmodule Fset.Fmodels.Vocab do
       @f_tref 28
       @f_value 29
       @f_any 30
-      @f_timestamp 31
+      @f_integer 31
 
       # kind
-      @f_integer [@f_int8, @f_int16, @f_int32, @f_uint8, @f_uint16, @f_uint32]
-      @f_float [@f_float32, @f_float64]
-      @f_number @f_integer ++ @f_float
+      @f__integer [@f_integer, @f_int8, @f_int16, @f_int32, @f_uint8, @f_uint16, @f_uint32]
+      @f__float [@f_float32, @f_float64]
+      @f__number @f__integer ++ @f__float
     end
   end
 end

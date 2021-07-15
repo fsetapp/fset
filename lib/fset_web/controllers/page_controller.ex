@@ -2,6 +2,7 @@ defmodule FsetWeb.PageController do
   use FsetWeb, :controller
   alias Fset.Accounts
   alias Fset.Payments
+  alias Fset.DocsSample
 
   def index(conn, _params) do
     with %{current_user: %Accounts.User{} = user} <- conn.assigns do
@@ -17,6 +18,7 @@ defmodule FsetWeb.PageController do
   end
 
   def docs(conn, _params) do
-    render(conn, "docs.html")
+    conn = put_layout(conn, {FsetWeb.LayoutView, "docs.html"})
+    render(conn, "docs.html", docs: DocsSample.types())
   end
 end

@@ -16,7 +16,8 @@ defmodule Fset.JSONSchema.Vocab do
       @properties "properties"
       @pattern_properties "patternProperties"
       @additional_properties "additionalProperties"
-      @unevaluated_properties "@unevaluatedProperties"
+      @unevaluated_properties "unevaluatedProperties"
+      @property_names "propertyNames"
       #
       @max_properties "maxProperties"
       @min_properties "minProperties"
@@ -26,6 +27,7 @@ defmodule Fset.JSONSchema.Vocab do
       @array "array"
       @items "items"
       @prefix_items "prefixItems"
+      @unevaluated_items "unevaluatedItems"
       #
       @max_items "maxItems"
       @min_items "minItems"
@@ -60,6 +62,7 @@ defmodule Fset.JSONSchema.Vocab do
       @description "description"
       @read_only "readOnly"
       @write_only "writeOnly"
+      @default "default"
     end
   end
 end
