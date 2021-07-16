@@ -164,6 +164,19 @@
       </article>
 
       <article id="json_schema_to_fmodel" class="docsref my-8">
+        <h3 class="my-2 text-xl font-semibold text-pink-500">Import</h3>
+        <h4 class="my-2 text-lg">JSON Schema <a href="https://json-schema.org/specification-links.html#2020-12" target="_blank" class="text-blue-500">(draft 2020-12)</a> to FModel</h4>
+        <p>
+          Purpose of FModel Import is for "getting started" quickly from existing schema.
+          Imported schema is NOT going to be lossless. We expect `draft 2020-12`, but our chosen keywords are likely what you are already using; those stable ones.
+        </p>
+        <br>
+        <p>
+          Output from <%= link "FModel to JSON Schema", class: "px1", to: "#fmodel_to_json_schema" %> section is expected to be input.
+          If source schema file's `$defs` or `definitions` name has namespace, import will try to group by that namespace,
+          for example, "AWS_ACMPCA_Policy". "AWS_ACMPCA" is going to be module name, "Policy" is going to be one of module's fmodels.
+          By default, imported definitions are grouped by first character.
+        </p>
       </article>
     </section>
   </div>
