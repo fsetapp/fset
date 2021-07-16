@@ -63,6 +63,8 @@ defmodule Fset.JSONSchema.Vocab do
       @read_only "readOnly"
       @write_only "writeOnly"
       @default "default"
+      # Semantic content
+      @format "format"
     end
   end
 end

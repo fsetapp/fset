@@ -1,0 +1,7 @@
+#body a {
+  color: var(--blue-500);
+}
+/* nav a[data-current="true"] {
+  background-color: var(--yellow-500);
+  color: black;
+} */

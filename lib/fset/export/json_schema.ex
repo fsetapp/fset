@@ -89,6 +89,7 @@ defmodule Fset.Exports.JSONSchema do
           |> map_put(@max_length, Map.get(sch_meta, "max"))
           |> map_put(@pattern, Map.get(sch_meta, "pattern"))
           |> map_put(@default, Map.get(sch_meta, "default"))
+          |> map_put(@format, Map.get(sch_meta, "format"))
 
         {sch, acc}
 
@@ -127,6 +128,7 @@ defmodule Fset.Exports.JSONSchema do
           |> map_put(@maximum, max)
           |> map_put(@multiple_of, Map.get(sch_meta, "multipleOf"))
           |> map_put(@default, default && bound.(default, min, max))
+          |> map_put(@format, Map.get(sch_meta, "format"))
 
         {sch, acc}
 
