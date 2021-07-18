@@ -105,7 +105,7 @@ defmodule Fset.Fmodels do
           end)
 
         multi2 = Ecto.Multi.new()
-        multi_upsert_referrers(multi2, :upsert_referrers, referrers, fmodel_anchor_to_id, project)
+        multi_upsert_referrers(multi2, :insert_referrers, referrers, fmodel_anchor_to_id, project)
     end
 
     multi =
