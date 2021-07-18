@@ -112,6 +112,10 @@ sch-meta > .meta-def + p {
   color: var(--pink-400);
   margin: .5rem 0;
 }
+sch-meta .referrers { margin: 1rem 0 .5rem }
+sch-meta .referrers + ul {
+  @apply text-sm text-gray-400;
+}
 combo-box {
   width: 100%;
   position: relative;
