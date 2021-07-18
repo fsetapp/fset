@@ -17,6 +17,12 @@
       <%= text_input f, :description %>
       <%= error_tag f, :description, class: "err" %>
     <% end %>
+    <%= label class: "box-label m-px" do %>
+      <p class="l">Project Private</p>
+      <%= select f, :visibility, Ecto.Enum.values(Fset.Projects.Project, :visibility) %>
+
+      <%= error_tag f, :visibility, class: "err" %>
+    <% end %>
   </div>
 
   <div>

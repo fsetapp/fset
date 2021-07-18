@@ -18,10 +18,10 @@ defmodule Fset.Projects.User do
   for example listing project names.
   """
   def with_projects(%__MODULE__{} = user),
-    do: Repo.preload(user, projects: project_desc_inserted())
+    do: Repo.preload(user, projects: project_desc_updated())
 
   def with_projects(%{id: user_id}),
-    do: Repo.preload(%__MODULE__{id: user_id}, projects: project_desc_inserted())
+    do: Repo.preload(%__MODULE__{id: user_id}, projects: project_desc_updated())
 
   def with_projects(username) when is_binary(username) do
     case Repo.get_by(__MODULE__, username: username) do
@@ -32,5 +32,9 @@ defmodule Fset.Projects.User do
 
   defp project_desc_inserted() do
     from(c in Fset.Projects.Project, order_by: [desc: c.inserted_at])
+  end
+
+  defp project_desc_updated() do
+    from(c in Fset.Projects.Project, order_by: [desc: c.updated_at])
   end
 end

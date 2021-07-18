@@ -10,8 +10,7 @@ if (window.userToken || window.projectName) {
   socket.onClose(e => {
     if (socketNotOpened) {
       socket.reconnectTimer.reset()
-      history.pushState({}, "", "/status/404.html")
-      // window.location.replace()
+      window.location.replace("/status/404.html")
     }
   })
   socket.connect()

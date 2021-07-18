@@ -6,6 +6,7 @@ defmodule Fset.Projects.Project do
     field :anchor, Ecto.UUID, autogenerate: true
     field :key, :string
     field :description, :string
+    field :visibility, Ecto.Enum, values: [:private, :public]
 
     has_many :sch_metas, Fset.Fmodels.SchMeta
 
@@ -33,7 +34,7 @@ defmodule Fset.Projects.Project do
 
   defp info_changeset(project, attrs) do
     project
-    |> cast(attrs, [:key, :description])
+    |> cast(attrs, [:key, :description, :visibility])
     |> unique_constraint(:key)
   end
 end

@@ -12,12 +12,13 @@ defmodule FsetWeb.ProjectController do
   """
   def show(conn, %{"projectname" => p, "username" => u} = params) do
     with {:ok, project} <- Projects.get_head(p),
-         %{} = user <- find_project_user(project, u) do
+         is_project_member <- is_project_member(project, conn.assigns[:current_user]),
+         %{} = user <- find_project_user(project, u, is_project_member) do
       render(conn, "show.html",
         project: project,
         user: user,
         is_project_unclaimed: project.users == [],
-        is_project_member: is_project_member(project, conn.assigns[:current_user]),
+        is_project_member: is_project_member,
         signup_changeset: Accounts.change_user_registration(%Accounts.User{}),
         project_info_changeset: Projects.change_info(project),
         current_file_key: Map.get(params, "filename"),
@@ -61,10 +62,19 @@ defmodule FsetWeb.ProjectController do
     end
   end
 
-  defp find_project_user(project, username) do
+  defp find_project_user(project, username, is_project_member) do
     case project.users do
-      [] -> %{username: "public", email: nil}
-      _ -> Enum.find(project.users, &(String.downcase(&1.username) == String.downcase(username)))
+      [] ->
+        %{username: "public", email: nil}
+
+      _ ->
+        case {is_project_member, project} do
+          {false, %{visibility: :private}} ->
+            nil
+
+          _ ->
+            Enum.find(project.users, &(String.downcase(&1.username) == String.downcase(username)))
+        end
     end
   end
 
