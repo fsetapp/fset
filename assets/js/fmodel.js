@@ -54,7 +54,7 @@ export const start = ({ channel }) => {
         this.changeUrlSSR(project)
 
         ProjectTree({ store: projectStore, target: "[id='project']", select: decodeURIComponent(`[${project.currentFileKey}]`) })
-        Project.changeFile(projectStore, project.currentFileKey, decodeURIComponent(location.hash.replace("#", "")))
+        Project.changeFile({ projectStore, filename: project.currentFileKey, fmodelname: decodeURIComponent(location.hash.replace("#", "")) })
 
         projectBaseStore = JSON.parse(JSON.stringify(this._projectStore))
         Diff.buildBaseIndices(projectBaseStore)
@@ -138,7 +138,7 @@ export const start = ({ channel }) => {
       let filename = e.detail.value.file
       let fmodelname = e.detail.value.fmodel
 
-      Project.changeFile(this._projectStore, filename, decodeURIComponent(`[${fmodelname}]`), true)
+      Project.changeFile({ projectStore: this._projectStore, filename, fmodelname: decodeURIComponent(`[${fmodelname}]`), focus: true })
       ProjectTree({ store: projectStore, target: "[id='project']", select: decodeURIComponent(`[${filename}]`), focus: false })
       this.changeUrl()
     }
@@ -191,6 +191,23 @@ export const start = ({ channel }) => {
         case "paste": this.keydown({ key: "v", metaKey: true }); break
         case "delete": this.keydown({ key: "Delete" }); break
         case "add_item": this.keydown({ key: "+", shiftKey: true }); break
+        case "inline_docs":
+          this.keydown({ key: "d" })
+          e.target._on = !e.target._on
+          let metaSection = document.querySelector("[id='fsch']")
+          let moduleDefsSection = document.querySelector("[id='module_defs']")
+          if (e.target._on) {
+            moduleDefsSection.style.setProperty("--flex", "4")
+            metaSection.style.setProperty("--display", "none")
+            e.target.classList.add("bg-matte-black")
+          }
+          else {
+            moduleDefsSection.style.setProperty("--flex", "2.5")
+            metaSection.style.setProperty("--display", "block")
+            e.target.classList.remove("bg-matte-black")
+          }
+
+          break
       }
     }
     keydown({ key, altKey, ctrlKey, metaKey, shiftKey }) {
