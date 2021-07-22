@@ -160,21 +160,10 @@ defmodule Fset.Exports.JSONSchema do
 
       %{@f_type => @f_tref} = a, _m, acc ->
         fmodel_anchor = Map.fetch!(a, @f_ref)
-
-        %{path: file_dot_fmodel} = Map.get(defs_index, fmodel_anchor, %{path: fmodel_anchor})
+        %{lpath: [module_uri, defname]} = Map.get(defs_index, fmodel_anchor)
         acc = Map.update(acc, :visit_defs, [], fn v -> [fmodel_anchor | v] end)
 
-        if !file_dot_fmodel, do: IO.inspect(a)
-
-        ref =
-          case export_type do
-            :one_way -> "#/$defs/" <> file_dot_fmodel
-            :two_way -> "#" <> fmodel_anchor
-          end
-
-        sch =
-          %{}
-          |> Map.put(@ref, ref)
+        sch = Map.put(%{}, @ref, to_string(URI.merge(module_uri, "#/$defs/" <> defname)))
 
         {sch, acc}
 
@@ -195,7 +184,6 @@ defmodule Fset.Exports.JSONSchema do
           |> Map.put(@additional_properties, dict_v)
           |> map_put(@min_properties, Map.get(sch_metas, "min"))
           |> map_put(@max_properties, Map.get(sch_metas, "max"))
-          |> map_put(@property_name, Map.get(sch_metas, "max"))
 
         sch =
           case dict_k do
@@ -223,14 +211,21 @@ defmodule Fset.Exports.JSONSchema do
 
         all_record =
           Enum.all?(tagged_things, fn
-            %{@type_ => @object} = thing ->
+            %{@type_ => @object} ->
               true
 
-            %{@ref => "#/$defs/" <> ref} ->
+            %{@ref => ref} ->
               Enum.find_value(defs_index, fn
-                {_, %{@f_type => @f_record, path: ^ref} = t} -> t
-                t -> false
+                {_, %{@f_type => @f_record} = t} ->
+                  [module_uri, defname] = Map.get(t, :lpath)
+                  ref == to_string(URI.merge(module_uri, "#/$defs/" <> defname))
+
+                _t ->
+                  false
               end)
+
+            _t ->
+              false
           end)
 
         sch =
@@ -302,7 +297,7 @@ defmodule Fset.Exports.JSONSchema do
     {mapped_sch, walk_acc} = Sch.walk(project_sch, %{}, pre_visit, post_visit)
     IO.inspect(walk_acc)
 
-    _schema = finalize(mapped_sch, walk_acc, opts)
+    _schema = bundle(mapped_sch, walk_acc, opts)
   end
 
   defp map_put_required(%{@f_fields => fields} = map, sch_metas) when is_list(fields) do
@@ -319,17 +314,17 @@ defmodule Fset.Exports.JSONSchema do
   defp map_put(map, k, v), do: Map.put(map, k, v)
 
   defp defs_index(project_sch, params) do
-    delimeter = Keyword.get(params, :delimeter, "::")
+    schema_id = Keyword.fetch!(params, :schema_id)
 
     {_, lookup} =
       Sch.walk(project_sch, %{}, fn
         %{@f_anchor => anchor} = a, %{"level" => 3, "path" => path}, acc ->
-          path =
-            path
-            |> String.split(:binary.compile_pattern(["[", "][", "]"]), trim: true)
-            |> Enum.join(delimeter)
+          [filename | defname] =
+            String.split(path, :binary.compile_pattern(["[", "][", "]"]), trim: true)
 
-          acc = Map.put(acc, anchor, Map.put(a, :path, path))
+          module_uri = to_string(URI.merge(schema_id, filename))
+          a = Map.put(a, :lpath, [module_uri, Enum.join(defname)])
+          acc = Map.put(acc, anchor, a)
           {:cont, {a, acc}}
 
         a, _, acc ->
@@ -339,35 +334,45 @@ defmodule Fset.Exports.JSONSchema do
     lookup
   end
 
-  defp finalize(project_sch, walk_acc, opts) do
-    _defs_anchors = Map.get(walk_acc, :visit_defs, [])
-    _tree_shake = opts[:tree_shake]
-    delimeter = Keyword.get(opts, :delimeter, "::")
+  defp bundle(project_sch, _walk_acc, opts) do
+    schema_id = Keyword.fetch!(opts, :schema_id)
 
-    defs =
-      for {prefix, file} <- Map.fetch!(project_sch, @properties), reduce: %{} do
-        acc ->
-          for {fmodel_name, fmodel} <- Map.fetch!(file, @properties), reduce: acc do
-            acc_ ->
-              Map.put(acc_, "#{prefix}#{delimeter}#{fmodel_name}", fmodel)
-          end
-      end
+    app =
+      project_sch
+      |> Map.fetch!(@properties)
+      |> Enum.reduce(%{modules: %{}, program: %{}}, fn {filename, file}, acc ->
+        module_uri = to_string(URI.merge(schema_id, filename))
+        defs = Map.fetch!(file, @properties)
 
-    {entry, defs} =
-      case Enum.split_with(defs, fn {_k, def} -> Map.get(def, "isEntry") end) do
-        {[entry | _], defs} -> {entry, defs}
-        {[], defs} -> {{"", %{}}, defs}
-      end
+        case build_schmea_file(module_uri, defs) do
+          {:definitions, schema} ->
+            put_in(acc, [:modules, module_uri], schema)
 
-    {_, entry} = entry
-    entry = Map.delete(entry, "isEntry")
+          {:entrypoint, schema} ->
+            acc = put_in(acc, [:modules, module_uri], schema)
+            _acc = Map.put(acc, :program, %{@ref => module_uri})
+        end
+      end)
 
-    %{}
-    |> map_put(@id, Keyword.get(opts, :schema_id))
-    |> map_put(@schema, Keyword.get(opts, :schema_url, schema_2020_12()))
-    |> Map.put(@defs, Map.new(defs))
-    |> Map.merge(entry)
+    Map.merge(app.program, %{@defs => app.modules})
   end
 
-  defp schema_2020_12(), do: "https://json-schema.org/draft/2020-12/schema"
+  defp build_schmea_file(module_uri, defs) do
+    {t, {entry, defs}} =
+      case Enum.split_with(defs, fn {_, def_} -> Map.get(def_, "isEntry") end) do
+        {[], _} -> {:definitions, {%{}, defs}}
+        {[{_, entry}], defs} -> {:entrypoint, {entry, defs}}
+      end
+
+    schema =
+      entry
+      |> Map.delete("isEntry")
+      |> Map.put(@id, module_uri)
+      |> Map.put(@schema, schema_2020_12())
+      |> Map.put(@defs, Map.new(defs, fn {k, def} -> {k, def} end))
+
+    {t, schema}
+  end
+
+  defp schema_2020_12, do: "https://json-schema.org/draft/2020-12/schema"
 end
