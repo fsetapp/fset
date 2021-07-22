@@ -9,7 +9,7 @@ defmodule Fset.Exports.JschDocs do
     sch_metas = Fset.Projects.sch_metas_map(project)
 
     opts = [{:sch_metas, sch_metas} | []]
-    schema = Fset.Exports.JSONSchema.json_schema(:one_way, project_sch, opts)
+    schema = Fset.Exports.JSONSchema.json_schema(project_sch, opts)
     defs = Map.get(schema, @defs)
 
     delimeter = opts[:delimeter] || "::"

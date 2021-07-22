@@ -3,7 +3,7 @@ defmodule Fset.Exports.JSONSchema do
   use Fset.JSONSchema.Vocab
   use Fset.Fmodels.Vocab
 
-  def json_schema(export_type, project_sch, opts \\ []) do
+  def json_schema(project_sch, opts \\ []) do
     sch_metas = Keyword.fetch!(opts, :sch_metas)
     defs_index = defs_index(project_sch, opts)
 
@@ -279,17 +279,6 @@ defmodule Fset.Exports.JSONSchema do
         end
 
       a_ = map_put(a_, "isEntry", Map.get(a, "isEntry"))
-
-      a_ =
-        case export_type do
-          :one_way ->
-            a_
-
-          :two_way ->
-            a_
-            |> Map.put("order", Map.fetch!(m, "index"))
-            |> Map.put(@anchor, Map.fetch!(a, @f_anchor))
-        end
 
       {a_, acc_}
     end
