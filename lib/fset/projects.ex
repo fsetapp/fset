@@ -166,11 +166,22 @@ defmodule Fset.Projects do
 
   def export_as_binary(params, opts \\ [])
 
-  def export_as_binary(%{"projectname" => projectname, "username" => username}, opts) do
+  def export_as_binary(%{"projectname" => projectname} = params, opts) do
+    %{"username" => username, "export" => export} = params
     {:ok, project} = get_project(projectname)
 
-    schema_path = Enum.join([username, projectname], "/")
-    schema_id = URI.merge("https://json-schema.fset.app", schema_path) |> URI.to_string()
+    uri = Map.get(export, "uri", "https://json-schema.fset.app")
+
+    path =
+      case export do
+        %{"project" => "true", "account" => "true"} -> [projectname, username]
+        %{"account" => "true"} -> [username]
+        %{"project" => "true"} -> [projectname]
+        _ -> []
+      end
+      |> Enum.reduce("/", fn p, acc -> "/" <> p <> acc end)
+
+    schema_id = URI.to_string(URI.merge(uri, path))
     opts = [{:schema_id, schema_id} | opts]
     opts = [{:sch_metas, sch_metas_map(project)} | opts]
 

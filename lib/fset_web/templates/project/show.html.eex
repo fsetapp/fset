@@ -56,7 +56,7 @@
             <h3>Import JSON Schema</h3>
             <p class="mb-3 text-gray-400">
               Coverting your json schema into
-              <a href="/docs#json_schema_to_fmodel" target="_blank" class="text-blue-400">fset schema</a>
+              <a href="/docs#json_schema_to_fmodel" target="_blank" class="text-blue-400">fmodel</a>
             </p>
             <%= form_for :import, Routes.import_path(@conn, :create, @current_user.username, @project.key), [multipart: true, class: "fbox"], fn f -> %>
               <%= label class: "box-label w-full" do %>
@@ -72,12 +72,36 @@
             <h3>Export to JSON Schema</h3>
             <p class="mb-3 text-gray-400">
               Coverting
-              <a href="/docs#fmodel_to_json_schema" target="_blank" class="text-blue-400">fset schema</a>
+              <a href="/docs#fmodel_to_json_schema" target="_blank" class="text-blue-400">fmodel</a>
               into json schema
             </p>
+            <p>schema_id =</p>
+            <p>url ["/" account] ["/" project]</p>
             <br>
-            <%= link "Download", to: Routes.export_path(@conn, :download, @current_user.username, @project.key), download: true, class: "btn-gray" %>
-            <%= link "View", to: Routes.export_path(@conn, :inline, @current_user.username, @project.key), target: "_blank", class: "ml-3 text-blue-400" %>
+            <p>module_id =</p>
+            <p>schema_id ["/" module_name]</p>
+            <br>
+            <%= form_for :export, "", [class: "fbox", method: :get], fn f -> %>
+              <%= label class: "box-label w-full" do %>
+                <p class="l">JSON Schema URL</p>
+                <%= url_input f, :uri, required: true, value: "https://json-schema.fset.app" %>
+              <% end %>
+              <%= label class: "box-label" do %>
+                <p class="l">Account name</p>
+                <%= checkbox f, :account %>
+                <%= @user.username %>
+              <% end %>
+              <%= label class: "box-label" do %>
+                <p class="l">Project name</p>
+                <%= checkbox f, :project %>
+                <%= @project.key %>
+              <% end %>
+
+              <div class="mt-3">
+                <%= submit "Download", formaction: Routes.export_path(@conn, :download, @current_user.username, @project.key), class: "btn-gray" %>
+                <%= submit "View", formaction: Routes.export_path(@conn, :inline, @current_user.username, @project.key), formtarget: "_blank", class: "hover:underline focus:underline ml-3 text-blue-400" %>
+              </div>
+            <% end %>
           </div>
         <% end %>
         <div role="tabpanel" class="flex flex-col overflow-hidden focus:outline-none" tabindex="-1" hidden>

@@ -3,7 +3,7 @@ defmodule FsetWeb.ExportController do
   alias Fset.Projects
 
   def inline(conn, params) do
-    exported = Projects.export_as_binary(Map.take(params, ["projectname", "username"]))
+    exported = Projects.export_as_binary(Map.take(params, ["projectname", "username", "export"]))
 
     send_download(conn, {:binary, exported},
       filename: params["projectname"] <> ".json",
@@ -14,7 +14,7 @@ defmodule FsetWeb.ExportController do
   end
 
   def download(conn, params) do
-    exported = Projects.export_as_binary(Map.take(params, ["projectname", "username"]))
+    exported = Projects.export_as_binary(Map.take(params, ["projectname", "username", "export"]))
     send_download(conn, {:binary, exported}, filename: params["projectname"] <> ".json")
   end
 end

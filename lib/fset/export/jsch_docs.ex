@@ -7,11 +7,11 @@ defmodule Fset.Exports.JschDocs do
     {:ok, project} = Fset.Projects.get_project(projectname)
     project_sch = Fset.Fmodels.to_project_sch(project)
     sch_metas = Fset.Projects.sch_metas_map(project)
+    schema_id = "https://localhost/"
 
-    opts = [{:sch_metas, sch_metas} | []]
+    opts = [sch_metas: sch_metas, schema_id: schema_id]
     schema = Fset.Exports.JSONSchema.json_schema(project_sch, opts)
     defs = Map.get(schema, @defs)
-
     delimeter = opts[:delimeter] || "::"
 
     anchors_models =
@@ -30,7 +30,8 @@ defmodule Fset.Exports.JschDocs do
 
         Enum.map(Map.get(file, @f_fields), fn fmodel ->
           fmodelname = Map.fetch!(fmodel, @f_key)
-          def = Map.get(defs, "#{filename}#{delimeter}#{fmodelname}", %{})
+          doc_module_uri = to_string(URI.merge(URI.parse(schema_id), filename))
+          def = get_in(defs, [doc_module_uri, "$defs", fmodelname])
 
           file = Map.put(file, "taggedLevel", %{1 => fmodelname})
           fmodel = Map.put(fmodel, "export", def)
