@@ -1,9 +1,7 @@
-<h3 class="p-2">Keyboard commands</h3>
-
 <div class="help overflow-auto">
   <dl>
     <h2>Add</h2>
-    <dd>Add random schema to container types (record | union | tuple)</dd>
+    <dd>Add random schema to container types</dd>
     <dt><kbd>Shift</kbd> + <kbd>+</kbd></dt>
   </dl>
 
@@ -18,13 +16,12 @@
       <dt><kbd>Cmd</kbd> + <kbd>c</kbd></dt>
     </div>
     <div>
-      <dd>
-        Paste schema from <kbd>Cmd</kbd> + <kbd>c</kbd> or <kbd>x</kbd>
-        <br>
-        <br>
-        To cancel copy or cut, press <kbd>Escape</kbd>
-      </dd>
+      <dd>Paste</dd>
       <dt><kbd>Cmd</kbd> + <kbd>v</kbd></dt>
+    </div>
+    <div>
+      <dd>Cancel copy or cut</dd>
+      <dt><kbd>Escape</kbd></dt>
     </div>
   </dl>
 
@@ -69,7 +66,7 @@
     <dt><kbd>Delete</kbd></dt>
   </dl>
 
-  <dl>
+  <dl class="select">
     <h2>Select</h2>
     <div>
       <dd>Select a schema</dd>
@@ -144,18 +141,8 @@
       <dd>Cancel editing</dd>
       <dt><kbd>Escape</kbd></dt>
     </div>
-    <div>
-      <dt>
-        Changeable types are: <b>record</b>, <b>list</b>, <b>tuple</b>, <b>string</b>, <b>number</b>,
-        <b>boolean</b>, <b>null</b>, <b>union</b>, <b>any</b>,
-        <br><br>
-        <b>Ref</b> type, type in the type name one wants to refer to.
-        <br><br>
-        <b>Scalar</b> type, type in scalar value (e.g. "a", 1, false, null). Currently support just json value.
-      </dt>
-    </div>
   </dl>
-  <dl>
+  <dl class="window">
     <dt>For Windows, use <kbd>Ctrl</kbd> in place of <kbd>Cmd</kbd></dt>
   </dl>
 </div>

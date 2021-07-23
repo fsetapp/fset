@@ -21,7 +21,7 @@
   background-color: var(--gray-meta);
   border: 1px solid rgba(31,41,55,1);
 }
-.help dl > div { display: flex; }
+.help dl > div { display: flex; width: 100%; }
 .help dl > div + div { border-top: 1px solid var(--gray-800); }
 .help dl > h2 {
   width: 100%;
@@ -29,7 +29,7 @@
 }
 .help dd,
 .help dt {
-  margin: .5rem .5rem .5rem 0;
+  margin: .3rem .5rem .5rem 0;
   flex: 1;
 }
 .help dt { margin: .25rem }

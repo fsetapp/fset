@@ -9,6 +9,7 @@
 @import "./form.css";
 @import "./billing.css";
 @import "./docs.css";
+@import "./landing.css";
 
 .bg-matte-black {
   background-color: var(--matte-black) !important;

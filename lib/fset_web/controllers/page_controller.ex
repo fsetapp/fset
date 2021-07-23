@@ -9,7 +9,8 @@ defmodule FsetWeb.PageController do
       redirect(conn, to: Routes.profile_path(conn, :show, user.username))
     else
       _ ->
-        render(conn, "index.html")
+        conn = put_layout(conn, {FsetWeb.LayoutView, "static.html"})
+        render(conn, "landing.html")
     end
   end
 

@@ -1,0 +1,17 @@
+.landing-page .help {
+  display: flex;
+  flex-wrap: wrap;
+}
+.landing-page .help > dl {
+  min-width: fit-content;
+  flex: 1;
+}
+@media (min-width: 768px) { .landing-page .help > dl { min-width: 20%; } }
+.landing-page .help dd,
+.landing-page .help dt {
+  flex: 0 1 auto;
+}
+.landing-page .select,
+.landing-page .window {
+  display: none;
+}

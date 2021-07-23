@@ -105,6 +105,7 @@
           </div>
         <% end %>
         <div role="tabpanel" class="flex flex-col overflow-hidden focus:outline-none" tabindex="-1" hidden>
+          <h3 class="p-2">Keyboard commands</h3>
           <%= render "_help.html" %>
         </div>
         <%= if @is_project_member do %>

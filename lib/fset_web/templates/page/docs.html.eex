@@ -154,7 +154,7 @@
                     </article>
                   </div>
                   <code class="flex mt-4 md:pl-2 md:w-1/2">
-                    <pre class="p-2 text-sm w-full bg-matte-black border border-gray-800 rounded-lg whitespace-pre-wrap"><%= get_in(fmodel_tree, ["fields", Access.at(0), Access.key("export", %{})]) |> Map.drop(["description", "title"]) |> Jason.encode!(pretty: true) %></pre>
+                    <pre class="p-2 text-sm text-left w-full bg-matte-black border border-gray-800 rounded-lg whitespace-pre-wrap"><%= get_in(fmodel_tree, ["fields", Access.at(0), Access.key("export", %{})]) |> Map.drop(["description", "title"]) |> Jason.encode!(pretty: true) %></pre>
                   </code>
                 </div>
               </li>
