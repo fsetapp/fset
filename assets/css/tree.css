@@ -20,9 +20,6 @@
   --diff-removed-color: rgba(255, 0, 0, .5);
   --diff-moved-color: rgba(59, 130, 246, .5);
   --diff-changed-color: rgba(255, 140, 0, .5);
-
-  --docs-description: var(--gray-400);
-  --docs-description-font: var(--font-sans);
 }
 .tree0 { --tree-min-width: 0; }
 
@@ -52,6 +49,7 @@
   margin-bottom: .5rem;
 }
 
+#fmodel [role="tree"] { @apply tracking-wide; }
 #fmodel [role="tree"] > .root-item > .h,
 #project [role="tree"] > .root-item > .h {
   padding-right: 8rem;

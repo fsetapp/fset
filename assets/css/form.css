@@ -103,6 +103,11 @@
 .btn-gray:hover { @apply bg-gray-800; }
 .btn-gray:focus { @apply ring-2 ring-gray-400 outline-none; }
 
+sch-meta {
+  --key-color: lightgreen;
+  --type-color: var(--pink-400);
+  --ref-color: var(--indigo-400);
+}
 sch-meta > .meta-def {
   padding: 1rem 0 .5rem;
   word-break: break-all;
@@ -113,9 +118,25 @@ sch-meta > .meta-def + p {
   margin: .5rem 0;
 }
 sch-meta .referrers { margin: 1rem 0 .5rem }
-sch-meta .referrers + ul {
+.referrers + ul {
   @apply text-sm text-gray-400;
 }
+sch-meta .defs-docs { margin: 1rem 0 0; }
+.defs-docs + ul {
+  --docs-description: var(--gray-400);
+  --docs-description-font: var(--font-sans);
+  @apply prose prose-sm prose-blue;
+}
+.defs-docs + ul t-md code,
+.defs-docs + ul t-md strong { color: var(--gray-300); }
+.defs-docs + ul > li { padding: .5rem 0; }
+.defs-docs + ul dt { display: flex; flex-wrap: wrap; }
+.defs-docs + ul dt .s { margin: 0 .5rem; }
+.defs-docs + ul dt .k { color: var(--gray-300); text-decoration: none; }
+.defs-docs + ul dd { @apply font-light; }
+.defs-docs + ul dt .k,
+.defs-docs + ul dt .t { max-width: 70%;}
+
 combo-box {
   width: 100%;
   position: relative;

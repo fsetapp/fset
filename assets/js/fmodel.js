@@ -191,27 +191,12 @@ export const start = ({ channel }) => {
         case "paste": this.keydown({ key: "v", metaKey: true }); break
         case "delete": this.keydown({ key: "Delete" }); break
         case "add_item": this.keydown({ key: "+", shiftKey: true }); break
-        case "inline_docs":
-          this.keydown({ key: "d" })
-          e.target._on = !e.target._on
-          let metaSection = document.querySelector("[id='fsch']")
-          let moduleDefsSection = document.querySelector("[id='module_defs']")
-          if (e.target._on) {
-            moduleDefsSection.style.setProperty("--flex", "4")
-            metaSection.style.setProperty("--display", "none")
-            e.target.classList.add("bg-matte-black")
-          }
-          else {
-            moduleDefsSection.style.setProperty("--flex", "2.5")
-            metaSection.style.setProperty("--display", "block")
-            e.target.classList.remove("bg-matte-black")
-          }
-
-          break
       }
     }
-    keydown({ key, altKey, ctrlKey, metaKey, shiftKey }) {
-      document.activeAriaTree.dispatchEvent(new KeyboardEvent("keydown", { key, altKey, ctrlKey, metaKey, shiftKey }))
+    keydown({ key, altKey, ctrlKey, metaKey, shiftKey, detail = {} }) {
+      let event = new KeyboardEvent("keydown", { key, altKey, ctrlKey, metaKey, shiftKey })
+      event._detail = detail
+      document.activeAriaTree.dispatchEvent(event)
     }
   })
 }
