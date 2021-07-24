@@ -1,4 +1,4 @@
-<header class="flex flex-col items-center pt-12">
+<header class="flex flex-col items-center pt-12 overflow-hidden">
   <h1 class="leading-10 text-5xl font-thin font-mono tracking-widest text-pink-500">FSET</h1>
   <h2 class="leading-loose text-3xl font-thin tracking-widest">Structure Editor Series</h2>
 
@@ -9,17 +9,18 @@
     </p>
   </div>
 
-  <div class="flex overflow-hidden w-screen">
+  <div class="flex mx-auto">
     <div class="rounded-tl-full rounded-bl-full -ml-36">
       <%= img_tag Routes.static_path(@conn, "/images/fset-ico.svg"), alt: "fset icon", class: "hidden sm:block" %>
     </div>
-    <%= img_tag Routes.static_path(@conn, "/images/landing.png"), alt: "editor overview" %>
+    <div class="">
+      <%= img_tag Routes.static_path(@conn, "/images/landing.png"), alt: "editor overview", class: "min-w-full" %>
+    </div>
   </div>
-  <p class="mb-4 self-end px-4 py-3 text-sm">
+  <p class="mb-4 container mx-auto px-4 py-3 text-sm text-right">
     <span class="mr-2 text-gray-400">Example data from</span>
     <%= link "https://vega.github.io", to: "https://vega.github.io", class: "my-1 tracking-wider text-blue-500", target: "_black" %>
   </p>
-
   <%= link "Documentation", to: Routes.page_path(@conn, :docs), class: "my-1 tracking-wider", target: "_black" %>
   <%= link "Pricing", to: Routes.page_path(@conn, :pricing), class: "my-1 tracking-wider", target: "_black" %>
 
@@ -40,7 +41,7 @@
     <p class="my-2 px-2 text-lg">Once a type is referenced, name and namespace updates automatically reflects on referrers</p>
     <p class="my-2 px-2 text-lg">When there exists at least one referrer, the referenced type cannot be deleted, enforced at db-level</p>
   </div>
-  <%= img_tag Routes.static_path(@conn, "/images/refs-tracking.png"), alt: "reference tracking", class: "block py-8" %>
+  <%= img_tag Routes.static_path(@conn, "/images/refs-tracking.png"), alt: "reference tracking", class: "block py-8 max-w-full" %>
 </section>
 <hr class="border-t border-pink-500 w-12 mx-auto my-12">
 <section class="container mx-auto">
@@ -54,7 +55,7 @@
     <p class="my-2 px-2 text-lg">
       Bundled schema is also a usable schema. Validator can validate the file without decomposing schema definitions into separate files.
     </p>
-    <%= img_tag Routes.static_path(@conn, "/images/bundled.png"), alt: "exported bundle", class: "block py-8 mx-auto" %>
+    <%= img_tag Routes.static_path(@conn, "/images/bundled.png"), alt: "exported bundle", class: "block py-8 mx-auto max-w-full" %>
     <p class="mx-auto text-center">Bundled schame consists of list of schemas, for more information see <%= link "Export documentation", to: Routes.page_path(@conn, :docs) <> "#fmodel_to_json_schema", class: "text-blue-500", target: "_black" %></p>
   </div>
 </section>
