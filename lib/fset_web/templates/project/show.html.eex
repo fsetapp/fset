@@ -84,7 +84,7 @@
             <%= form_for :export, "", [class: "fbox", method: :get], fn f -> %>
               <%= label class: "box-label w-full" do %>
                 <p class="l">JSON Schema URL</p>
-                <%= url_input f, :uri, required: true, value: "https://json-schema.fset.app" %>
+                <%= url_input f, :uri, required: true, value: "http://localhost" %>
               <% end %>
               <%= label class: "box-label" do %>
                 <p class="l">Account name</p>
