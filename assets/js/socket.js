@@ -1,10 +1,11 @@
 import phoenix from "phoenix"
 const { Socket } = phoenix
 
-let socket = new Socket("/socket", { params: { token: window.userToken, projectname: window.projectName } })
-let channel = socket.channel(`project:${window.projectName}`, { filename: window.currentFile })
+let channel, socket
+if (window.projectName) {
+  socket = new Socket("/socket", { params: { token: window.userToken, projectname: window.projectName } })
+  channel = socket.channel(`project:${window.projectName}`, { filename: window.currentFile })
 
-if (window.userToken || window.projectName) {
   let socketNotOpened = true
   socket.onOpen(e => socketNotOpened = false)
   socket.onClose(e => {
@@ -13,10 +14,9 @@ if (window.userToken || window.projectName) {
       window.location.replace("/status/404.html")
     }
   })
-  socket.connect()
-}
 
-if (window.projectName) {
+  socket.connect()
+
   channel.join()
     .receive("ok", resp => {
       document.querySelector("project-store")
