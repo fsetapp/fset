@@ -2,7 +2,8 @@ import "phoenix_html"
 
 customElements.define("paddle-checkout", class extends HTMLElement {
   connectedCallback() {
-    Paddle.Environment.set("sandbox")
+    if (this.dataset.env == "dev") Paddle.Environment.set("sandbox")
+
     Paddle.Setup({ vendor: parseInt(this.dataset.vendorId), eventCallback: this.checkoutCallback.bind(this) })
     Paddle.Checkout.open({
       method: "inline",

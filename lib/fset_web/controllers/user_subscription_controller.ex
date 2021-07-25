@@ -38,12 +38,16 @@ defmodule FsetWeb.UserSubscriptionController do
     if current_user.subscription && current_user.subscription.status == :active do
       redirect(conn, to: Routes.user_subscription_path(conn, :show))
     else
-      render(conn, "checkout.html", vendor_id: 2021, product_id: params["id"])
+      render(conn, "checkout.html",
+        vendor_id: System.get_env("VENDOR_ID"),
+        product_id: Fset.Payments.plan_by_name(params["id"]).id
+      )
     end
   end
 
   def show(conn, _params) do
     current_user = Payments.load_subscription(conn.assigns.current_user)
+    Payments.out_of_sync_check(current_user.subscription)
 
     if current_user.subscription do
       assigns = %{

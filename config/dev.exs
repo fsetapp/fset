@@ -74,3 +74,9 @@ config :phoenix, :stacktrace_depth, 20
 
 # Initialize plugs at runtime for faster development compilation
 config :phoenix, :plug_init_mode, :runtime
+
+config :fset, Fset.Payments.Paddle,
+  vendor_auth_code: System.get_env("VENDOR_AUTH_CODE"),
+  vendor_id: String.to_integer(System.get_env("VENDOR_ID")),
+  api_url: "https://sandbox-vendors.paddle.com",
+  plans: [%{id: 11294, name: "FModel", price: 15}]

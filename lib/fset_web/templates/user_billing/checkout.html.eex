@@ -1,4 +1,4 @@
-<paddle-checkout class="w-full flex flex-col justify-center items-center" data-vendor-id="<%= @vendor_id %>" data-product-id="<%= @product_id %>" data-email="<%= @current_user.email %>">
+<paddle-checkout class="w-full flex flex-col justify-center items-center" data-vendor-id="<%= @vendor_id %>" data-product-id="<%= @product_id %>" data-email="<%= @current_user.email %>" data-env="<%= Application.get_env(:fset, :environment) %>">
   <div class="w-full py-8 flex justify-center items-start flex-wrap">
     <section class="w-full md:w-1/4 min-w-max px-4">
       <header class="mb-10 -ml-2"><%= img_tag Routes.static_path(@conn, "/images/fset-ico.svg"), class: "w-12 h-12 bg-matte-black", alt: "app logo" %></header>

@@ -18,12 +18,20 @@
         <span class="sub <%= @subscription.status %> text-sm px-2 py-1 rounded-xl border"><%= @subscription.status %></span>
       </p>
 
-      <%= if @subscription.status == :cancelled && @cancellation_effective_date do %>
+      <%= if Fset.Payments.is_effectively_cancelled(@subscription) do %>
         <div class="my-8">
           <p class="text-gray-500 text-sm mb-2">Cancellation effective date</p>
-          <p class="text-yellow-200 text-sm">You can still use all features of current subscription until this effective date:</p>
           <p><%= @cancellation_effective_date %></p>
+          <p class="text-green-200 text-sm">Subscription has effectively been cancelled.
         </div>
+      <% else %>
+        <%= if @subscription.status == :cancelled && @cancellation_effective_date do %>
+          <div class="my-8">
+            <p class="text-gray-500 text-sm mb-2">Cancellation effective date</p>
+            <p class="text-yellow-200 text-sm">You can still use all features of current subscription until this effective date:</p>
+            <p><%= @cancellation_effective_date %></p>
+          </div>
+        <% end %>
       <% end %>
 
       <%= render FsetWeb.PageView, "_fmodel_plan.html" %>

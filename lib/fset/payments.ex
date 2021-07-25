@@ -33,6 +33,18 @@ defmodule Fset.Payments do
     provider.cancellation_effective_date(sub.metadata)
   end
 
+  def is_effectively_cancelled(%{status: :cancelled} = sub) do
+    if effective_date = cancellation_effective_date(sub) do
+      {:ok, effective_date} = Date.from_iso8601(effective_date)
+
+      Date.compare(Date.utc_today(), effective_date) == :gt
+    else
+      true
+    end
+  end
+
+  def is_effectively_cancelled(sub), do: false
+
   def plan(sub, provider \\ @provider) do
     provider.plan(sub.metadata, plans())
   end
@@ -42,7 +54,8 @@ defmodule Fset.Payments do
   end
 
   def plans() do
-    [%{id: 11294, name: "FModel", price: 15}]
+    provider_config = Application.get_env(:fset, @provider) |> Enum.into(%{})
+    provider_config.plans
   end
 
   def cancel(sub_id, provider \\ @provider) do
@@ -68,14 +81,46 @@ defmodule Fset.Payments do
         conflict_target: :user_id
       )
     else
-      a -> IO.inspect(a)
+      a ->
+        # subscription status out of sync
+        IO.inspect(a)
     end
   end
 
+  def out_of_sync_check(sub, provider \\ @provider)
+  def out_of_sync_check(nil, _), do: :nothing
+
+  def out_of_sync_check(sub, provider) do
+    data = provider.data(sub.metadata)
+
+    if data.subscription_status != sub.status do
+      subscribers = provider.subscribers(%{subscription_id: sub.external_id})
+
+      fresh_sub =
+        Enum.find(subscribers, fn subscriber ->
+          "#{subscriber["subscription_id"]}" == sub.external_id
+        end)
+
+      if fresh_sub do
+        %UserSubscription{}
+        |> UserSubscription.changeset(%{
+          status: provider.status(%{"status" => fresh_sub["state"]}),
+          user_id: sub.user_id
+        })
+        |> Repo.insert!(
+          on_conflict: {:replace, [:status]},
+          conflict_target: :user_id
+        )
+      end
+    end
+  end
+
+  # We currently do not delete subscription since we sometimes need it for a ground
+  # to check againts.
   def delete_subscription(user, sub_id) do
     user = load_subscription(user)
 
-    if user.subscription.external_id == sub_id do
+    if user.subscription.external_id == "#{sub_id}" do
       Repo.delete(user.subscription)
     end
   end

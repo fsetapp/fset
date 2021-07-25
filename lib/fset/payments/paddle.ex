@@ -25,7 +25,7 @@ defmodule Fset.Payments.Paddle do
     Map.get(event, "cancellation_effective_date")
   end
 
-  defp status(event) do
+  def status(event) do
     case Map.fetch!(event, "status") do
       "active" -> :active
       "deleted" -> :cancelled
@@ -49,18 +49,20 @@ defmodule Fset.Payments.Paddle do
     request(:get, "/2.0/subscription/plans")
   end
 
+  def subscribers(opts \\ %{}) do
+    request(:post, "/2.0/subscription/users", opts)
+  end
+
   defp request(method, path, params \\ %{}, retry \\ 3)
   defp request(_method, _path, _params, 0), do: :error
 
   defp request(method, path, params, retry) do
     headers = [{"content-type", "application/json"}]
 
-    auth_body = %{
-      vendor_auth_code: System.get_env("VENDOR_AUTH_CODE"),
-      vendor_id: System.get_env("VENDOR_ID")
-    }
-
+    paddle_config = Application.get_env(:fset, __MODULE__) |> Enum.into(%{})
+    auth_body = Map.take(paddle_config, [:vendor_auth_code, :vendor_id])
     body = Map.merge(auth_body, params)
+
     url = Finch.build(method, api_url(path), headers, Jason.encode!(body))
 
     with {:ok, result} <- Finch.request(url, FsetHttp),
@@ -74,9 +76,11 @@ defmodule Fset.Payments.Paddle do
   end
 
   defp api_url(path) do
-    "https://sandbox-vendors.paddle.com"
+    paddle_config = Application.get_env(:fset, __MODULE__) |> Enum.into(%{})
+
+    paddle_config.api_url
     |> URI.parse()
-    |> URI.merge("/api/" <> path)
+    |> URI.merge("/api" <> path)
     |> URI.to_string()
   end
 

@@ -39,4 +39,10 @@ if config_env() == :prod do
     ssl: true,
     pool_size: String.to_integer(System.get_env("POOL_SIZE") || "10"),
     prepare: :unnamed
+
+  config :fset, Fset.Payments.Paddle,
+    vendor_auth_code: System.get_env("VENDOR_AUTH_CODE"),
+    vendor_id: System.get_env("VENDOR_ID"),
+    api_url: "https://vendors.paddle.com",
+    plans: [%{id: 667_595, name: "FModel", price: 15}]
 end
