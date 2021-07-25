@@ -284,7 +284,7 @@ defmodule Fset.Exports.JSONSchema do
     end
 
     {mapped_sch, walk_acc} = Sch.walk(project_sch, %{}, pre_visit, post_visit)
-    IO.inspect(walk_acc)
+    # IO.inspect(walk_acc)
 
     _schema = bundle(mapped_sch, walk_acc, opts)
   end

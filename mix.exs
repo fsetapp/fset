@@ -51,7 +51,8 @@ defmodule Fset.MixProject do
       {:timex, "~> 3.0"},
       {:benchee, "~> 1.0", only: :dev},
       {:php_serializer, "~> 2.0"},
-      {:earmark, "~> 1.4"}
+      {:earmark, "~> 1.4"},
+      {:swoosh, "~> 1.4"}
     ]
   end
 

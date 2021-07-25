@@ -20,7 +20,10 @@ defmodule FsetWeb.UserRegistrationController do
           )
 
         conn
-        |> put_flash(:info, "User created successfully.")
+        |> put_flash(
+          :info,
+          "User created successfully. Account verification email has been sent."
+        )
         |> UserAuth.log_in_user(user)
 
       {:error, %Ecto.Changeset{} = changeset} ->

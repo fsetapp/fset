@@ -32,6 +32,14 @@ defmodule FsetWeb.Router do
     post "/payment-callback", APIPaymentController, :notify
   end
 
+  if Mix.env() == :dev do
+    scope "/dev" do
+      pipe_through [:browser]
+
+      forward "/mailbox", Plug.Swoosh.MailboxPreview
+    end
+  end
+
   # Enables LiveDashboard only for development
   #
   # If you want to use the LiveDashboard in production, you should put
@@ -98,4 +106,8 @@ defmodule FsetWeb.Router do
     get "/:username/:projectname", ProjectController, :show
     get "/:username", ProfileController, :show
   end
+
+  # IMPORTANT NOTE
+  # Do not apeend routes after the line below. We have some catch-all routes above.
+  # ==========================================================================
 end

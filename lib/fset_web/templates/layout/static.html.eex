@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="<%= Routes.static_path(@conn, "/css/app.css") %>"/>
   </head>
   <body>
-    <main role="main" class="text-gray-300 bg-matte-black">
+    <main role="main" class="text-gray-300 bg-matte-black min-h-screen">
       <%= @inner_content %>
     </main>
   </body>
