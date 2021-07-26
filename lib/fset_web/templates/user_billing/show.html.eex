@@ -36,7 +36,7 @@
 
       <%= render FsetWeb.PageView, "_fmodel_plan.html" %>
       <%= if @subscription.status == :active do %>
-        <%= button "Cancel Subscription", to: Routes.user_subscription_path(@conn, :cancel, @subscription.external_id), class: "my-2 px-2 py-1 btn-gray rounded text-sm" %>
+        <%= button "Cancel Subscription", to: Routes.user_subscription_path(@conn, :cancel, @subscription.external_id), class: "my-2 px-2 py-1 btn-gray rounded text-sm", "data-confirm": "Once cancelled, you can still use all features of current subscription until a given cancellation effective date" %>
       <% end %>
     </div>
 
