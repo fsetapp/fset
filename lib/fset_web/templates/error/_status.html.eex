@@ -1,0 +1,8 @@
+<div class="flex flex-col items-center justify-center h-screen">
+  <div class="relative flex items-center justify-center">
+    <h1 class="text-5xl absolute z-10"><%= @code %></h1>
+    <%= img_tag Routes.static_path(@conn, "/images/fset-ico.svg"), alt: "fset icon", style: "filter: grayscale(1);", class: "block w-64 h-64" %>
+  </div>
+  <h2 class="my-4 text-4xl font-thin tracking-widest"><%= @msg %></h1>
+  <%= link "go back", to: {:javascript, "history.back()"}, class: "my-2 text-xl text-blue-500" %>
+</div>

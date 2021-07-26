@@ -1,0 +1,1 @@
+<%= render "_status.html", conn: @conn, code: 404, msg: "Not Found" %>

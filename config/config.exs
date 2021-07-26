@@ -14,7 +14,11 @@ config :fset,
 config :fset, FsetWeb.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "bOkzilJWPhvhiu6tRBw2U0nVaDY1+TMnvzSURiQT1ydjHUrd+LktZNnqEu2h1Qqi",
-  render_errors: [view: FsetWeb.ErrorView, accepts: ~w(html json), layout: false],
+  render_errors: [
+    view: FsetWeb.ErrorView,
+    accepts: ~w(html json),
+    layout: {FsetWeb.LayoutView, "static.html"}
+  ],
   pubsub_server: Fset.PubSub,
   live_view: [signing_salt: "gZ0kyIRs"]
 

@@ -12,14 +12,14 @@ defmodule FsetWeb.FallbackController do
     |> put_status(:not_found)
     |> put_layout({FsetWeb.LayoutView, "static.html"})
     |> put_view(FsetWeb.ErrorView)
-    |> render(:"404")
+    |> render("404.html")
   end
 
-  def call(conn, {:error, :unauthorized}) do
+  def call(conn, {:error, :forbidden}) do
     conn
     |> put_status(403)
     |> put_layout({FsetWeb.LayoutView, "static.html"})
     |> put_view(FsetWeb.ErrorView)
-    |> render(:"403")
+    |> render("403.html")
   end
 end
