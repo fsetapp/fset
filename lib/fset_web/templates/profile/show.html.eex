@@ -11,7 +11,7 @@
     <ul class="flex flex-col md:w-4/5 mx-auto">
     <%= if @user.projects == [] do %>
       <li class="px-3 py-2 flex items-center justify-center flex-grow border border-gray-800 rounded bg-gray-900">
-        <p class="text-gray-500">There is no project created yet</p>
+        <p class="text-gray-500">There is no public projects created yet</p>
       </li>
     <% end %>
     <%= for project <- @user.projects do %>
