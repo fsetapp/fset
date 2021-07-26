@@ -2,32 +2,32 @@
   <div class="md:w-1/2 mx-auto">
     <header class="flex flex-wrap space-x-4">
       <div>
-        <p class="text-gray-500 text-sm mb-2">Current monthly bill</p>
+        <p class="text-gray-400 text-sm mb-2">Current monthly bill</p>
         <p><%= @current_price %> USD</p>
       </div>
       <div>
-        <p class="text-gray-500 text-sm mb-2">Next payment due</p>
+        <p class="text-gray-400 text-sm mb-2">Next payment due</p>
         <p><%= @next_bill_date || "–" %></p>
       </div>
     </header>
 
     <div class="my-8">
-      <p class="text-gray-500 text-sm mb-2">Current plan <%= link "change plan", to: Routes.page_path(@conn, :pricing), class: "ml-2 text-sm text-blue-500" %></p>
+      <p class="text-gray-400 text-sm mb-2">Current plan <%= link "change plan", to: Routes.page_path(@conn, :pricing), class: "ml-2 text-sm text-blue-500" %></p>
       <p><%= @current_plan.name %>
-        <span class="mx-2 text-gray-500">·</span>
+        <span class="mx-2 text-gray-400">·</span>
         <span class="sub <%= @subscription.status %> text-sm px-2 py-1 rounded-xl border"><%= @subscription.status %></span>
       </p>
 
       <%= if Fset.Payments.is_effectively_cancelled(@subscription) do %>
         <div class="my-8">
-          <p class="text-gray-500 text-sm mb-2">Cancellation effective date</p>
+          <p class="text-gray-400 text-sm mb-2">Cancellation effective date</p>
           <p><%= @cancellation_effective_date %></p>
           <p class="text-green-200 text-sm">Subscription has effectively been cancelled.
         </div>
       <% else %>
         <%= if @subscription.status == :cancelled && @cancellation_effective_date do %>
           <div class="my-8">
-            <p class="text-gray-500 text-sm mb-2">Cancellation effective date</p>
+            <p class="text-gray-400 text-sm mb-2">Cancellation effective date</p>
             <p class="text-yellow-200 text-sm">You can still use all features of current subscription until this effective date:</p>
             <p><%= @cancellation_effective_date %></p>
           </div>
@@ -36,7 +36,14 @@
 
       <%= render FsetWeb.PageView, "_fmodel_plan.html" %>
       <%= if @subscription.status == :active do %>
-        <%= button "Cancel Subscription", to: Routes.user_subscription_path(@conn, :cancel, @subscription.external_id), class: "my-2 px-2 py-1 btn-gray rounded text-sm", "data-confirm": "Once cancelled, you can still use all features of current subscription until a given cancellation effective date" %>
+        <details>
+          <summary class="cursor-pointer inline-block">
+            <span class="leading-none mr-1 text-gray-500">Subscription Actions</span>
+            <svg class="inline-block w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20"><path stroke="#6b7280" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 8l4 4 4-4"/></svg>
+          </summary>
+
+          <%= button "Cancel Subscription", to: Routes.user_subscription_path(@conn, :cancel, @subscription.external_id), class: "block my-4 px-2 py-1 btn-gray rounded text-sm", "data-confirm": "Once cancelled, you can still use all features of current subscription until a given cancellation effective date" %>
+        </details>
       <% end %>
     </div>
 

@@ -1,5 +1,5 @@
-<h3 class="text-gray-500 px-1 mb-2">Transactions</h3>
-<table>
+<h3 class="text-gray-400 px-1 -mx-1 mb-2">Transactions</h3>
+<table class="-mx-1">
   <thead>
     <tr align="left">
       <th class="px-1 font-medium">Status</th>
