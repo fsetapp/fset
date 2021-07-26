@@ -18,7 +18,7 @@ defmodule Fset.Projects.Project do
 
   def create_changeset(project, attrs) do
     project
-    |> cast(attrs, [:key])
+    |> cast(attrs, [:key, :visibility])
     |> unique_constraint(:key)
   end
 
