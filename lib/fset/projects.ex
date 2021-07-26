@@ -194,7 +194,7 @@ defmodule Fset.Projects do
   def import(params, opts \\ [])
 
   def import(%{"json_schema_file" => json} = params, opts) do
-    %{"projectname" => projectname, "username" => _username} = params
+    %{"projectname" => _projectname, "username" => _username} = params
     schema = Imports.json_schema(:draft7, json, opts)
     # replace(project, schema, %{})
   end

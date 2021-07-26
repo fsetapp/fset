@@ -43,7 +43,7 @@ defmodule Fset.Payments do
     end
   end
 
-  def is_effectively_cancelled(sub), do: false
+  def is_effectively_cancelled(_sub), do: false
 
   def plan(sub, provider \\ @provider) do
     provider.plan(sub.metadata, plans())

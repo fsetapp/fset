@@ -159,7 +159,7 @@ defmodule Fset.Imports.JSONSchema do
 
   defp put_children_info(a, _defs) do
     props = Map.get(a, @properties)
-    pattern_props = Map.get(a, @pattern_properties)
+    _pattern_props = Map.get(a, @pattern_properties)
 
     _a = if props, do: collect_required_props(a, props), else: a
     # _a = if pattern_props, do: collect_pattern_props(a, pattern_props), else: a
@@ -176,14 +176,14 @@ defmodule Fset.Imports.JSONSchema do
     Map.put(a, @properties, props)
   end
 
-  defp collect_pattern_props(a, props) do
-    props =
-      Map.new(props, fn {key, sch} ->
-        {key, update_metadata(sch, fn -> map_put(%{}, "isKeyPattern", true) end)}
-      end)
+  # defp collect_pattern_props(a, props) do
+  #   props =
+  #     Map.new(props, fn {key, sch} ->
+  #       {key, update_metadata(sch, fn -> map_put(%{}, "isKeyPattern", true) end)}
+  #     end)
 
-    Map.put(a, @pattern_properties, props)
-  end
+  #   Map.put(a, @pattern_properties, props)
+  # end
 
   defp new_possible_type(a, defs) do
     object = Map.take(a, [@properties, @pattern_properties, @additional_properties])

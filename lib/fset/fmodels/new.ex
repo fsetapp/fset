@@ -29,7 +29,7 @@ defmodule Fset.Fmodels.New do
   def boolean(), do: %{@f_type => @f_boolean}
   def null(), do: %{@f_type => @f_null}
   def any(), do: %{@f_type => @f_any}
-  def timestamp(), do: %{@f_type => @f_timestamp}
+  # def timestamp(), do: %{@f_type => @f_timestamp}
 
   def value(v) when is_binary(v) or is_number(v) or is_boolean(v),
     do: %{@f_type => @f_value, @f_const => v}

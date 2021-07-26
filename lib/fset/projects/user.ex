@@ -30,9 +30,9 @@ defmodule Fset.Projects.User do
     end
   end
 
-  defp project_desc_inserted() do
-    from(c in Fset.Projects.Project, order_by: [desc: c.inserted_at])
-  end
+  # defp project_desc_inserted() do
+  #   from(c in Fset.Projects.Project, order_by: [desc: c.inserted_at])
+  # end
 
   defp project_desc_updated() do
     from(c in Fset.Projects.Project, order_by: [desc: c.updated_at])
