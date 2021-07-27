@@ -1,0 +1,7 @@
+<footer class="flex justify-between h-16 items-center mx-4 px-4 flex-shrink-0 text-xs">
+  <p class="text-gray-500">&copy FSET 2021</p>
+  <div class="flex items-center space-x-4">
+    <%= link "Pricing", to: Routes.page_path(@conn, :pricing), class: "text-gray-500" %>
+    <%= link "Roadmap", to: Routes.page_path(@conn, :roadmap), class: "text-gray-500" %>
+  </div>
+</footer>

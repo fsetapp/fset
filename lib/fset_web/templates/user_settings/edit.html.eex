@@ -101,6 +101,4 @@
   <% end %>
 </div>
 
-<footer class="py-12">
-<hr class="border-gray-900">
-</footer>
+<%= render FsetWeb.LayoutView, "_footer.html", assigns %>

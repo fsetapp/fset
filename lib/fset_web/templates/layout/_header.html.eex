@@ -1,7 +1,7 @@
 <header class="flex justify-between h-13 items-center m-px px-4 py-3 flex-shrink-0 text-sm">
-  <div>
+  <a href="/">
     <%= img_tag Routes.static_path(@conn, "/images/fset-ico.svg"), class: "w-7 h-7 bg-matte-black", alt: "app logo" %>
-  </div>
+  </a>
   <div class="flex items-center">
     <%= link "Docs", to: Routes.page_path(@conn, :docs), class: "mr-8 text-gray-400" %>
     <%= render FsetWeb.LayoutView, "_new_things.html", assigns %>

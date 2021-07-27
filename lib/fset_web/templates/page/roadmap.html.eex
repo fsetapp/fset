@@ -1,0 +1,38 @@
+<div class="dark">
+  <%= render FsetWeb.LayoutView, "_header.html", assigns %>
+  <article id="roadmap" class="mx-auto py-4 prose dark:text-gray-300">
+    <h1 class="dark:text-gray-300">Roadmap</h1>
+    <h3 class="dark:text-gray-400">Next batch roadmap</h3>
+
+    <section>
+      <h3 class="dark:text-pink-600">Contextual Understanding</h2>
+      <h4 class="dark:text-gray-300">Improve focus on current context</h3>
+
+      <ul>
+        <li>Pin recently opened modules as tabs</li>
+        <li>Unidirectional way of navigating chaining references</li>
+      </ul>
+    </section>
+    <section>
+      <h3 class="dark:text-pink-600">Trial and Error</h2>
+      <h4 class="dark:text-gray-300">Enables more productivity by allowing users to make some mistakes in the process.</h3>
+
+      <ul>
+        <li>Undo / Redo</li>
+      </ul>
+    </section>
+    <section>
+      <h3 class="dark:text-pink-600">Work Process Interoperability</h2>
+      <ul>
+        <li>
+          <p>Ability to release project. A release is accessible by url</p>
+          <p>
+            Currently everything is automatically updated to a single copy,
+            and users export a target file manually to bring it into their work flow, as a release point.
+          </p>
+        </li>
+      </ul>
+    </section>
+  </article>
+  <%= render FsetWeb.LayoutView, "_footer.html", assigns %>
+</div>

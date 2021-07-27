@@ -179,4 +179,6 @@
       </article>
     </section>
   </div>
+
+  <%= render FsetWeb.LayoutView, "_footer.html", assigns %>
 </div>

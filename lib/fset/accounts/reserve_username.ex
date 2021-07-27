@@ -208,6 +208,7 @@ defmodule Fset.ReserveUsername do
         "readme",
         "recommendations",
         "redeem",
+        "roadmap",
         "releases",
         "render",
         "reply",

@@ -18,6 +18,11 @@ defmodule FsetWeb.PageController do
     render(conn, "pricing.html", plans: Payments.plans())
   end
 
+  def roadmap(conn, _params) do
+    conn = put_layout(conn, {FsetWeb.LayoutView, "docs.html"})
+    render(conn, "roadmap.html", plans: Payments.plans())
+  end
+
   def docs(conn, _params) do
     conn = put_layout(conn, {FsetWeb.LayoutView, "docs.html"})
     render(conn, "docs.html", docs: DocsSample.types())

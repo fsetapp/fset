@@ -18,6 +18,7 @@
     <main role="main" class="min-h-screen">
       <%= render FsetWeb.LayoutView, "_header.html", assigns %>
       <%= @inner_content %>
+      <%= render FsetWeb.LayoutView, "_footer.html", assigns %>
     </main>
   </body>
 </html>

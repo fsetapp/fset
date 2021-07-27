@@ -62,6 +62,5 @@
   </div>
 </section>
 <hr class="border-t border-pink-500 w-12 mx-auto my-12">
-<footer class="container mx-auto py-4 border-t border-gray-900">
-  <p class="text-sm text-gray-400">&copy 2021 FSET</p>
-</footer>
+
+<%= render FsetWeb.LayoutView, "_footer.html", assigns %>
