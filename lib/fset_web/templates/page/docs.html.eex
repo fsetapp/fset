@@ -20,8 +20,7 @@
     <section id="body" class="md:w-3/5 flex flex-col px-4 py-8 font-light tracking-wide leading-relaxed text-justify">
       <article id="what_is">
         <h3 class="my-2 text-xl font-semibold text-pink-500">What is FSET</h3>
-        <p>FSET is a linked shallow tree structure GUI editor that produces target data, </p>
-        <p>with simple composibility model like modules and functions</p>
+        <p>FSET is a shallow tree structure editor that produces target data, with simple modular composability</p>
 
         <div class="my-8">
           <p class="my-2">FSET's products:</p>
@@ -68,39 +67,40 @@
         </div>
 
         <p class="my-4">
-          FModel itself <i>actually</i> has no type nor syntax (it can be displayed however html is capable of, though we display it like text based because of familiarity and cleanliness).
-          So, there is no schema language introduced here. It's like editting high level AST where each node is a semantic block. A block represents a target data.
+          FModel itself has no syntax (it can be displayed however html is capable of, though FModel displays it like text based because of familiarity and cleanliness; text and symbols are already great).
+          So, there is no schema language introduced here, and no syntax errors (one would argue that a little bit of allowed mistakes enables more productivity).
+          It's like editting high level AST where each node is a semantic block. A block represents a target data.
           However, it's easier to model stuff when we think in terms of type.
           In the end fmodels get exported as definitions along with a root schema starting from an <a href="#entrypoint" class="underline text-blue-500">entrypoint</a>.
-          We provide ease of constructing schema, automated features and documentation.
+          FModel provides ease of constructing schema, constraints that prevent errors, automated features and documentation.
         </p>
 
         <div class="my-4">
           <h3 class="my-2 text-gray-500 font-normal">Why not use JSON Schema keywords directly?</h3>
           JSON Schema is a set of constraints based keywords, not only it contains "if", "then, "else", but also its keyword independence nature.
           That means a cartesian product of all keywords is enormous, like you can freely compose a bunch of logic gates encoding business rules at schema level.
-          It's expressive, but you will be inclined to put logics that should rather be at application level in there. That does not fit data modeling mental model.
-          We pick a nice subset of it and provide visual representation (and block constraints) that guides our brain to think in terms of model and type. In fact, majority of JSON Schema users have used it this way all long,
-          but there is still a lot of confusion, especially for newcomers.
+          It's expressive, but you will be inclined to put logics that should rather be at application level in there. That does not fit data modeling mental model (something that is not a model of data may look like configuration or parameters)
+          FModel picks a nice subset of it and provides visual representation (and block constraints) that guides our brain to think in terms of model and type over logical constraints. In our observation, majority of JSON Schema users have used it this way all along,
+          but there is still a lot of confusion, especially for newcomers, trying to mix and match to form rules that are not sane.
         </div>
 
         <div class="my-4">
           <h3 class="my-2 text-gray-500 font-normal underline">Goals</h3>
-          While FModel helps you author schema in "data modeling" way, it still uses standard JSON Schema
+          While FModel helps system developers author schema in "data modeling" way, it still uses standard JSON Schema
           <a href="https://json-schema.org/draft/2020-12/json-schema-validation.html#rfc.section.6" target="_blank" class="text-blue-500">Vocabulary</a> without customization or our own vocabulary.
           So it's still in <b class="font-semibold text-yellow-500">"Validation"</b> category, not in <b class="font-semibold text-yellow-500">"Code Generation"</b> category because validation is what JSON Schema is designed for.
           So today, FModel only exports JSON Schema original vocabulary (based on  <a href="https://json-schema.org/draft/2020-12/json-schema-validation.html" target="_blank" class="text-blue-500">draft/2020-12</a>, <i class="italic">"Each release of the JSON schema specification is treated as a production release"</i>).
           FModel output schema is suitable for configuration validation, api request / respond body, and also data shape like <a href="https://vega.github.io/vega-lite" target="_blank" class="text-blue-500">data visualization</a> grammar.
           <br>
           <br>
-          Generally speaking, FModel exports standard, widely adopted, "data modeling" schema in json format.
+          Generally speaking, FModel exports standard, widely adopted, data modeling schema in json format.
           There is <a href="https://datatracker.ietf.org/doc/html/rfc8927" class="text-blue-500" target="_blank">JSON Type Definition (rfc8927)</a> which is designed for <b class="font-semibold">code generation</b>, if there is enough
-          demand, we could also export JTD, though we would have yet another standard because code generation under JSON Schema umbrella, they just <a href="https://github.com/json-schema-org/community/discussions/18" class="text-blue-500" target="_blank">started developing it</a> and FModel will export that as well when their first release comes out.
+          demand, FModel could also export JTD, though we would have yet another standard because code generation under JSON Schema umbrella, they just <a href="https://github.com/json-schema-org/community/discussions/18" class="text-blue-500" target="_blank">started developing it</a> and FModel will export that as well when some releases come out.
         </div>
 
         <div class="my-4">
           <h3 class="my-2 text-gray-500 font-normal">How about non JSON and/or binary format export?</h3>
-          Non JSON and/or binary format is not non-goal but definitely not in our current roadmap.
+          No Plan!
         </div>
       </article>
 
@@ -108,16 +108,16 @@
         <h3 class="my-2 text-xl font-semibold text-pink-500">Module and Ref</h3>
         <h5 class="font-semibold">Module</h5>
         <p>
-          FModel has a logical group called "modu", stands for module.
-          A module contains a list of fmodels (i.e. top level types). That's it. Not as much as a "module system". Module name is used as a prefix for fmodel name at export.
+          FModel has a logical group called "modu", stands for module (naming is not a big deal it's just short enough for good noise/signal ratio visually).
+          A module contains a list of fmodels (i.e. top level types). That's it. Not as much as a "module system". Module name is used with fmodel name at export.
           Currently, a list of module is flat, there is no folder for now. It's enough for majority of schema today
-          (however, we will have a way to group module in future)
+          (however, the editor will have a way to group module in future, maybe something like scoped labels, because module and ref belong to FSET that will also have other kind of editors)
         </p>
         <br>
         <h5 class="font-semibold">Ref</h5>
         <p>
-          A Ref type can refer to a fmodel across modules. It also provides a simple referential integrity, if a fmodel is being referenced, it's not removable.
-          Ref name automatically reflects referenced fmodel name and namespace.
+          A Ref type can refer to a fmodel across modules. It also provides a simple referential integrity enforced at database level (i.e. Postgresql's foreign key constraint),
+          if a fmodel is being referenced, it's not removable. Ref name automatically reflects referenced fmodel name and namespace when type is updated or moved between modules.
         </p>
       </article>
 
@@ -125,8 +125,8 @@
         <h3 class="my-2 text-xl font-semibold text-pink-500">Entrypoint</h3>
         <p>
           FModel currently support 1 entrypoint at a time when export as a single file schema.
-          A fmodel can be marked as entrypoint, and it will be exported to root level of JSON Schema,
-          the rest of fmodels will go under "$defs" keyword (currently, without tree shaking) each with module name namespace.
+          A fmodel can be marked as entrypoint, and it will be exported to root level of JSON Schema of its own module,
+          the rest of fmodels will go under "$defs" keyword (currently, without tree shaking; unused defs elimination) each with module name namespace.
         </p>
       </article>
 
@@ -137,9 +137,8 @@
         <h3 class="my-2 text-xl font-semibold text-pink-500">Export</h3>
         <h4 class="my-2 text-lg">FModel to JSON Schema <a href="https://json-schema.org/specification-links.html#2020-12" target="_blank" class="text-blue-500">(draft 2020-12)</a></h4>
         <p>
-          We use a stable subset of draft-2020-12; keywords that have been through several previous releases to latest release.
-          And will probably add some keywords in future draft that's useful to FModel. Ideally, we do not ever remove keywords especially ones that strengthen constraints (i.e. fail a validation that's previously passed.)
-          So, we would only add new keywords if and only if there are strong reasons.
+          FModel uses a stable subset of draft-2020-12; keywords that have been through from several previous releases to latest release.
+          It would probably have some new keywords in future draft if that's useful in data modeling. Ideally, we do not ever remove keywords especially ones that strengthen constraints (i.e. fail a validation that's previously passed)
         </p>
         <div class="my-8 space-y-4">
           <ul class="tree0 space-y-6">

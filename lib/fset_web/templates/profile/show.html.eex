@@ -17,12 +17,12 @@
     <%= for project <- @user.projects do %>
       <li class="px-3 py-2 mb-3 border border-gray-800 rounded bg-gray-900">
         <div class="flex flex-wrap items-center">
-          <%= link project.key, to: Routes.project_path(@conn, :show, @user.username, project.key), class: "text-lg text-blue-500" %>
+          <%= link project.key, to: Routes.project_path(@conn, :show, @user.username, project.key), class: "text-lg text-blue-500 break-words" %>
           <%= if project.visibility == :private do %>
             <span class="text-xs mx-2 rounded bg-matte-black text-gray-400 px-2 py-1 font-light">private</span>
           <% end %>
         </div>
-        <p class="py-2 text-sm"><%= project.description %></p>
+        <p class="py-2 text-sm break-words"><%= project.description %></p>
         <p class="text-xs text-gray-400">
           <span>Updated </span>
           <time datetime="<%= DateTime.to_iso8601(DateTime.from_naive!(project.updated_at, "Etc/UTC")) %>">
