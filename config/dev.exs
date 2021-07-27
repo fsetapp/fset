@@ -23,7 +23,7 @@ config :fset, Fset.Mailer, adapter: Swoosh.Adapters.Local
 # with webpack to recompile .js and .css sources.
 config :fset, FsetWeb.Endpoint,
   http: [port: 4000],
-  debug_errors: true,
+  debug_errors: false,
   code_reloader: true,
   check_origin: false,
   watchers: [
@@ -77,6 +77,6 @@ config :phoenix, :plug_init_mode, :runtime
 
 config :fset, Fset.Payments.Paddle,
   vendor_auth_code: System.get_env("VENDOR_AUTH_CODE"),
-  vendor_id: String.to_integer(System.get_env("VENDOR_ID")),
+  vendor_id: String.to_integer(System.get_env("VENDOR_ID") || "0"),
   api_url: "https://sandbox-vendors.paddle.com",
   plans: [%{id: 11294, name: "FModel", price: 15}]

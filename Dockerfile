@@ -1,4 +1,4 @@
-FROM elixir:1.11-alpine AS build
+FROM elixir:1.12-alpine AS build
 
 # install build dependencies
 RUN apk add --no-cache build-base yarn git
@@ -37,7 +37,7 @@ RUN mix do compile, release
 
 # prepare release image
 FROM alpine:latest AS app
-RUN apk add --no-cache openssl ncurses-libs
+RUN apk add --no-cache openssl ncurses-libs libgcc libstdc++
 
 WORKDIR /app
 
