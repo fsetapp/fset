@@ -12,7 +12,4 @@
     <%= FsetWeb.IconView.ticket(class: "mr-3 w-5 h-5 text-blue-400") %>
     <span>Unlimited Import / Export <%= link "JSON Schemas", to: "#", class: "underline" %></span>
   </li>
-  <li class="flex items-center">
-    <%= FsetWeb.IconView.ticket(class: "mr-3 w-5 h-5 text-blue-400") %> <span>1 hosted exported schema (cdn url)</span>
-  </li>
 </ul>

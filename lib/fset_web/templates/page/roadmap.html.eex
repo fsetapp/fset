@@ -28,7 +28,7 @@
           <p>Ability to release project. A release is accessible by url</p>
           <p>
             Currently everything is automatically updated to a single copy,
-            and users export a target file manually to bring it into their work flow, as a release point.
+            and users export a target file manually to bring it into their workflow, as a release point.
           </p>
         </li>
       </ul>

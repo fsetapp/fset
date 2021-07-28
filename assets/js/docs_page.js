@@ -1,3 +1,4 @@
+import "phoenix_html"
 import { View } from "./vendor/fbox.min.js"
 
 window.addEventListener("hashchange", e => {
