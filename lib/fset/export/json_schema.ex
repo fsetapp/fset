@@ -343,7 +343,11 @@ defmodule Fset.Exports.JSONSchema do
         end
       end)
 
-    Map.merge(app.program, %{@defs => app.modules})
+    Map.merge(app.program, %{
+      @id => schema_id,
+      @schema => schema_2020_12(),
+      @defs => app.modules
+    })
   end
 
   defp build_schmea_file(module_uri, defs) do
