@@ -235,11 +235,16 @@ defmodule Fset.Exports.JSONSchema do
                 Enum.map(tagged_things, fn thing ->
                   {key, thing} = Map.pop!(thing, "key")
 
-                  put_in(
-                    thing,
-                    [Access.key(@properties, %{}), Map.fetch!(sch_meta, "tagname")],
-                    %{@const => key}
-                  )
+                  tagname = Map.fetch!(sch_meta, "tagname")
+
+                  thing =
+                    put_in(
+                      thing,
+                      [Access.key(@properties, %{}), tagname],
+                      %{@const => key}
+                    )
+
+                  Map.update(thing, @required, [tagname], fn required -> [tagname | required] end)
                 end)
 
               Map.put(%{}, @one_of, tagged_things)

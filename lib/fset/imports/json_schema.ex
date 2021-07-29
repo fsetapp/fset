@@ -286,15 +286,21 @@ defmodule Fset.Imports.JSONSchema do
   defp new_tagged_union(a, _defs) do
     fields = Map.get(a, @one_of, [T.record()])
 
-    fields
-    |> Enum.with_index()
-    |> Enum.map(fn {a, i} ->
-      a = Map.put(a, "key", "tag_#{i}")
-      T.put_anchor(a)
-    end)
+    all_record = Enum.all?(fields, fn thing -> Map.get(thing, @type_) == @object end)
 
-    # all_record = Enum.all?(tagged_things, fn thing -> Map.get(thing, @type_) == @object end)
-    T.tagged_union(fields)
+    if all_record do
+      tagged_things =
+        fields
+        |> Enum.with_index()
+        |> Map.new(fn {a, i} ->
+          a = Map.put(a, "key", "tag_#{i}")
+          T.put_anchor(a)
+        end)
+
+      T.tagged_union(tagged_things)
+    else
+      T.union(fields)
+    end
   end
 
   defp new_string(a) do
