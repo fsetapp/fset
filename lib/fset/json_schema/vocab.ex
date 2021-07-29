@@ -31,6 +31,7 @@ defmodule Fset.JSONSchema.Vocab do
       #
       @max_items "maxItems"
       @min_items "minItems"
+      @unique_items "uniqueItems"
 
       ##
       @string "string"
@@ -57,6 +58,7 @@ defmodule Fset.JSONSchema.Vocab do
       @one_of "oneOf"
 
       # Meta-data
+      @comment "$comment"
       @examples "examples"
       @title "title"
       @description "description"

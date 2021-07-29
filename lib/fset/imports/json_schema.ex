@@ -102,10 +102,12 @@ defmodule Fset.Imports.JSONSchema do
         |> map_put("isEntry", Map.get(a_og, "isEntry"))
 
       meta =
-        update_metadata(a_og, fn ->
+        update_metadata(a_, fn ->
           %{}
           |> map_put("title", Map.get(a_og, @title))
           |> map_put("description", Map.get(a_og, @description))
+          |> map_put("comment", Map.get(a_og, @comment))
+          |> map_put("examples", Map.get(a_og, @examples))
         end)
         |> Map.get(@metadata)
 
@@ -140,8 +142,8 @@ defmodule Fset.Imports.JSONSchema do
       %{@ref => ref} -> new_ref(a, ref, defs)
       %{@const => _} -> new_val(a)
       %{@enum => _} -> new_union(a)
-      %{@any_of => schs} -> T.union(schs)
-      %{@one_of => _} -> new_tagged_union(a, defs)
+      %{@any_of => schs} -> new_tagged_union(a, schs, defs)
+      %{@one_of => schs} -> new_tagged_union(a, schs, defs)
       #
       %{@type_ => @object} -> new_record_or_dict(a, defs)
       %{@type_ => @array} -> new_list_or_tuple(a)
@@ -241,8 +243,9 @@ defmodule Fset.Imports.JSONSchema do
     T.list(item)
     |> put_metadata(fn ->
       %{}
-      |> map_put("min", Map.get(a, @min_items, 1))
+      |> map_put("min", Map.get(a, @min_items))
       |> map_put("max", Map.get(a, @max_items))
+      |> map_put("unique", Map.get(a, @unique_items))
     end)
   end
 
@@ -283,8 +286,8 @@ defmodule Fset.Imports.JSONSchema do
     ])
   end
 
-  defp new_tagged_union(a, _defs) do
-    fields = Map.get(a, @one_of, [T.record()])
+  defp new_tagged_union(_a, fields, _defs) do
+    fields = fields || [T.record()]
 
     all_record = Enum.all?(fields, fn thing -> Map.get(thing, @type_) == @object end)
 
@@ -381,6 +384,7 @@ defmodule Fset.Imports.JSONSchema do
   defp update_metadata(map, f) do
     v = f.()
     metadata = Map.get(map, @metadata, %{})
+
     map_put(map, @metadata, Map.merge(metadata, v))
   end
 end
