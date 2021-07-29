@@ -57,7 +57,8 @@ defmodule Fset.Exports.JSONSchema do
           %{}
           |> Map.put(@type_, @array)
           |> Map.put(@prefix_items, items)
-          |> Map.put(@unevaluated_items, false)
+          |> map_put(@min_items, Enum.count(items))
+          |> map_put(@max_items, Enum.count(items))
 
         {sch, acc}
 
