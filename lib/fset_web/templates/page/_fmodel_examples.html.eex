@@ -1,0 +1,679 @@
+<ul class="tree0 md:grid md:grid-cols-3">
+  <li class="">
+    <div class="block" style="min-height:9rem" data-name="Record" data-sch="">
+      <ul role="tree" aria-multiselectable="true" class="setnu text-sm" aria-labelledby="Record_tree">
+        <li class="root-item" role="treeitem" aria-selected="false" tabindex="-1" id="" data-tag="Record"
+          aria-posinset="1" aria-level="1" aria-expanded="true">
+          <dfn class="h" id="Record_tree">
+          </dfn>
+          <ul role="group" tabindex="-1" data-group="keyed">
+            <li class="folder" role="treeitem" aria-selected="false" tabindex="-1" id="[Record]" aria-posinset="1"
+              aria-level="2" aria-expanded="true">
+              <dfn class="h" data-diff="" data-group-size="2">
+                <span class="def" style="padding-left: 6ch">
+                  type
+                </span>
+                <span class="k">
+                  Record
+                </span>
+                <span class="s">=</span>
+                <span class="t">
+                  { &nbsp; }
+                </span>
+              </dfn>
+              <ul role="group" data-group="keyed">
+                <li class="file" role="treeitem" aria-selected="false" tabindex="-1" id="[Record][field_a]" data-diff=""
+                  aria-posinset="1" aria-level="3">
+                  <span class="k" style="padding-left: 9ch" data-required="true" data-is-pattern="false">
+                    field_a
+                  </span>
+                  <span class="s">:</span>
+                  <span class="t">
+                    string
+                  </span>
+                </li>
+                <li class="file" role="treeitem" aria-selected="false" tabindex="-1" id="[Record][field_b]" data-diff=""
+                  aria-posinset="2" aria-level="3">
+                  <span class="k" style="padding-left: 9ch" data-required="false" data-is-pattern="false">
+                    field_b
+                  </span>
+                  <span class="s">:</span>
+                  <span class="t">
+                    int_32
+                  </span>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+
+    </div>
+    <code class="flex">
+          <pre class="p-2 text-xs text-left w-full bg-matte-black rounded-lg whitespace-pre-wrap overflow-x-scroll">{
+  "properties": {
+    "field_a": {
+      "type": "string"
+    },
+    "field_b": {
+      "maximum": 2147483647,
+      "minimum": -2147483648,
+      "type": "integer"
+    }
+  },
+  "required": [
+    "field_a"
+  ],
+  "type": "object"
+}</pre>
+        </code>
+  </li>
+  <li class="">
+    <div class="block" style="min-height:9rem" data-name="Tuple" data-sch="">
+      <ul role="tree" aria-multiselectable="true" class="setnu text-sm" aria-labelledby="Tuple_tree">
+        <li class="root-item" role="treeitem" aria-selected="false" tabindex="-1" id="" data-tag="Tuple"
+          aria-posinset="1" aria-level="1" aria-expanded="true">
+          <dfn class="h" id="Tuple_tree">
+          </dfn>
+          <ul role="group" tabindex="-1" data-group="keyed">
+
+            <li class="folder" role="treeitem" aria-selected="false" tabindex="-1" id="[Tuple]" aria-posinset="1"
+              aria-level="2" aria-expanded="true">
+              <dfn class="h" data-diff="" data-group-size="3">
+
+                <span class="def" style="padding-left: 6ch">
+                  type
+                </span>
+                <span class="k">
+
+                  Tuple
+
+
+                </span>
+                <span class="s">=</span>
+
+                <span class="t">
+
+                  ( &nbsp; )
+
+
+                </span>
+              </dfn>
+              <ul role="group" data-group="indexed">
+
+                <li class="file" role="treeitem" aria-selected="false" tabindex="-1" id="[Tuple][][0]" data-diff=""
+                  aria-posinset="1" aria-level="3">
+
+                  <span class="k" style="padding-left: 9ch">
+                    0
+
+                  </span>
+                  <span class="s">:</span>
+
+                  <span class="t">
+
+                    <span class="value" title="Value type">
+                      "ok"
+
+                    </span>
+
+
+                  </span>
+                </li>
+
+
+                <li class="file" role="treeitem" aria-selected="false" tabindex="-1" id="[Tuple][][1]" data-diff=""
+                  aria-posinset="2" aria-level="3">
+
+                  <span class="k" style="padding-left: 9ch">
+                    1
+
+                  </span>
+                  <span class="s">:</span>
+
+                  <span class="t">
+
+                    <span class="ref">
+                      ExportDocs::Record
+
+                    </span>
+
+
+                  </span>
+                </li>
+
+
+                <li class="folder" role="treeitem" aria-selected="false" tabindex="-1" id="[Tuple][][2]"
+                  aria-posinset="3" aria-level="3" aria-expanded="true">
+                  <dfn class="h" data-diff="" data-group-size="0">
+
+                    <span class="k" style="padding-left: 9ch">
+                      2
+
+                    </span>
+                    <span class="s">:</span>
+
+                    <span class="t">
+
+                      { any }
+
+
+                    </span>
+                  </dfn>
+                  <ul role="group" data-group="keyed">
+
+                  </ul>
+                </li>
+
+              </ul>
+            </li>
+
+          </ul>
+        </li>
+      </ul>
+
+    </div>
+    <code class="flex">
+          <pre class="p-2 text-xs text-left w-full bg-matte-black rounded-lg whitespace-pre-wrap overflow-x-scroll">{
+  "prefixItems": [
+    {
+      "const": "ok"
+    },
+    {
+      "$ref": "https://localhost/ExportDocs#/$defs/Record"
+    },
+    {
+      "properties": {},
+      "type": "object"
+    }
+  ],
+  "type": "array",
+  "unevaluatedItems": false
+}</pre>
+        </code>
+  </li>
+
+  <li class="">
+    <div class="block" style="min-height:9rem" data-name="Dict" data-sch="">
+
+      <ul role="tree" aria-multiselectable="true" class="setnu text-sm" aria-labelledby="Dict_tree">
+
+        <li class="root-item" role="treeitem" aria-selected="false" tabindex="-1" id="" data-tag="Dict"
+          aria-posinset="1" aria-level="1" aria-expanded="true">
+          <dfn class="h" id="Dict_tree">
+
+          </dfn>
+          <ul role="group" tabindex="-1" data-group="keyed">
+
+            <li class="folder" role="treeitem" aria-selected="false" tabindex="-1" id="[Dict]" aria-posinset="1"
+              aria-level="2" aria-expanded="true">
+              <dfn class="h" data-diff="" data-group-size="0">
+
+                <span class="def" style="padding-left: 6ch">
+                  type
+                </span>
+                <span class="k">
+
+                  Dict
+
+
+                </span>
+                <span class="s">=</span>
+
+                <span class="t">
+
+                  dict
+
+
+                </span>
+              </dfn>
+              <ul role="group" data-group="none">
+
+                <li class="file" role="treeitem" aria-selected="false" tabindex="-1" id="[Dict][][0]" data-diff=""
+                  aria-posinset="1" aria-level="3">
+
+                  <span class="s" style="padding-left: 8ch">k</span>
+
+                  <span class="t">
+
+
+                    string <span class="m pattern">/^x-/<span></span></span>
+
+
+                  </span>
+                </li>
+
+
+                <li class="file" role="treeitem" aria-selected="false" tabindex="-1" id="[Dict][][1]" data-diff=""
+                  aria-posinset="2" aria-level="3">
+
+                  <span class="s" style="padding-left: 8ch">v</span>
+
+                  <span class="t">
+
+                    <span class="ref">
+                      ExportDocs::Record
+
+                    </span>
+
+
+                  </span>
+                </li>
+
+              </ul>
+            </li>
+
+          </ul>
+        </li>
+      </ul>
+
+    </div>
+    <code class="flex">
+          <pre class="p-2 text-xs text-left w-full bg-matte-black rounded-lg whitespace-pre-wrap overflow-x-scroll">{
+  "additionalProperties": {
+    "$ref": "https://localhost/ExportDocs#/$defs/Record"
+  },
+  "minProperties": 4,
+  "propertyNames": {
+    "pattern": "^x-",
+    "type": "string"
+  },
+  "type": "object"
+}</pre>
+        </code>
+  </li>
+
+  <li class="">
+    <div class="block" style="min-height:9rem" data-name="List" data-sch="">
+
+      <ul role="tree" aria-multiselectable="true" class="setnu text-sm" aria-labelledby="List_tree">
+
+        <li class="root-item" role="treeitem" aria-selected="false" tabindex="-1" id="" data-tag="List"
+          aria-posinset="1" aria-level="1" aria-expanded="true">
+          <dfn class="h" id="List_tree">
+
+          </dfn>
+          <ul role="group" tabindex="-1" data-group="keyed">
+
+            <li class="folder" role="treeitem" aria-selected="false" tabindex="-1" id="[List]" aria-posinset="1"
+              aria-level="2" aria-expanded="false">
+              <dfn class="h" data-diff="" data-group-size="1">
+
+                <span class="def" style="padding-left: 6ch">
+                  type
+                </span>
+                <span class="k">
+
+                  List
+
+
+                </span>
+                <span class="s">=</span>
+
+                <span class="t">
+
+                  [&nbsp; <span class="ref">
+                    ExportDocs::Record
+
+                  </span> &nbsp;]
+
+
+                </span>
+              </dfn>
+              <ul role="group" data-group="none">
+
+                <li class="file" role="treeitem" aria-selected="false" tabindex="-1" id="[List][][0]" data-diff=""
+                  aria-posinset="1" aria-level="3">
+
+                  <span class="s" style="padding-left: 8ch">└</span>
+
+                  <span class="t">
+
+                    <span class="ref">
+                      ExportDocs::Record
+
+                    </span>
+
+
+                  </span>
+                </li>
+
+              </ul>
+            </li>
+
+          </ul>
+        </li>
+      </ul>
+
+    </div>
+    <code class="flex">
+          <pre class="p-2 text-xs text-left w-full bg-matte-black rounded-lg whitespace-pre-wrap overflow-x-scroll">{
+  "items": {
+    "$ref": "https://localhost/ExportDocs#/$defs/Record"
+  },
+  "type": "array"
+}</pre>
+        </code>
+  </li>
+  <li class="">
+    <div class="block" style="min-height:9rem" data-name="TaggedUnion1" data-sch="">
+
+      <ul role="tree" aria-multiselectable="true" class="setnu text-sm" aria-labelledby="TaggedUnion1_tree">
+
+        <li class="root-item" role="treeitem" aria-selected="false" tabindex="-1" id="" data-tag="TaggedUnion1"
+          aria-posinset="1" aria-level="1" aria-expanded="true">
+          <dfn class="h" id="TaggedUnion1_tree">
+
+          </dfn>
+          <ul role="group" tabindex="-1" data-group="keyed">
+
+            <li class="folder" role="treeitem" aria-selected="false" tabindex="-1" id="[TaggedUnion1]" aria-posinset="1"
+              aria-level="2" aria-expanded="true">
+              <dfn class="h" data-diff="" data-group-size="2">
+
+                <span class="def" style="padding-left: 6ch">
+                  type
+                </span>
+                <span class="k">
+
+                  TaggedUnion
+
+
+                </span>
+                <span class="s">=</span>
+
+                <span class="t">
+
+                  || _mytag
+
+
+                </span>
+              </dfn>
+              <ul role="group" data-group="keyed">
+
+                <li class="folder" role="treeitem" aria-selected="false" tabindex="-1" id="[TaggedUnion1][tag_a]"
+                  aria-posinset="1" aria-level="3" aria-expanded="true">
+                  <dfn class="h" data-diff="" data-group-size="1">
+
+                    <span class="s" style="padding-left: 8.5ch">|</span>
+                    <span class="k tag">
+                      tag_a
+
+                    </span>
+                    <span class="s">·</span>
+
+                    <span class="t">
+
+                      { &nbsp; }
+
+
+                    </span>
+                  </dfn>
+                  <ul role="group" data-group="keyed">
+
+                    <li class="file" role="treeitem" aria-selected="false" tabindex="-1"
+                      id="[TaggedUnion1][tag_a][field_x]" data-diff="" aria-posinset="1" aria-level="4">
+
+                      <span class="k" style="padding-left: 11ch" data-required="false" data-is-pattern="false">
+                        field_x
+
+                      </span>
+                      <span class="s">:</span>
+
+                      <span class="t">
+
+                        uint_8
+
+
+                      </span>
+                    </li>
+
+                  </ul>
+                </li>
+
+
+                <li class="folder" role="treeitem" aria-selected="false" tabindex="-1" id="[TaggedUnion1][tag_b]"
+                  aria-posinset="2" aria-level="3" aria-expanded="true">
+                  <dfn class="h" data-diff="" data-group-size="1">
+
+                    <span class="s" style="padding-left: 8.5ch">|</span>
+                    <span class="k tag">
+                      tag_b
+
+                    </span>
+                    <span class="s">·</span>
+
+                    <span class="t">
+
+                      { &nbsp; }
+
+
+                    </span>
+                  </dfn>
+                  <ul role="group" data-group="keyed">
+
+                    <li class="file" role="treeitem" aria-selected="false" tabindex="-1"
+                      id="[TaggedUnion1][tag_b][field_z]" data-diff="" aria-posinset="1" aria-level="4">
+
+                      <span class="k" style="padding-left: 11ch" data-required="false" data-is-pattern="false">
+                        field_z
+
+                      </span>
+                      <span class="s">:</span>
+
+                      <span class="t">
+
+                        string
+
+
+                      </span>
+                    </li>
+
+                  </ul>
+                </li>
+
+              </ul>
+            </li>
+
+          </ul>
+        </li>
+      </ul>
+
+    </div>
+    <code class="flex">
+          <pre class="p-2 text-xs text-left w-full bg-matte-black rounded-lg whitespace-pre-wrap overflow-x-scroll">{
+  "oneOf": [
+    {
+      "properties": {
+        "_mytag": {
+          "const": "tag_a"
+        },
+        "field_x": {
+          "maximum": 255,
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "type": "object"
+    },
+    {
+      "properties": {
+        "_mytag": {
+          "const": "tag_b"
+        },
+        "field_z": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    }
+  ],
+  "unevaluatedProperties": false
+}</pre>
+        </code>
+  </li>
+
+
+
+
+
+  <li class="">
+    <div class="block" style="min-height:9rem" data-name="UnionOfVal" data-sch="">
+
+      <ul role="tree" aria-multiselectable="true" class="setnu text-sm" aria-labelledby="UnionOfVal_tree">
+
+        <li class="root-item" role="treeitem" aria-selected="false" tabindex="-1" id="" data-tag="UnionOfVal"
+          aria-posinset="1" aria-level="1" aria-expanded="true">
+          <dfn class="h" id="UnionOfVal_tree">
+
+          </dfn>
+          <ul role="group" tabindex="-1" data-group="keyed">
+
+            <li class="folder" role="treeitem" aria-selected="false" tabindex="-1" id="[UnionOfVal]" aria-posinset="1"
+              aria-level="2" aria-expanded="true">
+              <dfn class="h" data-diff="" data-group-size="4">
+
+                <span class="def" style="padding-left: 6ch">
+                  type
+                </span>
+                <span class="k">
+
+                  UnionOfVal
+
+
+                </span>
+                <span class="s">=</span>
+
+                <span class="t">
+
+                  ||
+
+
+                </span>
+              </dfn>
+              <ul role="group" data-group="indexed">
+
+                <li class="file" role="treeitem" aria-selected="false" tabindex="-1" id="[UnionOfVal][][0]" data-diff=""
+                  aria-posinset="1" aria-level="3">
+
+                  <span class="s" style="padding-left: 9ch">|</span>
+
+                  <span class="t">
+
+                    <span class="value" title="Value type">
+                      "a"
+
+                    </span>
+
+
+                  </span>
+                </li>
+
+
+                <li class="file" role="treeitem" aria-selected="false" tabindex="-1" id="[UnionOfVal][][1]" data-diff=""
+                  aria-posinset="2" aria-level="3">
+
+                  <span class="s" style="padding-left: 9ch">|</span>
+
+                  <span class="t">
+
+                    <span class="value" title="Value type">
+                      10
+
+                    </span>
+
+
+                  </span>
+                </li>
+
+
+                <li class="file" role="treeitem" aria-selected="false" tabindex="-1" id="[UnionOfVal][][2]" data-diff=""
+                  aria-posinset="3" aria-level="3">
+
+                  <span class="s" style="padding-left: 9ch">|</span>
+
+                  <span class="t">
+
+                    <span class="value" title="Value type">
+                      true
+
+                    </span>
+
+
+                  </span>
+                </li>
+
+
+                <li class="file" role="treeitem" aria-selected="false" tabindex="-1" id="[UnionOfVal][][3]" data-diff=""
+                  aria-posinset="4" aria-level="3">
+
+                  <span class="s" style="padding-left: 9ch">|</span>
+
+                  <span class="t">
+
+                    <span class="value" title="Value type">
+                      null
+
+                    </span>
+
+
+                  </span>
+                </li>
+
+              </ul>
+            </li>
+
+          </ul>
+        </li>
+      </ul>
+
+    </div>
+    <code class="flex">
+          <pre class="p-2 text-xs text-left w-full bg-matte-black rounded-lg whitespace-pre-wrap overflow-x-scroll">{
+  "enum": [
+    "a",
+    10,
+    true,
+    null
+  ]
+}</pre>
+        </code>
+  </li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</ul>

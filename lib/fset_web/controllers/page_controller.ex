@@ -11,6 +11,9 @@ defmodule FsetWeb.PageController do
       _ ->
         conn = put_layout(conn, {FsetWeb.LayoutView, "static.html"})
         render(conn, "landing.html")
+        # For generate example of types on landing page
+        # Also put <script defer type="module" src="<%= Routes.static_path(@conn, "/js/docs_page.js") %>"></script> on static.html (layout)
+        # render(conn, "landing.html", docs: DocsSample.types())
     end
   end
 

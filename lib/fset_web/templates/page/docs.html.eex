@@ -15,6 +15,8 @@
         <li><%= link "FModel to JSON Schema", class: "px1", to: "#fmodel_to_json_schema" %></li>
         <li class="mt-3 mb-1 text-gray-400 text-sm font-light tracking-wide">Import</li>
         <li><%= link "JSON Schema to FModel", class: "px1", to: "#json_schema_to_fmodel" %></li>
+        <li class="mt-6 mb-2"></li>
+        <li><%= link "Keyboard Commands", class: "px1", to: "#kbd" %></li>
       </ul>
     </nav>
     <section id="body" class="md:w-3/5 flex flex-col px-4 py-8 font-light tracking-wide leading-relaxed text-justify">
@@ -42,7 +44,7 @@
 
         <div class="tree0 mt-4">
           <p>A fmodel example:</p>
-          <def-fmodel class="tree0" data-name="ex_1" data-sch="<%= @docs.ex_1 %>">
+          <def-fmodel data-name="ex_1" data-sch="<%= @docs.ex_1 %>">
           <pre class="text-sm"><%= """
           type VConcatSpec<GenericSpec> = {   }
               bounds : ||
@@ -176,6 +178,11 @@
           for example, "AWS_ACMPCA_Policy". "AWS_ACMPCA" is going to be module name, "Policy" is going to be one of module's fmodels.
           By default, imported definitions are grouped by first character.
         </p>
+      </article>
+
+      <article id="kbd" class="docsref my-8">
+      <h3 class="my-2 text-xl font-semibold text-pink-500">Keyboard commands</h3>
+        <%= render FsetWeb.ProjectView, "_help.html" %>
       </article>
     </section>
   </div>

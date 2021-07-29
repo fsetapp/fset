@@ -21,7 +21,13 @@
   --diff-moved-color: rgba(59, 130, 246, .5);
   --diff-changed-color: rgba(255, 140, 0, .5);
 }
-.tree0 { --tree-min-width: 0; }
+.tree0 {
+  --tree-bg-color: transparent;
+  --tree-min-width: 0;
+}
+.landing-page [role="tree"] {
+  height: auto;
+}
 
 #project [role="tree"] {
   --tree-min-width: 187px;

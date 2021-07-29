@@ -77,6 +77,14 @@
       </dt>
     </div>
     <div>
+      <dd>Select a sibling schema</dd>
+      <dt>
+        <kbd>i</kbd>
+        <br>
+        <kbd>j</kbd>
+      </dt>
+    </div>
+    <div>
       <dd>Select mutiple schemas</dd>
       <dt>
         <kbd>Shift</kbd> + <kbd>ArrowUp</kbd>

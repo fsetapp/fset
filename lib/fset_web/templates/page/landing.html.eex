@@ -31,8 +31,17 @@
 <hr class="border-t border-pink-500 w-12 mx-auto my-12">
 <section class="landing-page container mx-auto">
   <div class="flex flex-wrap font-thin">
-    <p class="my-4 w-full px-2 text-3xl tracking-wide text-gray-100">Constructing schema as productive as text editor</p>
-    <p class="my-2 px-2 text-lg">With essential keyboard commands</p>
+    <p class="my-4 w-full px-2 text-3xl tracking-wide text-gray-100">Abstract Data Type to JSON Schema</p>
+    <p class="my-2 px-2 text-lg">Think in terms of abstract data type, export sane subset of json schema <span class="text-base">( see <a href="<%= Routes.page_path(@conn, :docs) <> "#fmodel_to_json_schema" %>" class="text-blue-500" target="_blank">all types</a> )</span></p>
+    <%= render "_fmodel_examples.html", assigns %>
+  </div>
+
+</section>
+<hr class="border-t border-pink-500 w-12 mx-auto my-12">
+<section class="landing-page container mx-auto">
+  <div class="flex flex-wrap font-thin">
+    <p class="my-4 w-full px-2 text-3xl tracking-wide text-gray-100">Constructing schema as productive as working in text editor</p>
+    <p class="my-2 px-2 text-lg">With essential keyboard commands <span class="text-base">( see <a href="<%= Routes.page_path(@conn, :docs) <> "#kbd" %>" class="text-blue-500" target="_blank">all commands</a> )</span></p>
     <%= render FsetWeb.ProjectView, "_help.html" %>
   </div>
 </section>
@@ -57,8 +66,50 @@
     <p class="my-2 px-2 text-lg">
       Bundled schema is also a usable schema. Validator can validate the file without decomposing schema definitions into separate files.
     </p>
-    <%= img_tag Routes.static_path(@conn, "/images/bundled.png"), alt: "exported bundle", class: "block py-8 mx-auto max-w-full" %>
-    <p class="mx-auto text-center">Bundled schame consists of list of schemas, for more information see <%= link "Export documentation", to: Routes.page_path(@conn, :docs) <> "#fmodel_to_json_schema", class: "text-blue-500", target: "_black" %></p>
+    <div class="flex flex-wrap py-8">
+      <%= img_tag Routes.static_path(@conn, "/images/bundled.png"), alt: "exported bundle", class: "block" %>
+      <div class="md:w-1/2 mx-4 pl-16">
+        <div>
+          <h5 class="text-lg tracking-wider"><a href="https://ajv.js.org/" target="_blank" class="text-blue-500">AJV</a> validator</h5>
+          <p class="text-sm text-gray-400">Currently AJV needs one step of decomposing files</p>
+
+          <code class="block my-4 text-sm">
+            <pre class="whitespace-pre-wrap overflow-x-scroll font-mono" style="color: burlywood">
+const Ajv2020 = require("ajv/dist/2020")
+let ajv = new Ajv2020()
+
+let programSch = require("./sch.json")
+
+for (modu of Object.keys(programSch.$defs)) {
+  ajv.addSchema(programSch.$defs[modu])
+  delete programSch.$defs[modu]
+}
+
+const data = { data: { values: ["a", "b"] }, mark: "arc" }
+let result = ajv.validate(programSch, data)
+
+console.log(result)
+console.log(ajv.errors)
+            </pre>
+          </code>
+        </div>
+        <div>
+          <h5 class="text-lg tracking-wider"><a href="https://validate.hyperjump.io/" target="_blank" class="text-blue-500">Hyperjump</a> validator</h5>
+
+          <code class="block my-4 text-sm">
+            <pre class="whitespace-pre-wrap overflow-x-scroll font-mono" style="color: burlywood">
+const hpj = require("@hyperjump/json-schema")
+hpj
+  .get("file://./sch.json")
+  .then(schema => hpj.validate(schema, { data: { values: ["a", "b"] }, mark: "arc" }))
+  .then(output => console.log(output))
+            </pre>
+          </code>
+        </div>
+      </div>
+    </div>
+    <p class="">Simply think each <b class="font-semibold">$id</b> is a module and each of <b class="font-semibold">$defs</b> is a type, </p>
+    <p>for more information see <%= link "Export documentation", to: Routes.page_path(@conn, :docs) <> "#entrypoint", class: "text-blue-500", target: "_black" %></p>
   </div>
 </section>
 <hr class="border-t border-pink-500 w-12 mx-auto my-12">
