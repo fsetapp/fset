@@ -2,31 +2,49 @@
   <h1 class="leading-10 text-5xl font-thin font-mono tracking-widest text-pink-500">FSET</h1>
   <h2 class="leading-loose text-3xl font-thin tracking-widest">Structure Editor Series</h2>
 
-  <div class="my-4 container mx-auto font-thin tracking-wide flex justify-between items-baseline px-2 md:px-0">
+  <div class="my-4 container mx-auto font-thin tracking-wide flex flex-col justify-between items-baseline px-2 md:px-0">
     <p class="text-2xl">
       <mark class="px-1 font-medium bg-indigo-500 tracking-wider">FModel</mark>
       JSON Schema Editor
     </p>
+    <p class="text-lg my-2">No longer write raw schema by hand, no programming tooling required</p>
   </div>
 
   <div class="flex mx-auto">
     <div class="rounded-tl-full rounded-bl-full -ml-36">
       <%= img_tag Routes.static_path(@conn, "/images/fset-ico.svg"), alt: "fset icon", class: "hidden sm:block" %>
     </div>
-    <div class="">
+    <div class="flex flex-col">
       <%= img_tag Routes.static_path(@conn, "/images/landing.png"), alt: "editor overview", class: "min-w-full" %>
+      <div class="flex justify-between 2xl:relative">
+        <ul class="flex flex-col flex-shrink-0 xl:ml- py-2 my-0.5 mx-1">
+          <li><%= link "Register", to: Routes.user_registration_path(@conn, :new) %></li>
+          <li><%= link "Log in", to: Routes.user_session_path(@conn, :new) %></li>
+        </ul>
+        <p class="mb-4 px-4 py-3 text-sm right-0 absolute">
+          <span class="mr-2 text-gray-400">Example data from</span>
+          <%= link "https://vega.github.io", to: "https://vega.github.io", class: "my-1 tracking-wider text-blue-500", target: "_black" %>
+        </p>
+      </div>
     </div>
   </div>
-  <p class="mb-4 container mx-auto px-4 py-3 text-sm text-right">
-    <span class="mr-2 text-gray-400">Example data from</span>
-    <%= link "https://vega.github.io", to: "https://vega.github.io", class: "my-1 tracking-wider text-blue-500", target: "_black" %>
-  </p>
-  <%= link "Documentation", to: Routes.page_path(@conn, :docs), class: "my-1 tracking-wider", target: "_black" %>
-  <%= link "Pricing", to: Routes.page_path(@conn, :pricing), class: "my-1 tracking-wider", target: "_black" %>
 
-  <%= form_for :project, Routes.project_path(@conn, :create), [method: :post], fn _f -> %>
-    <%= submit "Create Project", class: "mt-8 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-lg text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-400" %>
-  <% end %>
+  <div class="flex justify-between">
+    <div class="hidden md:block"></div>
+    <div class="flex flex-col items-center">
+      <ul class="flex space-x-4 flex-shrink-0 xl:ml- py-2 my-0.5 mx-1 sm:hidden">
+        <li><%= link "Register", to: Routes.user_registration_path(@conn, :new) %></li>
+        <li><%= link "Log in", to: Routes.user_session_path(@conn, :new) %></li>
+      </ul>
+      <%= link "Documentation", to: Routes.page_path(@conn, :docs), class: "my-1 tracking-wider", target: "_black" %>
+      <%= link "Pricing", to: Routes.page_path(@conn, :pricing), class: "my-1 tracking-wider", target: "_black" %>
+
+      <%= form_for :project, Routes.project_path(@conn, :create), [method: :post], fn _f -> %>
+        <%= submit "Create Project", class: "mt-8 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-lg text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-400" %>
+      <% end %>
+    </div>
+  </div>
+
 </header>
 <hr class="border-t border-pink-500 w-12 mx-auto my-12">
 <section class="landing-page container mx-auto">
@@ -68,7 +86,7 @@
     </p>
     <div class="flex flex-wrap py-8">
       <%= img_tag Routes.static_path(@conn, "/images/bundled.png"), alt: "exported bundle", class: "block" %>
-      <div class="md:w-1/2 mx-4 pl-16">
+      <div class="md:w-1/2 mx-4 py-4 md:pl-16 lg:py-0">
         <div>
           <h5 class="text-lg tracking-wider"><a href="https://ajv.js.org/" target="_blank" class="text-blue-500">AJV</a> validator</h5>
           <p class="text-sm text-gray-400">Currently AJV needs one step of decomposing files</p>
