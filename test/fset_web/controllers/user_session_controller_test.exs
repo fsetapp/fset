@@ -11,8 +11,8 @@ defmodule FsetWeb.UserSessionControllerTest do
     test "renders log in page", %{conn: conn} do
       conn = get(conn, Routes.user_session_path(conn, :new))
       response = html_response(conn, 200)
-      assert response =~ "<h1>Log in</h1>"
-      assert response =~ "Log in</a>"
+      assert response =~ "Log in</h1>"
+      assert response =~ "Log in</button>"
       assert response =~ "Register</a>"
     end
 
@@ -34,8 +34,13 @@ defmodule FsetWeb.UserSessionControllerTest do
 
       # Now do a logged in request and assert on the menu
       conn = get(conn, "/")
+      username = conn.assigns.current_user.username
+      redirect_path = redirected_to(conn)
+      assert redirect_path == "/" <> username
+      conn = get(recycle(conn), redirect_path)
+
       response = html_response(conn, 200)
-      assert response =~ user.email
+      assert response =~ username
       assert response =~ "Settings</a>"
       assert response =~ "Log out</a>"
     end
@@ -75,7 +80,7 @@ defmodule FsetWeb.UserSessionControllerTest do
         })
 
       response = html_response(conn, 200)
-      assert response =~ "<h1>Log in</h1>"
+      assert response =~ "Log in</h1>"
       assert response =~ "Invalid email or password"
     end
   end

@@ -1,11 +1,11 @@
 import Config
 
-config :fset, Fset.Mailer,
-  adapter: Swoosh.Adapters.Mailgun,
-  api_key: System.get_env("MAILER_API_KEY"),
-  domain: System.get_env("MAILER_DOMAIN")
-
 if config_env() == :prod do
+  config :fset, Fset.Mailer,
+    adapter: Swoosh.Adapters.Mailgun,
+    api_key: System.get_env("MAILER_API_KEY"),
+    domain: System.get_env("MAILER_DOMAIN")
+
   secret_key_base =
     System.get_env("SECRET_KEY_BASE") ||
       raise """

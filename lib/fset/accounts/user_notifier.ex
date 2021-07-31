@@ -3,20 +3,18 @@ defmodule Fset.Accounts.UserNotifier do
   import Swoosh.Email
   alias Fset.Mailer
 
-  defp new_email(text, html, user, subject) do
-    new()
-    |> to({user.username, user.email})
-    |> from({"FSET", "f@fset.app"})
-    |> subject(subject)
-    |> text_body(text)
-    |> html_body(html)
-  end
+  defp deliver(%{text: text, html: html, user: user, subject: subject}) do
+    email =
+      new()
+      |> to({user.username, user.email})
+      |> from({"FSET", "f@fset.app"})
+      |> subject(subject)
+      |> text_body(text)
+      |> html_body(html)
 
-  # defp deliver(to, body) do
-  #   require Logger
-  #   Logger.debug(body)
-  #   {:ok, %{to: to, body: body}}
-  # end
+    Mailer.deliver(email)
+    {:ok, %{to: user.email, html: html}}
+  end
 
   @doc """
   Deliver instructions to confirm account.
@@ -53,8 +51,12 @@ defmodule Fset.Accounts.UserNotifier do
       """
       |> safe_to_string()
 
-    new_email(text, html, user, "Hello #{user.email}, please verify your FSET account")
-    |> Mailer.deliver()
+    deliver(%{
+      user: user,
+      subject: "Hello #{user.email}, please verify your FSET account",
+      text: text,
+      html: html
+    })
   end
 
   @doc """
@@ -89,8 +91,12 @@ defmodule Fset.Accounts.UserNotifier do
       """
       |> safe_to_string()
 
-    new_email(text, html, user, "FSET Password Reset")
-    |> Mailer.deliver()
+    deliver(%{
+      user: user,
+      subject: "FSET Password Reset",
+      text: text,
+      html: html
+    })
   end
 
   @doc """
@@ -125,7 +131,11 @@ defmodule Fset.Accounts.UserNotifier do
       """
       |> safe_to_string()
 
-    new_email(text, html, user, "FSET Email Update")
-    |> Mailer.deliver()
+    deliver(%{
+      user: user,
+      subject: "FSET Email Update",
+      text: text,
+      html: html
+    })
   end
 end
