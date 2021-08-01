@@ -85,7 +85,7 @@
       Bundled schema is also a usable schema. Validator can validate the file without decomposing schema definitions into separate files.
     </p>
     <div class="flex flex-wrap py-8">
-      <%= img_tag Routes.static_path(@conn, "/images/bundled.png"), alt: "exported bundle", class: "block" %>
+      <%= img_tag Routes.static_path(@conn, "/images/bundled.png"), alt: "exported bundle", class: "block max-w-full" %>
       <div class="md:w-1/2 mx-4 py-4 md:pl-16 lg:py-0">
         <div>
           <h5 class="text-lg tracking-wider"><a href="https://ajv.js.org/" target="_blank" class="text-blue-500">AJV</a> validator</h5>
