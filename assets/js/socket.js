@@ -22,7 +22,14 @@ if (window.projectName) {
       document.querySelector("project-store")
         .dispatchEvent(new CustomEvent("remote-connected", { detail: { project: resp } }))
     })
-    .receive("error", resp => { console.log("Unable to join", resp) })
+    .receive("error", resp => {
+      switch (resp.reason) {
+        case "expried":
+          location.reload()
+        default:
+          console.log("Unable to join", resp)
+      }
+    })
 }
 
 export default socket

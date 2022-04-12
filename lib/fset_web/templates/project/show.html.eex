@@ -148,7 +148,7 @@
           Mark as Entrypoint
         </button>
       </action-listener>
-      <div id="fmodel" class="flex-grow overflow-hidden h-full"></div>
+      <file-body id="fmodel" class="flex-grow overflow-hidden h-full"></file-body>
     </section>
     <sch-meta id ="fsch" class="overflow-auto m-px _flex-1 bg-gray-900 px-2 pb-2 focus:outline-none" tabindex="-1" style="flex: 1.5; display: var(--display, 'block');">
     </sch-meta>

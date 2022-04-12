@@ -7,7 +7,7 @@
       <mark class="px-1 font-medium bg-indigo-500 tracking-wider">FModel</mark>
       JSON Schema Editor
     </p>
-    <p class="text-lg my-2">No longer write raw schema by hand, no programming tooling required</p>
+    <p class="text-lg my-2">No more writing raw schema by hand, no programming tooling required</p>
   </div>
 
   <div class="flex mx-auto">
@@ -18,7 +18,10 @@
       <%= img_tag Routes.static_path(@conn, "/images/landing.png"), alt: "editor overview", class: "min-w-full" %>
       <div class="flex justify-between 2xl:relative">
         <ul class="flex flex-col flex-shrink-0 xl:ml- py-2 my-0.5 mx-1">
-          <li><%= link "Register", to: Routes.user_registration_path(@conn, :new) %></li>
+          <li class="my-1">
+            <%=# link "Register", to: Routes.user_registration_path(@conn, :new) %>
+            <span class="border-l-4 border-gray-500 px-3 py-2">Currently in closed beta</span>
+          </li>
           <li><%= link "Log in", to: Routes.user_session_path(@conn, :new) %></li>
         </ul>
         <p class="mb-4 px-4 py-3 text-sm right-0 absolute">
@@ -33,7 +36,10 @@
     <div class="hidden md:block"></div>
     <div class="flex flex-col items-center">
       <ul class="flex space-x-4 flex-shrink-0 xl:ml- py-2 my-0.5 mx-1 sm:hidden">
-        <li><%= link "Register", to: Routes.user_registration_path(@conn, :new) %></li>
+        <li>
+          <%=# link "Register", to: Routes.user_registration_path(@conn, :new) %>
+          <span class="border-l-4 border-gray-500 px-3 py-2">Currently in closed beta</span>
+        </li>
         <li><%= link "Log in", to: Routes.user_session_path(@conn, :new) %></li>
       </ul>
       <%= link "Documentation", to: Routes.page_path(@conn, :docs), class: "my-1 tracking-wider", target: "_black" %>

@@ -1,6 +1,8 @@
 import { ProjectTree, Project, Diff } from "./vendor/fbox.min.js"
 import { buffer, throttle } from "./utils.js"
 
+import ProjectURL from "./lib/project_url.js"
+
 var projectStore = Project.createProjectStore()
 var projectBaseStore
 
@@ -12,7 +14,7 @@ export const start = ({ channel }) => {
       this.off = this.removeEventListener
     }
     connectedCallback() {
-      this.on("remote-connected", this.handleRemoteConnected.bind(this))
+      this.on("remote-connected", this.handleRemoteConnected)
       this.on("tree-command", buffer(this.handleTreeCommand.bind(this), 5))
       this.on("tree-command", this.handleRemotePush.bind(this))
       this.on("search-selected", this.handleSearchSelected.bind(this), true)
@@ -39,6 +41,7 @@ export const start = ({ channel }) => {
       this.channelOff()
       let project = e.detail.project
       this._projectStore = Project.projectToStore(project, projectStore)
+      this._projectStore.url = { path: window.project_path }
 
       channel.on("persisted_diff_result", (saved_diffs) => {
         Diff.mergeToCurrent(projectStore, saved_diffs)
@@ -51,10 +54,12 @@ export const start = ({ channel }) => {
           this._projectStore.fields.push(Project.fileToStore(file))
       })
       channel.on("each_batch_finished", nothing => {
-        this.changeUrlSSR(project)
+        // Project.buildFolderTree(this._projectStore)
+        const { url, currentFileKey } = this._projectStore
+        ProjectURL.replaceWith({ url, currentFileKey })
 
-        ProjectTree({ store: projectStore, target: "[id='project']", select: decodeURIComponent(`[${project.currentFileKey}]`) })
-        Project.changeFile({ projectStore, filename: project.currentFileKey, fmodelname: decodeURIComponent(location.hash.replace("#", "")) })
+        ProjectTree({ store: projectStore, target: "[id='project']", select: decodeURIComponent(`[${currentFileKey}]`) })
+        Project.changeFile({ projectStore, filename: currentFileKey, fmodelname: decodeURIComponent(location.hash.replace("#", "")) })
 
         projectBaseStore = JSON.parse(JSON.stringify(this._projectStore))
         Diff.buildBaseIndices(projectBaseStore)
@@ -146,24 +151,18 @@ export const start = ({ channel }) => {
       for (let commbobox of this.querySelectorAll("combo-box"))
         commbobox.dispatchEvent(new CustomEvent("data-push", { detail: { _models: Project.anchorsModels(this._projectStore) } }))
     }
-    changeUrlSSR(project) {
-      if (project.currentFileKey && project.currentFileKey != "") {
-        history.replaceState(null, "", `${window.project_path}/m/${encodeURIComponent(project.currentFileKey)}${location.hash}`)
-        this.currentFileKey = project.currentFileKey
-      }
-    }
     changeUrl() {
       let file = document.querySelector("[id='project'] [role='tree']")?._walker?.currentNode
-      let fmodel = document.querySelector("[id='fmodel'] [role='tree']")?._walker?.currentNode
-      if (!file || !fmodel) return
+      let fileBodyNode = document.querySelector("file-body [role='tree']")?._walker?.currentNode
+      if (!file || !fileBodyNode) return
 
       let fileIsFile = file.getAttribute("data-tag") == "file"
-      let fmodelIsNotFile = fmodel.getAttribute("data-tag") != "file"
+      let notFileNode = fileBodyNode.getAttribute("data-tag") != "file"
 
       this.currentFileKey = file.key
       switch (true) {
-        case !!(fileIsFile && file.key) && !!(fmodelIsNotFile && fmodel.id):
-          history.replaceState(null, "", `${window.project_path}/m/${encodeURIComponent(file.key)}#${fmodel.id}`)
+        case !!(fileIsFile && file.key) && !!(notFileNode && fileBodyNode.id):
+          history.replaceState(null, "", `${window.project_path}/m/${encodeURIComponent(file.key)}#${fileBodyNode.id}`)
           break
         case !!(fileIsFile && file.key):
           history.replaceState(null, "", `${window.project_path}/m/${encodeURIComponent(file.key)}`)

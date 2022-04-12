@@ -6,9 +6,16 @@ defmodule FsetWeb.MainChannel do
   @diffed_topic "project_diffs_result:"
 
   def join("project:" <> project_name, params, socket) do
-    {:ok, project_name} = Phoenix.Token.verify(socket, "project name", project_name)
-    # TODO: handle session from token expired
-    # {:error, :expired}
+    case Phoenix.Token.verify(socket, "project name", project_name) do
+      {:ok, project_name} ->
+        joined(project_name, params, socket)
+
+      {:error, :expired} ->
+        {:error, %{reason: "expired"}}
+    end
+  end
+
+  defp joined(project_name, params, socket) do
     t1 = :os.system_time(:millisecond)
 
     case Projects.get_project(project_name) do
