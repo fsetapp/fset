@@ -1,8 +1,7 @@
 defmodule Fset.Accounts.UserNotifier do
-  import Phoenix.HTML
+  import Phoenix.LiveView.Helpers
   import Swoosh.Email
   alias Fset.Mailer
-  import Phoenix.LiveView.Helpers
 
   defp deliver(%{text: text, html: html, user: user, subject: subject}) do
     email =
