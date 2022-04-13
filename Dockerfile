@@ -27,8 +27,9 @@ ENV NODE_ENV=production
 COPY lib lib
 COPY priv priv
 COPY assets assets
-RUN yarn --cwd ./assets run build
-RUN mix phx.digest
+# RUN yarn --cwd ./assets run build
+# RUN mix phx.digest
+RUN mix assets.deploy
 
 # compile and build release
 # uncomment COPY if rel/ exists

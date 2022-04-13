@@ -65,6 +65,7 @@ defmodule FsetWeb do
 
       # Import basic rendering functionality (render, render_layout, etc)
       import Phoenix.View
+      import Phoenix.LiveView.Helpers
 
       import FsetWeb.ErrorHelpers
       import FsetWeb.Gettext

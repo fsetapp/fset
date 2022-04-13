@@ -27,7 +27,10 @@ config :fset, FsetWeb.Endpoint,
   code_reloader: true,
   check_origin: false,
   watchers: [
-    yarn: ["run", "watch", cd: Path.expand("../assets", __DIR__)]
+    # yarn: ["run", "watch", cd: Path.expand("../assets", __DIR__)]
+    tailwind: {Tailwind, :install_and_run, [:default, ~w(--watch)]},
+    esbuild:
+      {Esbuild, :install_and_run, [:default, ~w(--sourcemap=inline --watch --loader:.png=file)]}
   ]
 
 # ## SSL Support

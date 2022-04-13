@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <%= csrf_meta_tag() %>
     <%= title(assigns) %>
-    <link rel="stylesheet" href="<%= Routes.static_path(@conn, "/css/app.css") %>"/>
-    <script defer type="module" src="<%= Routes.static_path(@conn, "/js/docs_page.js") %>"></script>
+    <link rel="stylesheet" href="<%= Routes.static_path(@conn, "/assets/app.css") %>"/>
+    <script defer type="module" src="<%= Routes.static_path(@conn, "/assets/docs_page.js") %>"></script>
   </head>
   <body class="text-gray-300 bg-matte-black">
     <main role="main" class="">

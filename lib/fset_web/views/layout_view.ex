@@ -4,17 +4,17 @@ defmodule FsetWeb.LayoutView do
   def title(assigns) do
     case assigns do
       %{project: p, user: u} ->
-        ~E"""
+        ~H"""
           <title><%= u.username %>/<%= p.key %>: <%= p.description %></title>
         """
 
       %{user: u} ->
-        ~E"""
+        ~H"""
           <title><%= u.username %></title>
         """
 
       _ ->
-        ~E"""
+        ~H"""
           <title>Fsetapp</title>
         """
     end

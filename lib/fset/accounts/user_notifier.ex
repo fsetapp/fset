@@ -2,6 +2,7 @@ defmodule Fset.Accounts.UserNotifier do
   import Phoenix.HTML
   import Swoosh.Email
   alias Fset.Mailer
+  import Phoenix.LiveView.Helpers
 
   defp deliver(%{text: text, html: html, user: user, subject: subject}) do
     email =
@@ -20,8 +21,10 @@ defmodule Fset.Accounts.UserNotifier do
   Deliver instructions to confirm account.
   """
   def deliver_confirmation_instructions(user, url) do
+    assigns = %{}
+
     text =
-      ~E"""
+      ~H"""
       ==============================
 
       Hi <%= user.email %>,
@@ -35,21 +38,23 @@ defmodule Fset.Accounts.UserNotifier do
 
       ==============================
       """
-      |> safe_to_string()
+      |> Phoenix.HTML.Safe.to_iodata()
+      |> IO.iodata_to_binary()
 
     html =
-      ~E"""
+      ~H"""
         <p>Hi <%= user.email %>,</p>
 
 
         <p>Thank you for choosing FSET!</p>
         <p>Please confirm your email address by clicking the link below.</p>
 
-        <a href=<%= url %>><%= url %></a>
+        <a href={url}><%= url %></a>
 
         <p>If you didn't create an account with us, please ignore this.</p>
       """
-      |> safe_to_string()
+      |> Phoenix.HTML.Safe.to_iodata()
+      |> IO.iodata_to_binary()
 
     deliver(%{
       user: user,
@@ -63,8 +68,10 @@ defmodule Fset.Accounts.UserNotifier do
   Deliver instructions to reset a user password.
   """
   def deliver_reset_password_instructions(user, url) do
+    assigns = %{}
+
     text =
-      ~E"""
+      ~H"""
       ==============================
 
       Hi <%= user.email %>,
@@ -77,19 +84,21 @@ defmodule Fset.Accounts.UserNotifier do
 
       ==============================
       """
-      |> safe_to_string()
+      |> Phoenix.HTML.Safe.to_iodata()
+      |> IO.iodata_to_binary()
 
     html =
-      ~E"""
+      ~H"""
       <p>Hi <%= user.email %>,</p>
 
       <p>You can reset your password by visiting the URL below:</p>
 
-      <a href=<%= url %>><%= url %></a>
+      <a href={url}><%= url %></a>
 
       <p>If you didn't request this change, please ignore this.</p>
       """
-      |> safe_to_string()
+      |> Phoenix.HTML.Safe.to_iodata()
+      |> IO.iodata_to_binary()
 
     deliver(%{
       user: user,
@@ -103,8 +112,10 @@ defmodule Fset.Accounts.UserNotifier do
   Deliver instructions to update a user email.
   """
   def deliver_update_email_instructions(user, url) do
+    assigns = %{}
+
     text =
-      ~E"""
+      ~H"""
       ==============================
 
       Hi <%= user.email %>,
@@ -117,19 +128,21 @@ defmodule Fset.Accounts.UserNotifier do
 
       ==============================
       """
-      |> safe_to_string()
+      |> Phoenix.HTML.Safe.to_iodata()
+      |> IO.iodata_to_binary()
 
     html =
-      ~E"""
+      ~H"""
       <p>Hi <%= user.email %>,</p>
 
       <p>You can change your email by visiting the URL below:</p>
 
-      <a href=<%= url %>><%= url %></a>
+      <a href={url}><%= url %></a>
 
       <p>If you didn't request this change, please ignore this.</p>
       """
-      |> safe_to_string()
+      |> Phoenix.HTML.Safe.to_iodata()
+      |> IO.iodata_to_binary()
 
     deliver(%{
       user: user,

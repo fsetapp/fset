@@ -1,5 +1,4 @@
-import phoenix from "phoenix"
-const { Socket } = phoenix
+import { Socket } from "phoenix"
 
 let channel, socket
 if (window.projectName) {

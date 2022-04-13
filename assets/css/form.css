@@ -148,18 +148,18 @@ combo-box {
   max-height: 50vh;
   @apply mt-1 p-0.5 z-50 absolute text-gray-100 bg-gray-900 w-full border border-gray-700 shadow-2xl overflow-auto;
 }
-.autoComplete_result { @apply px-2 py-1 text-xs font-light text-gray-200 tracking-wide }
+.autoComplete_result { @apply px-2 py-1 text-xs font-light text-gray-200 tracking-wide; }
 .autoComplete_result:nth-child(2n+1):not(.autoComplete_selected):not(:hover) { background-color: var(--gray-meta); }
-.autoComplete_result:nth-child(2n):not(.autoComplete_selected):not(:hover) { @apply bg-gray-800 }
-.autoComplete_result mark { @apply bg-transparent text-yellow-500 font-semibold }
-.autoComplete_result_t { @apply text-gray-500 font-normal }
-.autoComplete_selected.notfound { @apply border-gray-400 bg-gray-200 }
+.autoComplete_result:nth-child(2n):not(.autoComplete_selected):not(:hover) { @apply bg-gray-800; }
+.autoComplete_result mark { @apply bg-transparent text-yellow-500 font-semibold; }
+.autoComplete_result_t { @apply text-gray-500 font-normal; }
+.autoComplete_selected.notfound { @apply border-gray-400 bg-gray-200; }
 
 .autoComplete_result:hover,
 .autoComplete_selected {
-  @apply text-gray-100 bg-blue-700
+  @apply text-gray-100 bg-blue-700;
 }
 .autoComplete_result:hover .autoComplete_result_t,
 .autoComplete_selected .autoComplete_result_t {
-  @apply text-gray-100 font-normal
+  @apply text-gray-100 font-normal;
 }

@@ -1,24 +1,17 @@
 {
   "repository": {},
-  "description": " ",
+  "description": "fset internal",
   "license": "MIT",
-  "scripts": {
-    "build": "vite build",
-    "watch": "chokidar js css ../lib/fset_web/templates/**/*.{leex,eex} ../lib/fset_web/views/*.ex -c 'vite build --minify false --emptyOutDir false --clearScreen false --mode development'"
-  },
   "dependencies": {
-    "@github/details-menu-element": "^1.0.9",
-    "@github/include-fragment-element": "^5.3.1",
-    "@github/tab-container-element": "^3.1.0",
-    "@tailwindcss/typography": "^0.4.1",
-    "@tarekraafat/autocomplete.js": "^10.1.5",
-    "phoenix": "file:../deps/phoenix",
-    "phoenix_html": "file:../deps/phoenix_html"
+    "@github/details-menu-element": "^1.0.12",
+    "@github/include-fragment-element": "^6.0.1",
+    "@github/tab-container-element": "^3.1.2",
+    "@tarekraafat/autocomplete.js": "^10.2.7"
   },
   "devDependencies": {
-    "autoprefixer": "^10.2.4",
-    "chokidar-cli": "^2.1.0",
-    "tailwindcss": "^2.2.4",
-    "vite": "^2.3.8"
+    "autoprefixer": "^10.4.4",
+    "postcss": "^8.4.12",
+    "postcss-import": "^14.1.0",
+    "tailwindcss": "^3.0.24"
   }
 }

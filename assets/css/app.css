@@ -35,5 +35,5 @@ sch-meta > form {
 
 /* actions */
 [data-tree-action]:focus {
-  @apply outline-none ring-1 ring-gray-700
+  @apply outline-none ring-1 ring-gray-700;
 }

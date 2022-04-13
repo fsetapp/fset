@@ -10,9 +10,9 @@
     <% end %>
     <%= csrf_meta_tag() %>
     <title>Fsetapp</title>
-    <link rel="stylesheet" href="<%= Routes.static_path(@conn, "/css/app.css") %>"/>
+    <link rel="stylesheet" href="<%= Routes.static_path(@conn, "/assets/app.css") %>"/>
     <script src="https://cdn.paddle.com/paddle/paddle.js"></script>
-    <script defer type="module" src="<%= Routes.static_path(@conn, "/js/paddle.js") %>"></script>
+    <script defer type="module" src="<%= Routes.static_path(@conn, "/assets/paddle.js") %>"></script>
   </head>
   <body class="text-gray-300 bg-matte-black">
     <main role="main" class="min-h-screen">

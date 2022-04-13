@@ -16,7 +16,7 @@
 
     <%= csrf_meta_tag() %>
     <%= title(assigns) %>
-    <link rel="stylesheet" href="<%= Routes.static_path(@conn, "/css/app.css") %>"/>
+    <link rel="stylesheet" href="<%= Routes.static_path(@conn, "/assets/app.css") %>"/>
   </head>
   <body>
     <script>0</script>
