@@ -70,7 +70,7 @@ defmodule Fset.Payments.Paddle do
       resp
     else
       err ->
-        IO.inspect(err)
+        IO.inspect(err, label: "Paddle.request")
         request(method, path, params, retry - 1)
     end
   end
