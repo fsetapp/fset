@@ -1,11 +1,6 @@
 import Config
 
 if config_env() == :prod do
-  config :fset, Fset.Mailer,
-    adapter: Swoosh.Adapters.Mailgun,
-    api_key: System.get_env("MAILER_API_KEY"),
-    domain: System.get_env("MAILER_DOMAIN")
-
   secret_key_base =
     System.get_env("SECRET_KEY_BASE") ||
       raise """
@@ -39,6 +34,11 @@ if config_env() == :prod do
     ssl: true,
     pool_size: String.to_integer(System.get_env("POOL_SIZE") || "10"),
     prepare: :unnamed
+
+  config :fset, Fset.Mailer,
+    adapter: Swoosh.Adapters.Mailgun,
+    api_key: System.get_env("MAILER_API_KEY"),
+    domain: System.get_env("MAILER_DOMAIN")
 
   config :fset, Fset.Payments.Paddle,
     vendor_auth_code: System.get_env("VENDOR_AUTH_CODE"),
