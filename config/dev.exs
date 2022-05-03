@@ -1,4 +1,4 @@
-use Mix.Config
+import Config
 
 config :fset, environment: :dev
 
@@ -30,7 +30,8 @@ config :fset, FsetWeb.Endpoint,
     # yarn: ["run", "watch", cd: Path.expand("../assets", __DIR__)]
     tailwind: {Tailwind, :install_and_run, [:default, ~w(--watch)]},
     esbuild:
-      {Esbuild, :install_and_run, [:default, ~w(--sourcemap=inline --watch --loader:.png=file)]}
+      {Esbuild, :install_and_run,
+       [:default, ~w(--sourcemap=linked --watch --minify --analyze=verbose --loader:.png=file)]}
   ]
 
 # ## SSL Support
@@ -69,7 +70,9 @@ config :fset, FsetWeb.Endpoint,
   ]
 
 # Do not include metadata nor timestamps in development logs
-config :logger, :console, format: "[$level] $message\n"
+config :logger, :console,
+  format: "[$level] $message\n",
+  colors: [debug: :light_blue]
 
 # Set a higher stacktrace during development. Avoid configuring such
 # in production as building large stacktraces may be expensive.

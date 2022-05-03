@@ -5,7 +5,7 @@
 # is restricted to this project.
 
 # General application configuration
-use Mix.Config
+import Config
 
 config :fset,
   ecto_repos: [Fset.Repo]
@@ -38,10 +38,21 @@ config :sentry,
   included_environments: [:prod, :dev]
 
 config :esbuild,
-  version: "0.12.18",
+  version: "0.14.38",
   default: [
-    args:
-      ~w(js/app.js js/paddle.js js/docs_page.js --bundle --target=es2017 --outdir=../priv/static/assets --external:/fonts/* --external:/images/*),
+    args: [
+      "js/app.js",
+      "js/paddle.js",
+      "js/docs_page.js",
+      "--bundle",
+      "--target=esnext",
+      "--format=esm",
+      "--splitting",
+      "--tree-shaking=true",
+      "--outdir=../priv/static/assets",
+      "--external:/fonts/*",
+      "--external:/images/*"
+    ],
     cd: Path.expand("../assets", __DIR__),
     env: %{"NODE_PATH" => Path.expand("../deps", __DIR__)}
   ]

@@ -6,6 +6,7 @@ defmodule Ecto.Term do
   def cast(_), do: :error
 
   def load(""), do: {:ok, %{}}
+  def load("[]"), do: {:ok, []}
   def load(bin) when is_binary(bin), do: {:ok, bin |> :erlang.binary_to_term()}
   def load(map) when is_map(map), do: {:ok, map}
   def load(_), do: :error

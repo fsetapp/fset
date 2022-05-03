@@ -5,9 +5,9 @@ import "@github/include-fragment-element"
 import Search from "./search.js"
 
 import { channel } from "./socket"
-import * as Fmodel from "./fmodel.js"
+import * as Repo from "./repo.js"
 
-if (channel) Fmodel.start({ channel })
+if (channel) Repo.init("project-store", channel)
 
 Search.start()
 

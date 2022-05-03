@@ -1,5 +1,6 @@
 import "phoenix_html"
-import { View } from "./vendor/fbox.min.js"
+import { elements } from "@fsetapp/fset/pkgs/model.js"
+const { ReadOnlyFmodelTree } = elements
 
 window.addEventListener("hashchange", e => {
   for (let a of document.body.querySelectorAll(`[data-current]`)) a.removeAttribute("data-current")
@@ -8,7 +9,7 @@ window.addEventListener("hashchange", e => {
 
 customElements.define("def-fmodel", class extends HTMLElement {
   connectedCallback() {
-    View.rFmodelTree({ store: JSON.parse(this.dataset.sch), target: `[data-name=${this.dataset.name}]`, select: false })
+    ReadOnlyFmodelTree({ target: `[data-name=${this.dataset.name}]`, select: false }, JSON.parse(this.dataset.sch))
     this.setAttribute("data-sch", "")
   }
 })

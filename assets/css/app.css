@@ -4,7 +4,12 @@
 
 @import "./tree.css";
 @import "./tab.css";
-@import "./vendor/fbox.min.css";
+@import url("../node_modules/@fsetapp/fset/dist/css/main.css");
+@import url("../node_modules/@fsetapp/fset/dist/css/model.css");
+@import url("../node_modules/@fsetapp/fset/dist/css/sch-meta.css");
+@import url("../node_modules/@fsetapp/fset/dist/css/file.css");
+@import url("../node_modules/@fsetapp/fset/dist/css/json.css");
+@import url("../node_modules/@fsetapp/fset/dist/css/sheet.css");
 @import "./kbd.css";
 @import "./form.css";
 @import "./billing.css";
@@ -14,6 +19,7 @@
 .bg-matte-black {
   background-color: var(--matte-black) !important;
 }
+
 .bg-gray-meta {
   background-color: var(--gray-meta);
 }
@@ -28,8 +34,12 @@
   background-position: -2px -2px, -2px -2px, -1px -1px, -1px -1px;
 }
 
-details-menu { min-width: 22ch; z-index: 1;}
-sch-meta > form {
+details-menu {
+  min-width: 22ch;
+  z-index: 1;
+}
+
+sch-meta>form {
   @apply text-xs;
 }
 

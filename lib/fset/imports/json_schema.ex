@@ -5,7 +5,7 @@ defmodule Fset.Imports.JSONSchema do
   use Fset.Fmodels.Vocab
   alias Fset.Fmodels.New, as: T
 
-  @metadata "m"
+  @metadata "metadata"
 
   defp chunk_defs_to_files(defs, opts \\ [delimiter: "_", group_n: 2]) do
     d_chars = opts[:delimiter]

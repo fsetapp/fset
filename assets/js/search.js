@@ -1,15 +1,11 @@
-import { Project, tstr, legitTs } from "./vendor/fbox.min.js"
 import autoComplete from "@tarekraafat/autocomplete.js"
 
 const typeSearch = (selector, modelsGetter, opts = {}) => {
   let comboboxOpts = commonComboboxOpts({ maxResults: 100, placeHolder: opts.placeHolder })
-  let types = Project.allSchs
-    .map(a => a()).filter(sch => tstr(sch.t) != "value" || tstr(sch.t) != "ref")
-    .reduce((acc, sch) => Object.assign(acc, { [tstr(sch.t)]: { display: tstr(sch.t), sch: sch, primitive: true } }), {})
 
-  const modelsToDataList = (anchorsModels) => {
-    let data = Object.assign({}, types, anchorsModels)
-    let datalist = dataList(data, opts)
+  const modelsToDataList = (anchorsTops) => {
+    let datalist = dataList(anchorsTops, opts)
+
     return datalist
   }
 
@@ -25,8 +21,8 @@ const projectSearch = (selector, modelsGetter, opts = {}) => {
     }
   })
 
-  const modelsToDataList = (anchorsModels) => {
-    let data = anchorsModels
+  const modelsToDataList = (anchorsTops) => {
+    let data = anchorsTops
     let datalist = dataList(data)
     return datalist
   }
@@ -80,8 +76,8 @@ const commonComboboxOpts = ({ maxResults, placeHolder, postSelection }) => {
       element: (item, data) => {
         if (!data.value.primitive) {
           let t = document.createRange().createContextualFragment(`
-            <span class="mx-1 text-gray-600">–</span>
-            <span class="autoComplete_result_t">${tstr(data.value.sch.t)}</span>
+            <span class="mx-1 text-gray-600">-</span>
+            <span class="autoComplete_result_t">${data.value.sch.t}</span>
           `)
           item.appendChild(t)
         }
@@ -123,7 +119,7 @@ const dataList = (data, opts = {}) => {
     if (!opts.only)
       datalist.push(Object.assign({ anchor: anchors[i], fmodelname: fmodelname, }, fmodel))
     else
-      if (legitTs(opts.only, fmodel))
+      if (containsRefTo(opts.only, fmodel))
         datalist.push(Object.assign({ anchor: anchors[i], fmodelname: fmodelname, }, fmodel))
   }
 

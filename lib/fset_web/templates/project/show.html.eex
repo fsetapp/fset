@@ -42,9 +42,9 @@
             <button type="button" role="tab" tabindex="-1" class="flex items-center"><%= FsetWeb.IconView.settings(class: "w-5 h-5") %></button>
           <% end %>
         </div>
-        <div role="tabpanel" id="project" class="flex-grow overflow-hidden h-full" tabindex="-1" >
+        <nav-tree role="tabpanel" id="project" class="flex-grow overflow-hidden h-full" tabindex="-1" >
           <p class="p-2">project is loading ...</p>
-        </div>
+        </nav-tree>
         <%= if @is_project_unclaimed && !@current_user do %>
           <div role="tabpanel" class="overflow-hidden p-2" hidden>
             <h3>Register and confirm user via email link to claim this project</h3>
@@ -115,7 +115,7 @@
         <% end %>
       </tab-container>
     </section>
-    <section id="module_defs" class="overflow-hidden flex flex-col m-px bg-gray-900" style="flex: var(--flex, 2.5)">
+    <section class="overflow-hidden flex flex-col m-px bg-gray-900" style="flex: var(--flex, 2.5)">
       <action-listener class="flex flex-shrink-0 bg-gray-meta border border-gray-800 text-xs">
         <button name="add_item" data-tree-action="add_item" tabindex="-1" class="px-2 py-1.5 hover:bg-gray-800 rounded">
           <%= FsetWeb.IconView.add(class: "w-4 h-4 text-gray-300") %>
@@ -148,9 +148,9 @@
           Mark as Entrypoint
         </button>
       </action-listener>
-      <file-body id="fmodel" class="flex-grow overflow-hidden h-full"></file-body>
+      <file-body class="flex-grow overflow-hidden h-full"></file-body>
     </section>
-    <sch-meta id ="fsch" class="overflow-auto m-px _flex-1 bg-gray-900 px-2 pb-2 focus:outline-none" tabindex="-1" style="flex: 1.5; display: var(--display, 'block');">
+    <sch-meta id ="fsch" class="overflow-auto m-px _flex-1 bg-gray-900 pb-2 focus:outline-none" tabindex="-1" style="flex: 1.5; display: var(--display, 'block');">
     </sch-meta>
   </div>
 </project-store>

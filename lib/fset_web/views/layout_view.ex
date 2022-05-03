@@ -5,12 +5,12 @@ defmodule FsetWeb.LayoutView do
     case assigns do
       %{project: p, user: u} ->
         ~H"""
-          <title><%= u.username %>/<%= p.key %>: <%= p.description %></title>
+          <title><%= @user.username %>/<%= @project.key %>: <%= @project.description %></title>
         """
 
       %{user: u} ->
         ~H"""
-          <title><%= u.username %></title>
+          <title><%= @user.username %></title>
         """
 
       _ ->
