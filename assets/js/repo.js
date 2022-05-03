@@ -1,13 +1,14 @@
-import { ProjectTree, Project, Diff } from "./vendor/fbox.min.js"
-import { buffer, throttle } from "./utils.js"
-
+import * as Model from "@fsetapp/fset/pkgs/model.js"
+import * as File from "@fsetapp/fset/pkgs/file.js"
+import { Project } from "@fsetapp/fset"
+import { buffer } from "./utils.js"
 import ProjectURL from "./lib/project_url.js"
 
-var projectStore = Project.createProjectStore()
-var projectBaseStore
+const { Store, Controller, Diff, Remote } = Project
+var structSheet = {}
 
-export const start = ({ channel }) => {
-  customElements.define("project-store", class extends HTMLElement {
+export const init = (name, channel) => {
+  customElements.define(name || "project-store", class extends HTMLElement {
     constructor() {
       super()
       this.on = this.addEventListener
@@ -40,42 +41,46 @@ export const start = ({ channel }) => {
     handleRemoteConnected(e) {
       this.channelOff()
       let project = e.detail.project
-      this._projectStore = Project.projectToStore(project, projectStore)
-      this._projectStore.url = { path: window.project_path }
+      structSheet = Object.assign(structSheet, Model.structSheet)
+      structSheet = Object.assign(structSheet, File.structSheet)
+
+      this._store = Store.fromProject(project, { structSheet })
+      this._store.url = { path: window.project_path }
 
       channel.on("persisted_diff_result", (saved_diffs) => {
-        Diff.mergeToCurrent(projectStore, saved_diffs)
-        Diff.mergeToBase(projectBaseStore, saved_diffs)
+        Diff.mergeToCurrent(this._store, saved_diffs)
+        Diff.mergeToBase(this._base, saved_diffs)
         this.diffRender({ anchorsModelsUpdate: true })
         buffer(this.pushChanged.bind(this), 100)()
       })
       channel.on("each_batch", ({ batch }) => {
         for (let file of batch)
-          this._projectStore.fields.push(Project.fileToStore(file))
+          this._store.fields.push(file)
       })
       channel.on("each_batch_finished", nothing => {
-        // Project.buildFolderTree(this._projectStore)
-        const { url, currentFileKey } = this._projectStore
-        ProjectURL.replaceWith({ url, currentFileKey })
+        // Project.buildFolderTree(this._store)
+        const { url, currentFile } = this._store
+        Store.buildFolderTree(this._store)
+        ProjectURL.replaceWith({ url, currentFile })
 
-        ProjectTree({ store: projectStore, target: "[id='project']", select: decodeURIComponent(`[${currentFileKey}]`) })
-        Project.changeFile({ projectStore, filename: currentFileKey, fmodelname: decodeURIComponent(location.hash.replace("#", "")) })
+        File.FileTree({ target: "[id='project']", select: decodeURIComponent(`[${currentFile?.key}]`) }, this._store)
+        Controller.changeFile({ projectStore: this._store, filename: currentFile?.key, fmodelname: decodeURIComponent(location.hash.replace("#", "")) })
 
-        projectBaseStore = JSON.parse(JSON.stringify(this._projectStore))
-        Diff.buildBaseIndices(projectBaseStore)
+        this._base = JSON.parse(JSON.stringify(this._store))
+        Store.Indice.buildBaseIndices(this._base)
         this.pushChanged()
       })
       channel.on("sch_metas_map", ({ schMetas, phase }) => {
-        Project.mergeSchMetas(this._projectStore, schMetas)
+        Store.Pull.mergeSchMetas(this._store, schMetas)
         this.rerenderCurrentFile(null, phase)
       })
       channel.on("referrers_map", ({ referrers, phase }) => {
-        Project.mergeReferrers(this._projectStore, referrers)
+        Store.Pull.mergeReferrers(this._store, referrers)
         this.rerenderCurrentFile(null, phase)
       })
     }
     handleTreeCommand(e) {
-      Project.controller(projectStore, e.detail.target, e.detail.command, this.runDiff)
+      Controller.router(this._store, e.detail.target, e.detail.command, this.runDiff)
       document.activeAriaTree = e.detail.target.closest("[role='tree']")
     }
     handleRemotePush(e) {
@@ -84,7 +89,7 @@ export const start = ({ channel }) => {
       this.cmdQueue.push(e)
 
       this.push = buffer(() => {
-        if (this.cmdQueue.find(cmd => Project.isDiffableCmd(cmd.detail.command.name))) {
+        if (this.cmdQueue.find(cmd => Controller.isDiffableCmd(cmd.detail.command.name))) {
           this.pushToRemote(e)
           this.cmdQueue = []
         }
@@ -93,11 +98,11 @@ export const start = ({ channel }) => {
     }
     pushToRemote(e) {
       this.diffRender()
-      Project.taggedDiff(projectStore, (diff) => {
+      Remote.taggedDiff(this._store, (diff) => {
         channel.push("push_project", diff, 30_000)
           .receive("ok", (saved_diffs) => {
             console.log(saved_diffs)
-            Diff.mergeToBase(projectBaseStore, saved_diffs)
+            Diff.mergeToBase(this._base, saved_diffs)
             this.diffRender()
           })
           .receive("error", (reasons) => console.log("update project failed", reasons))
@@ -106,27 +111,27 @@ export const start = ({ channel }) => {
       })
     }
     runDiff() {
-      return Diff.diff(projectStore, projectBaseStore)
+      return Diff.diff(this._store, this._base)
     }
     diffRender(opts = {}) {
-      Object.defineProperty(this._projectStore, "_diffToRemote", { value: this.runDiff(), writable: true })
+      Object.defineProperty(this._store, "_diffToRemote", { value: this.runDiff(), writable: true })
       this.rerenderCurrentFile(fileStore => {
         if (opts.anchorsModelsUpdate)
-          fileStore._models = Project.anchorsModels(this._projectStore)
+          fileStore._models = Store.Indice.anchorsModels(this._store)
       })
-      this._projectStore.render()
+      this._store.render()
     }
     rerenderCurrentFile(f, phase) {
       f ||= a => a
 
-      let fileStore = Project.getFileStore(this._projectStore, this.currentFileKey || project.currentFileKey)
+      let fileStore = this._store._currentFileStore
       f(fileStore)
       fileStore?.render()
       fileStore?.renderSchMeta()
     }
     handleSchUpdate(e) {
       let { detail, target } = e
-      let fileStore = Project.getFileStore(projectStore, e.detail.file)
+      let fileStore = e.detail.file
       let updated_sch = Project.SchMeta.update({ store: fileStore, detail })
 
       if (!window.userToken) return
@@ -143,13 +148,13 @@ export const start = ({ channel }) => {
       let filename = e.detail.value.file
       let fmodelname = e.detail.value.fmodel
 
-      Project.changeFile({ projectStore: this._projectStore, filename, fmodelname: decodeURIComponent(`[${fmodelname}]`), focus: true })
-      ProjectTree({ store: projectStore, target: "[id='project']", select: decodeURIComponent(`[${filename}]`), focus: false })
+      Controller.changeFile({ projectStore: this._store, filename, fmodelname: decodeURIComponent(`[${fmodelname}]`), focus: true })
+      File.FileTree({ target: "[id='project']", select: decodeURIComponent(`[${filename}]`), focus: false }, this._store)
       this.changeUrl()
     }
     pushChanged() {
       for (let commbobox of this.querySelectorAll("combo-box"))
-        commbobox.dispatchEvent(new CustomEvent("data-push", { detail: { _models: Project.anchorsModels(this._projectStore) } }))
+        commbobox.dispatchEvent(new CustomEvent("data-push", { detail: { _models: Store.Indice.anchorsModels(this._store) } }))
     }
     changeUrl() {
       let file = document.querySelector("[id='project'] [role='tree']")?._walker?.currentNode
@@ -159,7 +164,7 @@ export const start = ({ channel }) => {
       let fileIsFile = file.getAttribute("data-tag") == "file"
       let notFileNode = fileBodyNode.getAttribute("data-tag") != "file"
 
-      this.currentFileKey = file.key
+      this._store.currentFile = file
       switch (true) {
         case !!(fileIsFile && file.key) && !!(notFileNode && fileBodyNode.id):
           history.replaceState(null, "", `${window.project_path}/m/${encodeURIComponent(file.key)}#${fileBodyNode.id}`)

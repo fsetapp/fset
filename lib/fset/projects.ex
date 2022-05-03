@@ -90,7 +90,7 @@ defmodule Fset.Projects do
     |> Repo.update()
   end
 
-  def replace(project, schema, acc) do
+  def replace(project, ast, acc) do
     # Repo.get_by!(Fset.Projects.Project, key: projectname)
     project_files = from f in Fset.Fmodels.File, where: f.project_id == ^project.id
     project_sch_metas = from m in Fset.Fmodels.SchMeta, where: m.project_id == ^project.id
@@ -106,8 +106,8 @@ defmodule Fset.Projects do
 
     multi = Ecto.Multi.delete_all(multi, :replace_sch_metas, project_sch_metas)
 
-    schema = Map.put(schema, "key", project.key)
-    Fset.Fmodels.persist_diff(to_diff(schema, acc), build_ids(project), multi: multi)
+    schema = Map.put(ast, "key", project.key)
+    Fset.Fmodels.persist_diff(to_diff(ast, acc), build_ids(project), multi: multi)
   end
 
   defp build_ids(project) do
@@ -127,8 +127,8 @@ defmodule Fset.Projects do
     _project = %{project | files: Enum.map(project.files, map_file)}
   end
 
-  defp to_diff(schema, acc) do
-    {files, project} = Map.pop!(schema, "fields")
+  defp to_diff(ast, acc, f \\ fn a -> a end) do
+    {files, project} = Map.pop!(ast, "fields")
 
     diff = %{
       "changed" => %{"project" => project},
@@ -142,7 +142,7 @@ defmodule Fset.Projects do
         diff,
         ["added", "files"],
         Enum.reduce(files, %{}, fn file, acc ->
-          Map.put(acc, Map.get(file, "key"), file)
+          Map.put(acc, Map.get(file, "key"), f.(:added_file, file))
         end)
       )
 
@@ -155,6 +155,7 @@ defmodule Fset.Projects do
         fmodels =
           Enum.map(fmodels, fn fmodel ->
             fmodel = Map.put(fmodel, "pa", Map.get(file_, "$a"))
+            fmodel = f.(:added_top, fmodel)
             {Map.get(file_, "key") <> Map.get(fmodel, "key"), fmodel}
           end)
 
@@ -205,8 +206,8 @@ defmodule Fset.Projects do
     {:ok, project} = get_project(projectname)
 
     opts = [{:project_id, project.id} | opts]
-    {schema, acc} = Imports.json_schema(:draft7, json, opts)
-    {_result, project} = replace(project, schema, acc)
+    {ast, acc} = Imports.json_schema(:draft7, json, opts)
+    {_result, project} = replace(project, ast, acc)
 
     project
   end
@@ -226,5 +227,60 @@ defmodule Fset.Projects do
 
   defp rand_key(length) when is_integer(length) do
     :crypto.strong_rand_bytes(length) |> Base.url_encode64() |> binary_part(0, length)
+  end
+
+  # Maintainance tools
+  @core_m 1
+  @proj_m 2
+  @proj_project_t 1
+  @proj_model_ext_t 4
+  @model_m 3
+  @f_record 10
+  @f_tref 28
+  def migrate(project, ast, acc) do
+    ast = Map.put(ast, "key", project.key)
+    ast = Map.put(ast, "m", @proj_m)
+    ast = Map.put(ast, "t", @proj_project_t)
+
+    project_files = from f in Fset.Fmodels.File, where: f.project_id == ^project.id
+    project_sch_metas = from m in Fset.Fmodels.SchMeta, where: m.project_id == ^project.id
+    project_referreres = from r in Fset.Fmodels.Referrer, where: r.project_id == ^project.id
+
+    multi = Ecto.Multi.new()
+    multi = Ecto.Multi.delete_all(multi, :replace_referrers, project_referreres)
+
+    multi =
+      Ecto.Multi.delete_all(multi, :replace_files, fn %{replace_referrers: {_n, _refrers}} ->
+        project_files
+      end)
+
+    multi = Ecto.Multi.delete_all(multi, :replace_sch_metas, project_sch_metas)
+
+    diff =
+      to_diff(ast, acc, fn
+        :added_file, file ->
+          file = Map.put(file, "m", @proj_m)
+          _file = Map.put(file, "t", @proj_model_ext_t)
+
+        :added_top, top ->
+          {top, _acc} =
+            Fset.Sch.walk(top, %{}, fn a, _m, acc ->
+              a = Map.put(a, "m", @model_m)
+
+              a =
+                if Map.get(a, "$r") do
+                  a = Map.put(a, "m", @core_m)
+                  _a = Map.put(a, "t", @f_tref)
+                else
+                  a
+                end
+
+              {:cont, {a, acc}}
+            end)
+
+          top
+      end)
+
+    Fset.Fmodels.persist_diff(diff, build_ids(project), multi: multi)
   end
 end

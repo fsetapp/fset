@@ -4,7 +4,7 @@
 
 @import "./tree.css";
 @import "./tab.css";
-@import "./vendor/fbox.min.css";
+@import "./vendor/fbox.css";
 @import "./kbd.css";
 @import "./form.css";
 @import "./billing.css";

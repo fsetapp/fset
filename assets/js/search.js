@@ -1,4 +1,4 @@
-import { Project, tstr, legitTs } from "./vendor/fbox.min.js"
+import { Project } from "@fsetapp/fset/pkgs/model.js"
 import autoComplete from "@tarekraafat/autocomplete.js"
 
 const typeSearch = (selector, modelsGetter, opts = {}) => {
@@ -7,8 +7,8 @@ const typeSearch = (selector, modelsGetter, opts = {}) => {
     .map(a => a()).filter(sch => tstr(sch.t) != "value" || tstr(sch.t) != "ref")
     .reduce((acc, sch) => Object.assign(acc, { [tstr(sch.t)]: { display: tstr(sch.t), sch: sch, primitive: true } }), {})
 
-  const modelsToDataList = (anchorsModels) => {
-    let data = Object.assign({}, types, anchorsModels)
+  const modelsToDataList = (anchorsTops) => {
+    let data = Object.assign({}, types, anchorsTops)
     let datalist = dataList(data, opts)
     return datalist
   }
@@ -25,8 +25,8 @@ const projectSearch = (selector, modelsGetter, opts = {}) => {
     }
   })
 
-  const modelsToDataList = (anchorsModels) => {
-    let data = anchorsModels
+  const modelsToDataList = (anchorsTops) => {
+    let data = anchorsTops
     let datalist = dataList(data)
     return datalist
   }

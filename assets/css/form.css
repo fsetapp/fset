@@ -12,6 +12,15 @@
   min-height: 100%;
   word-break: break-all;
 }
+.fbox .box-label.compact {
+  display: flex;
+  align-items: flex-start;
+}
+.fbox .box-label.compact textarea,
+.fbox .box-label.compact input,
+.fbox .box-label.compact select {
+  padding: .1rem;
+}
 .fbox .box-label:focus-within {
   color: var(--blue-500);
   border-color: var(--blue-500);

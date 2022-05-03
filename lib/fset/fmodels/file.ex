@@ -4,6 +4,7 @@ defmodule Fset.Fmodels.File do
   schema "files" do
     field :anchor, Ecto.UUID, autogenerate: true
     field :key, :string
+    field :t, :integer
     field :order, :integer
     # field :lpath, {:array, :map}
 

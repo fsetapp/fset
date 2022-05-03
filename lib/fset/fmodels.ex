@@ -273,7 +273,7 @@ defmodule Fset.Fmodels do
   defp multi_upsert_files(multi, key, files) do
     Ecto.Multi.insert_all(multi, key, File, files,
       conflict_target: [:anchor],
-      on_conflict: {:replace, [:key, :order]},
+      on_conflict: {:replace, [:key, :order, :t]},
       returning: true
     )
   end
@@ -454,6 +454,7 @@ defmodule Fset.Fmodels do
     %{}
     |> put_from!(:anchor, {file_sch, @f_anchor})
     |> put_from(:key, {file_sch, @f_key})
+    |> put_from(:t, {file_sch, @f_type})
     |> put_from(:order, {file_sch, "index"})
   end
 
@@ -462,7 +463,7 @@ defmodule Fset.Fmodels do
 
     fmodel =
       %{}
-      |> put_from!(:anchor, {fmodel_sch, @f_anchor})
+      |> put_from!(:anchor, {fmodel_sch, [@f_anchor, "$anchor"]})
       |> put_from(:key, {fmodel_sch, @f_key})
       |> put_from(:order, {fmodel_sch, "index"})
       |> Map.put(:is_entry, Map.get(fmodel_sch, "isEntry", false))
@@ -516,7 +517,7 @@ defmodule Fset.Fmodels do
   end
 
   def from_sch_meta(sch, opts \\ []) when is_map(sch) do
-    metadata = Map.get(sch, "m") || Map.get(sch, "metadata", %{})
+    metadata = Map.get(sch, "metadata", %{})
 
     m =
       %{}
@@ -532,7 +533,7 @@ defmodule Fset.Fmodels do
       end)
 
     if m != %{} do
-      m = put_from!(m, :anchor, {sch, @f_anchor})
+      m = put_from!(m, :anchor, {sch, [@f_anchor, "$anchor"]})
       _m = Map.put(m, :project_id, Keyword.fetch!(opts, :project_id))
     else
       m
@@ -548,7 +549,14 @@ defmodule Fset.Fmodels do
   end
 
   defp put_from!(map, putkey, {from_map, getkey}, f \\ fn a -> a end) do
-    case Map.fetch!(from_map, getkey) do
+    backword_compat_fetch =
+      if is_list(getkey) do
+        Enum.find_value(getkey, fn k -> Map.get(from_map, k) end)
+      else
+        Map.fetch!(from_map, getkey)
+      end
+
+    case backword_compat_fetch do
       %{"new" => val} -> Map.put(map, putkey, f.(val))
       val -> Map.put(map, putkey, f.(val))
     end
@@ -609,7 +617,10 @@ defmodule Fset.Fmodels do
     |> Map.put(@f_anchor, project.anchor)
     |> Map.put(@f_key, project.key)
     |> Map.put("schMetas", [])
-    |> Map.put(@f_type, @f_record)
+    # @proj_m 2
+    # @proj_project_t 1
+    |> Map.put("m", 2)
+    |> Map.put(@f_type, 1)
     |> Map.put("fields", Enum.map(project.files, &to_file_sch/1))
     |> map_put_current_file(params)
   end
@@ -619,7 +630,8 @@ defmodule Fset.Fmodels do
     |> Map.put(@f_anchor, file.anchor)
     |> Map.put(@f_key, file.key)
     |> Map.put("index", file.order)
-    |> Map.put(@f_type, @f_record)
+    |> Map.put("m", 2)
+    |> Map.put(@f_type, file.t)
     |> Map.put("fields", Enum.map(file.fmodels, &to_fmodel_sch/1))
   end
 
@@ -641,7 +653,7 @@ defmodule Fset.Fmodels do
         p
 
       %{"fields" => [file | _]} = p ->
-        Map.put(p, "currentFileKey", params["filename"] || Map.get(file, @f_key))
+        Map.put(p, "currentFile", params["filename"] || Map.get(file, @f_anchor))
     end
   end
 

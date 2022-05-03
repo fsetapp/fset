@@ -1,7 +1,7 @@
 %{
   "bcrypt_elixir": {:hex, :bcrypt_elixir, "2.3.1", "5114d780459a04f2b4aeef52307de23de961b69e13a5cd98a911e39fda13f420", [:make, :mix], [{:comeonin, "~> 5.3", [hex: :comeonin, repo: "hexpm", optional: false]}, {:elixir_make, "~> 0.6", [hex: :elixir_make, repo: "hexpm", optional: false]}], "hexpm", "42182d5f46764def15bf9af83739e3bf4ad22661b1c34fc3e88558efced07279"},
   "benchee": {:hex, :benchee, "1.1.0", "f3a43817209a92a1fade36ef36b86e1052627fd8934a8b937ac9ab3a76c43062", [:mix], [{:deep_merge, "~> 1.0", [hex: :deep_merge, repo: "hexpm", optional: false]}, {:statistex, "~> 1.0", [hex: :statistex, repo: "hexpm", optional: false]}], "hexpm", "7da57d545003165a012b587077f6ba90b89210fd88074ce3c60ce239eb5e6d93"},
-  "castore": {:hex, :castore, "0.1.16", "2675f717adc700475345c5512c381ef9273eb5df26bdd3f8c13e2636cf4cc175", [:mix], [], "hexpm", "28ed2c43d83b5c25d35c51bc0abf229ac51359c170cba76171a462ced2e4b651"},
+  "castore": {:hex, :castore, "0.1.17", "ba672681de4e51ed8ec1f74ed624d104c0db72742ea1a5e74edbc770c815182f", [:mix], [], "hexpm", "d9844227ed52d26e7519224525cb6868650c272d4a3d327ce3ca5570c12163f9"},
   "certifi": {:hex, :certifi, "2.9.0", "6f2a475689dd47f19fb74334859d460a2dc4e3252a3324bd2111b8f0429e7e21", [:rebar3], [], "hexpm", "266da46bdb06d6c6d35fde799bcb28d36d985d424ad7c08b5bb48f5b5cdd4641"},
   "combine": {:hex, :combine, "0.10.0", "eff8224eeb56498a2af13011d142c5e7997a80c8f5b97c499f84c841032e429f", [:mix], [], "hexpm", "1b1dbc1790073076580d0d1d64e42eae2366583e7aecd455d1215b0d16f2451b"},
   "comeonin": {:hex, :comeonin, "5.3.3", "2c564dac95a35650e9b6acfe6d2952083d8a08e4a89b93a481acb552b325892e", [:mix], [], "hexpm", "3e38c9c2cb080828116597ca8807bb482618a315bfafd98c90bc22a821cc84df"},
