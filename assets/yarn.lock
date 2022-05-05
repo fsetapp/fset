@@ -3,9 +3,9 @@
 
 
 "@fsetapp/fset@^0.2.0":
-  version "0.2.2"
-  resolved "https://npm.pkg.github.com/download/@fsetapp/fset/0.2.2/d893d451034120db9bf46cc551856f1edf7f57a177bba82cd9d85e3ca9572e1b#b56274ee2911c6cc17c3afd6362c0a04f813e42f"
-  integrity sha512-iDJjJvrjY7VQMArV4ZesY2Ta+rYS+xXw/gcR2FRhqlCBZWA+0xN2v+nHMRRbvsKOtBSQuk76ub596xRuKiV+UA==
+  version "0.2.3"
+  resolved "https://npm.pkg.github.com/download/@fsetapp/fset/0.2.3/7173aa969cf964e6471c24cba06cd1b8b85b6d76eb9e2274801e9410c3599e2d#600ef24a543b82a1422d6d89087b754fa8c579f1"
+  integrity sha512-+/zbvVpIvsHCrEg+YlES6c4xb+ZgLT4zWI1LLMI9xcYTApBcPNHzwQIg33p2S8bPLsh08grgAOQoHw9OQAE34A==
 
 "@github/details-menu-element@^1.0.12":
   version "1.0.12"

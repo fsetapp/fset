@@ -1,4 +1,5 @@
-#fmodel [role="tree"], .tree0 {
+#fmodel [role="tree"],
+.tree0 {
   --tree-min-width: 374px;
   --tree-bg-color: var(--gray-900);
   --tree-color: var(--gray-300);
@@ -21,10 +22,12 @@
   --diff-moved-color: rgba(59, 130, 246, .5);
   --diff-changed-color: rgba(255, 140, 0, .5);
 }
+
 .tree0 {
   --tree-bg-color: transparent;
   --tree-min-width: 0;
 }
+
 .landing-page [role="tree"] {
   height: auto;
 }
@@ -51,32 +54,40 @@
 .root-item {
   margin: 0;
 }
-.root-item > [role='group'] {
+
+.root-item>[role='group'] {
   margin-bottom: .5rem;
 }
 
-#fmodel [role="tree"] { @apply tracking-wide; }
-#fmodel [role="tree"] > .root-item > .h,
-#project [role="tree"] > .root-item > .h {
+#fmodel [role="tree"] {
+  @apply tracking-wide;
+}
+
+#fmodel [role="tree"]>.root-item>.h,
+#project [role="tree"]>.root-item>.h {
   padding-right: 8rem;
 }
-#fmodel [role="tree"] > .root-item[aria-selected='true'] > .h:after,
-#project [role="tree"] > .root-item[aria-selected='true'] > .h:after {
+
+#fmodel [role="tree"]>.root-item[aria-selected='true']>.h:after,
+#project [role="tree"]>.root-item[aria-selected='true']>.h:after {
   position: absolute;
   right: 1rem;
   content: "shift +";
   color: var(--gray-400);
 }
-#project textarea { min-width: 25ch; }
 
-#project [role="tree"] [role='treeitem'] > .h[data-group-size] {
+#project textarea {
+  min-width: 25ch;
+}
+
+#project [role="tree"] [role='treeitem']>.h[data-group-size] {
   padding-right: 2rem;
 }
-#project [role="tree"] [role='treeitem'] > .h[data-group-size]:after {
+
+#project [role="tree"] [role='treeitem']>.h[data-group-size]:after {
   position: absolute;
   content: attr(data-group-size);
   right: .25rem;
-  top: .5rem;
   color: var(--gray-400);
   background-color: var(--gray-800);
   border-radius: 100%;
@@ -85,6 +96,7 @@
   text-align: center;
   font-size: .625rem;
 }
+
 #project [role="tree"] [role='treeitem'] .k {
   max-width: 100%;
 }

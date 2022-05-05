@@ -14,6 +14,7 @@
 .bg-matte-black {
   background-color: var(--matte-black) !important;
 }
+
 .bg-gray-meta {
   background-color: var(--gray-meta);
 }
@@ -28,8 +29,12 @@
   background-position: -2px -2px, -2px -2px, -1px -1px, -1px -1px;
 }
 
-details-menu { min-width: 22ch; z-index: 1;}
-sch-meta > form {
+details-menu {
+  min-width: 22ch;
+  z-index: 1;
+}
+
+sch-meta>form {
   @apply text-xs;
 }
 

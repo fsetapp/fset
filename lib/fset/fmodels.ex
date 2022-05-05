@@ -273,7 +273,7 @@ defmodule Fset.Fmodels do
   defp multi_upsert_files(multi, key, files) do
     Ecto.Multi.insert_all(multi, key, File, files,
       conflict_target: [:anchor],
-      on_conflict: {:replace, [:key, :order, :t]},
+      on_conflict: {:replace, [:key, :order, :t, :lpath]},
       returning: true
     )
   end
@@ -453,9 +453,13 @@ defmodule Fset.Fmodels do
   defp from_file_sch(file_sch) when is_map(file_sch) do
     %{}
     |> put_from!(:anchor, {file_sch, @f_anchor})
-    |> put_from(:key, {file_sch, @f_key})
+    |> put_from(:key, {file_sch, @f_key}, fn
+      "" -> Map.fetch!(file_sch, @f_anchor)
+      val -> val
+    end)
     |> put_from(:t, {file_sch, @f_type})
     |> put_from(:order, {file_sch, "index"})
+    |> put_from(:lpath, {file_sch, "lpath"})
   end
 
   defp from_fmodel_sch(fmodel_sch, project_id, opts \\ []) when is_map(fmodel_sch) do
@@ -630,6 +634,7 @@ defmodule Fset.Fmodels do
     |> Map.put(@f_anchor, file.anchor)
     |> Map.put(@f_key, file.key)
     |> Map.put("index", file.order)
+    |> Map.put("lpath", file.lpath)
     |> Map.put("m", 2)
     |> Map.put(@f_type, file.t)
     |> Map.put("fields", Enum.map(file.fmodels, &to_fmodel_sch/1))
