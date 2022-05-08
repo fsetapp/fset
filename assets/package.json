@@ -3,7 +3,7 @@
   "description": "fset internal",
   "license": "MIT",
   "dependencies": {
-    "@fsetapp/fset": "^0.2.0",
+    "@fsetapp/fset": "^0.4.1",
     "@github/details-menu-element": "^1.0.12",
     "@github/include-fragment-element": "^6.0.1",
     "@github/tab-container-element": "^3.1.2",

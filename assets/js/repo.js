@@ -58,9 +58,9 @@ export const init = (name, channel) => {
           this._store.fields.push(file)
       })
       channel.on("each_batch_finished", nothing => {
-        // Project.buildFolderTree(this._store)
         const { url, currentFile } = this._store
         Store.buildFolderTree(this._store)
+
         ProjectURL.replaceWith({ url, currentFile })
 
         File.FileTree({ target: "[id='project']", select: decodeURIComponent(`[${currentFile?.key}]`) }, this._store)
@@ -127,7 +127,7 @@ export const init = (name, channel) => {
       let fileStore = this._store._currentFileStore
       f(fileStore)
       fileStore?.render()
-      fileStore?.renderSchMeta()
+      // fileStore?.renderSchMeta()
     }
     handleSchUpdate(e) {
       let { detail, target } = e
