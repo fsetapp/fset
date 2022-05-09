@@ -1,15 +1,11 @@
-import { Project } from "@fsetapp/fset/pkgs/model.js"
 import autoComplete from "@tarekraafat/autocomplete.js"
 
 const typeSearch = (selector, modelsGetter, opts = {}) => {
   let comboboxOpts = commonComboboxOpts({ maxResults: 100, placeHolder: opts.placeHolder })
-  let types = Project.allSchs
-    .map(a => a()).filter(sch => tstr(sch.t) != "value" || tstr(sch.t) != "ref")
-    .reduce((acc, sch) => Object.assign(acc, { [tstr(sch.t)]: { display: tstr(sch.t), sch: sch, primitive: true } }), {})
 
   const modelsToDataList = (anchorsTops) => {
-    let data = Object.assign({}, types, anchorsTops)
-    let datalist = dataList(data, opts)
+    let datalist = dataList(anchorsTops, opts)
+
     return datalist
   }
 
@@ -80,8 +76,8 @@ const commonComboboxOpts = ({ maxResults, placeHolder, postSelection }) => {
       element: (item, data) => {
         if (!data.value.primitive) {
           let t = document.createRange().createContextualFragment(`
-            <span class="mx-1 text-gray-600">–</span>
-            <span class="autoComplete_result_t">${tstr(data.value.sch.t)}</span>
+            <span class="mx-1 text-gray-600">-</span>
+            <span class="autoComplete_result_t">${data.value.sch.t}</span>
           `)
           item.appendChild(t)
         }

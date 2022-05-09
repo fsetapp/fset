@@ -45,25 +45,25 @@
         <div class="tree0 mt-4">
           <p>A fmodel example:</p>
           <def-fmodel data-name="ex_1" data-sch="<%= @docs.ex_1 %>">
-          <pre class="text-sm"><%= """
-          type VConcatSpec<GenericSpec> = {   }
-              bounds : ||
-                  | "full"
-                  | "flush"
-              center : bool
-              data : ||
-                  | D :: Data
-                  | null
-              description : string
-              name : string
-              resolve : R :: Resolve
-              spacing : float_64
-              title : ||
-                  | T :: Text
-                  | T :: TitleParams
-              transform : [  T :: Transform  ]
-              vconcat : [  S :: Spec  ]
-          """%></pre>
+            <pre class="text-sm hidden"><%= """
+            type VConcatSpec<GenericSpec> = {   }
+                bounds : ||
+                    | "full"
+                    | "flush"
+                center : bool
+                data : ||
+                    | D :: Data
+                    | null
+                description : string
+                name : string
+                resolve : R :: Resolve
+                spacing : float_64
+                title : ||
+                    | T :: Text
+                    | T :: TitleParams
+                transform : [  T :: Transform  ]
+                vconcat : [  S :: Spec  ]
+            """%></pre>
           </def-fmodel>
           <p class="text-xs text-center text-gray-500"><i>A fmodel encodes a json schema definition, source: <a href="https://github.com/vega/schema" target="_blank">https://github.com/vega/schema</a></i></p>
         </div>

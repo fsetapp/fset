@@ -1,4 +1,5 @@
 import * as Model from "@fsetapp/fset/pkgs/model.js"
+import * as Json from "@fsetapp/fset/pkgs/json.js"
 import * as File from "@fsetapp/fset/pkgs/file.js"
 import { Project } from "@fsetapp/fset"
 import { buffer } from "./utils.js"
@@ -41,10 +42,8 @@ export const init = (name, channel) => {
     handleRemoteConnected(e) {
       this.channelOff()
       let project = e.detail.project
-      structSheet = Object.assign(structSheet, Model.structSheet)
-      structSheet = Object.assign(structSheet, File.structSheet)
 
-      this._store = Store.fromProject(project, { structSheet })
+      this._store = Store.fromProject(project, { imports: [File, Model, Json] })
       this._store.url = { path: window.project_path }
 
       channel.on("persisted_diff_result", (saved_diffs) => {
@@ -63,8 +62,8 @@ export const init = (name, channel) => {
 
         ProjectURL.replaceWith({ url, currentFile })
 
-        File.FileTree({ target: "[id='project']", select: decodeURIComponent(`[${currentFile?.key}]`) }, this._store)
-        Controller.changeFile({ projectStore: this._store, filename: currentFile?.key, fmodelname: decodeURIComponent(location.hash.replace("#", "")) })
+        File.FileTree({ target: "[id='project']", fileBody: "file-body", select: decodeURIComponent(`[${currentFile?.key}]`) }, this._store)
+        File.changeFile({ projectStore: this._store, tree: { _passthrough: { fileBody: "file-body" } }, filename: currentFile?.key, fmodelname: decodeURIComponent(location.hash.replace("#", "")) })
 
         this._base = JSON.parse(JSON.stringify(this._store))
         Store.Indice.buildBaseIndices(this._base)
@@ -80,7 +79,7 @@ export const init = (name, channel) => {
       })
     }
     handleTreeCommand(e) {
-      Controller.router(this._store, e.detail.target, e.detail.command, this.runDiff)
+      Controller.router(this._store, e.detail)
       document.activeAriaTree = e.detail.target.closest("[role='tree']")
     }
     handleRemotePush(e) {
@@ -148,8 +147,8 @@ export const init = (name, channel) => {
       let filename = e.detail.value.file
       let fmodelname = e.detail.value.fmodel
 
-      Controller.changeFile({ projectStore: this._store, filename, fmodelname: decodeURIComponent(`[${fmodelname}]`), focus: true })
-      File.FileTree({ target: "[id='project']", select: decodeURIComponent(`[${filename}]`), focus: false }, this._store)
+      File.changeFile({ projectStore: this._store, tree: { _passthrough: { fileBody: "file-body" } }, filename, fmodelname: decodeURIComponent(`[${fmodelname}]`), focus: true })
+      File.FileTree({ target: "[id='project']", fileBody: "file-body", select: decodeURIComponent(`[${filename}]`), focus: false }, this._store)
       this.changeUrl()
     }
     pushChanged() {
@@ -163,7 +162,8 @@ export const init = (name, channel) => {
 
       let fileIsFile = file.getAttribute("data-tag") == "file"
       let notFileNode = fileBodyNode.getAttribute("data-tag") != "file"
-
+      console.log(fileIsFile)
+      console.log(file.key)
       this._store.currentFile = file
       switch (true) {
         case !!(fileIsFile && file.key) && !!(notFileNode && fileBodyNode.id):

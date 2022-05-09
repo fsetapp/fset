@@ -1,5 +1,6 @@
 import "phoenix_html"
-import { ReadOnlyFmodelTree } from "@fsetapp/fset/pkgs/model.js"
+import { elements } from "@fsetapp/fset/pkgs/model.js"
+const { ReadOnlyFmodelTree } = elements
 
 window.addEventListener("hashchange", e => {
   for (let a of document.body.querySelectorAll(`[data-current]`)) a.removeAttribute("data-current")

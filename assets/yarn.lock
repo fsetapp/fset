@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@fsetapp/fset@^0.4.1":
-  version "0.4.1"
-  resolved "https://npm.pkg.github.com/download/@fsetapp/fset/0.4.1/959c338e4127e5d105e20d0ba5fb0b204b0926bcfef9a3bbfeb08221faf40e42#0cc903093bd027e5371dfa9231b8679ba5e11663"
-  integrity sha512-/ikrSjGV2u4E2yPlUlV17ENYHp6oe565gQn/j7PV80EK7pPh1hHWnLsyN73mzdjLztXT9ztWw4OHpfLCHazRrg==
+"@fsetapp/fset@^0.5.1":
+  version "0.5.1"
+  resolved "https://npm.pkg.github.com/download/@fsetapp/fset/0.5.1/9a359a6d6673663a53f026bae671409624055f07e0a5d3a9bc5cc34f64a9e051#bd2d5c6fc34876462f07fde7018dc3d541f0dded"
+  integrity sha512-Vfvcx3eRWUuRaZhj0jksnbOI7tw984by5pv1c4mDMXwGT5Bcxg0EHmGQderYmvIcoeS1cOw6ov1aeSCzAIlmnA==
 
 "@github/details-menu-element@^1.0.12":
   version "1.0.12"

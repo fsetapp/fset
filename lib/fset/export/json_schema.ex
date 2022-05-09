@@ -19,7 +19,7 @@ defmodule Fset.Exports.JSONSchema do
     end
 
     map_put_type = fn
-      %{@f_type => @f_record} = a, _m, acc ->
+      %{@f_fields => _} = a, _m, acc ->
         sch_meta = get_meta.(a)
 
         fields = Map.fetch!(a, @f_fields)
@@ -236,7 +236,7 @@ defmodule Fset.Exports.JSONSchema do
                 Enum.map(tagged_things, fn thing ->
                   {key, thing} = Map.pop!(thing, "key")
 
-                  tagname = Map.fetch!(sch_meta, "tagname")
+                  tagname = Map.fetch!(a, "tagname")
 
                   thing =
                     put_in(
