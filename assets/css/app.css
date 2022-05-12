@@ -4,7 +4,8 @@
 
 @import "./tree.css";
 @import "./tab.css";
-@import "./vendor/fbox.css";
+@import url("../node_modules/@fsetapp/fset/dist/main.css");
+@import url("../node_modules/@fsetapp/fset/dist/css/json.css");
 @import "./kbd.css";
 @import "./form.css";
 @import "./billing.css";

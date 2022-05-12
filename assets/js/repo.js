@@ -6,7 +6,6 @@ import { buffer } from "./utils.js"
 import ProjectURL from "./lib/project_url.js"
 
 const { Store, Controller, Diff, Remote } = Project
-var structSheet = {}
 
 export const init = (name, channel) => {
   customElements.define(name || "project-store", class extends HTMLElement {
@@ -162,8 +161,7 @@ export const init = (name, channel) => {
 
       let fileIsFile = file.getAttribute("data-tag") == "file"
       let notFileNode = fileBodyNode.getAttribute("data-tag") != "file"
-      console.log(fileIsFile)
-      console.log(file.key)
+
       this._store.currentFile = file
       switch (true) {
         case !!(fileIsFile && file.key) && !!(notFileNode && fileBodyNode.id):

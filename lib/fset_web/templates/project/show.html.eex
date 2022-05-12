@@ -115,7 +115,7 @@
         <% end %>
       </tab-container>
     </section>
-    <section id="module_defs" class="overflow-hidden flex flex-col m-px bg-gray-900" style="flex: var(--flex, 2.5)">
+    <section class="overflow-hidden flex flex-col m-px bg-gray-900" style="flex: var(--flex, 2.5)">
       <action-listener class="flex flex-shrink-0 bg-gray-meta border border-gray-800 text-xs">
         <button name="add_item" data-tree-action="add_item" tabindex="-1" class="px-2 py-1.5 hover:bg-gray-800 rounded">
           <%= FsetWeb.IconView.add(class: "w-4 h-4 text-gray-300") %>
@@ -148,7 +148,7 @@
           Mark as Entrypoint
         </button>
       </action-listener>
-      <file-body id="fmodel" class="flex-grow overflow-hidden h-full"></file-body>
+      <file-body class="flex-grow overflow-hidden h-full"></file-body>
     </section>
     <sch-meta id ="fsch" class="overflow-auto m-px _flex-1 bg-gray-900 px-2 pb-2 focus:outline-none" tabindex="-1" style="flex: 1.5; display: var(--display, 'block');">
     </sch-meta>

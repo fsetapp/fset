@@ -1,4 +1,4 @@
-#fmodel [role="tree"],
+[data-ext="fmodel"] [role="tree"],
 .tree0 {
   --tree-min-width: 374px;
   --tree-bg-color: var(--gray-900);
@@ -51,6 +51,29 @@
   --diff-changed-color: rgba(255, 140, 0, .5);
 }
 
+[data-ext="json"] [role="tree"] {
+  --tree-min-width: 374px;
+  --tree-bg-color: var(--gray-900);
+  --tree-color: var(--gray-300);
+
+  --item-root-bg-color: var(--matte-black);
+  --item-selected-bg-color: var(--gray-meta-75);
+
+  --item-selected-border-color: rgba(59, 130, 246, .5);
+  --item-selected-header-bg-color: var(--gray-700);
+
+  --key-color: var(--gray-300);
+  --key-pattern-font: var(--font-mono);
+  --type-color: var(--pink-400);
+  --ref-color: var(--indigo-400);
+
+  --diff-new-color: rgba(144, 238, 144, .5);
+  --diff-removed-color: rgba(255, 0, 0, .5);
+  --diff-moved-color: rgba(59, 130, 246, .5);
+  --diff-changed-color: rgba(255, 140, 0, .5);
+  /* --diff-reorder-color: var(--diff-moved-color); */
+}
+
 .root-item {
   margin: 0;
 }
@@ -59,16 +82,16 @@
   margin-bottom: .5rem;
 }
 
-#fmodel [role="tree"] {
+[data-ext="fmodel"] [role="tree"] {
   @apply tracking-wide;
 }
 
-#fmodel [role="tree"]>.root-item>.h,
+[data-ext="fmodel"] [role="tree"]>.root-item>.h,
 #project [role="tree"]>.root-item>.h {
   padding-right: 8rem;
 }
 
-#fmodel [role="tree"]>.root-item[aria-selected='true']>.h:after,
+[data-ext="fmodel"] [role="tree"]>.root-item[aria-selected='true']>.h:after,
 #project [role="tree"]>.root-item[aria-selected='true']>.h:after {
   position: absolute;
   right: 1rem;
