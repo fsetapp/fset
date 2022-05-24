@@ -119,7 +119,7 @@ const dataList = (data, opts = {}) => {
     if (!opts.only)
       datalist.push(Object.assign({ anchor: anchors[i], fmodelname: fmodelname, }, fmodel))
     else
-      if (legitTs(opts.only, fmodel))
+      if (containsRefTo(opts.only, fmodel))
         datalist.push(Object.assign({ anchor: anchors[i], fmodelname: fmodelname, }, fmodel))
   }
 

@@ -31,7 +31,7 @@ config :fset, FsetWeb.Endpoint,
     tailwind: {Tailwind, :install_and_run, [:default, ~w(--watch)]},
     esbuild:
       {Esbuild, :install_and_run,
-       [:default, ~w(--sourcemap=linked --watch --analyze=verbose --loader:.png=file)]}
+       [:default, ~w(--sourcemap=linked --watch --minify --analyze=verbose --loader:.png=file)]}
   ]
 
 # ## SSL Support
