@@ -1,6 +1,7 @@
 import * as Model from "@fsetapp/fset/pkgs/model.js"
 import * as Json from "@fsetapp/fset/pkgs/json.js"
 import * as File from "@fsetapp/fset/pkgs/file.js"
+import * as Sheet from "@fsetapp/fset/pkgs/sheet.js"
 import { Project } from "@fsetapp/fset"
 import { buffer } from "./utils.js"
 import ProjectURL from "./lib/project_url.js"
@@ -42,10 +43,11 @@ export const init = (name, channel) => {
       this.channelOff()
       let project = e.detail.project
 
-      this._store = Store.fromProject(project, { imports: [File, Model, Json] })
+      this._store = Store.fromProject(project, { imports: [File, Model, Json, Sheet] })
       this._store.url = { path: window.project_path }
 
       channel.on("persisted_diff_result", (saved_diffs) => {
+        // Receive broadcasted saved_diffs from other sessions. Not from this session itself.
         Diff.mergeToCurrent(this._store, saved_diffs)
         Diff.mergeToBase(this._base, saved_diffs)
         this.diffRender({ anchorsModelsUpdate: true })
@@ -87,7 +89,8 @@ export const init = (name, channel) => {
       this.cmdQueue.push(e)
 
       this.push = buffer(() => {
-        if (this.cmdQueue.find(cmd => Controller.isDiffableCmd(cmd.detail.command.name))) {
+        let diffableActs = Object.values(this._store.diffableActs).flat()
+        if (diffableActs.includes(e.detail.command.name)) {
           this.pushToRemote(e)
           this.cmdQueue = []
         }
@@ -128,9 +131,7 @@ export const init = (name, channel) => {
       // fileStore?.renderSchMeta()
     }
     handleSchUpdate(e) {
-      let { detail, target } = e
-      let fileStore = e.detail.file
-      let updated_sch = Project.SchMeta.update({ store: fileStore, detail })
+      let updated_sch = Model.SchMeta.update({ store: e.detail.file, detail })
 
       if (!window.userToken) return
       if (updated_sch)

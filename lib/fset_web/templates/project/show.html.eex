@@ -42,9 +42,9 @@
             <button type="button" role="tab" tabindex="-1" class="flex items-center"><%= FsetWeb.IconView.settings(class: "w-5 h-5") %></button>
           <% end %>
         </div>
-        <div role="tabpanel" id="project" class="flex-grow overflow-hidden h-full" tabindex="-1" >
+        <nav-tree role="tabpanel" id="project" class="flex-grow overflow-hidden h-full" tabindex="-1" >
           <p class="p-2">project is loading ...</p>
-        </div>
+        </nav-tree>
         <%= if @is_project_unclaimed && !@current_user do %>
           <div role="tabpanel" class="overflow-hidden p-2" hidden>
             <h3>Register and confirm user via email link to claim this project</h3>

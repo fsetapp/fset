@@ -5,7 +5,11 @@
 @import "./tree.css";
 @import "./tab.css";
 @import url("../node_modules/@fsetapp/fset/dist/main.css");
+@import url("../node_modules/@fsetapp/fset/dist/css/model.css");
+@import url("../node_modules/@fsetapp/fset/dist/css/sch-meta.css");
+@import url("../node_modules/@fsetapp/fset/dist/css/file.css");
 @import url("../node_modules/@fsetapp/fset/dist/css/json.css");
+@import url("../node_modules/@fsetapp/fset/dist/css/sheet.css");
 @import "./kbd.css";
 @import "./form.css";
 @import "./billing.css";

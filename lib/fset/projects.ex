@@ -90,6 +90,13 @@ defmodule Fset.Projects do
     |> Repo.update()
   end
 
+  @core_m 1
+  @proj_m 2
+  @model_m 3
+  @proj_project_t 1
+  @proj_model_ext_t 4
+  @f_tref 28
+
   def replace(project, ast, acc) do
     # Repo.get_by!(Fset.Projects.Project, key: projectname)
     project_files = from f in Fset.Fmodels.File, where: f.project_id == ^project.id
@@ -106,8 +113,20 @@ defmodule Fset.Projects do
 
     multi = Ecto.Multi.delete_all(multi, :replace_sch_metas, project_sch_metas)
 
-    schema = Map.put(ast, "key", project.key)
-    Fset.Fmodels.persist_diff(to_diff(ast, acc), build_ids(project), multi: multi)
+    ast = Map.put(ast, "key", project.key)
+    ast = assign_proj_m_t(ast)
+
+    diff =
+      to_diff(ast, acc, fn
+        :added_file, file ->
+          file = Map.put(file, "m", @proj_m)
+          _file = Map.put(file, "t", @proj_model_ext_t)
+
+        :added_top, top ->
+          top
+      end)
+
+    Fset.Fmodels.persist_diff(diff, build_ids(project), multi: multi)
   end
 
   defp build_ids(project) do
@@ -127,7 +146,7 @@ defmodule Fset.Projects do
     _project = %{project | files: Enum.map(project.files, map_file)}
   end
 
-  defp to_diff(ast, acc, f \\ fn a -> a end) do
+  defp to_diff(ast, acc, f \\ fn _, a -> a end) do
     {files, project} = Map.pop!(ast, "fields")
 
     diff = %{
@@ -230,17 +249,15 @@ defmodule Fset.Projects do
   end
 
   # Maintainance tools
-  @core_m 1
-  @proj_m 2
-  @proj_project_t 1
-  @proj_model_ext_t 4
-  @model_m 3
-  @f_record 10
-  @f_tref 28
+
+  defp assign_proj_m_t(ast) do
+    ast = Map.put(ast, "m", @proj_m)
+    _ast = Map.put(ast, "t", @proj_project_t)
+  end
+
   def migrate(project, ast, acc) do
     ast = Map.put(ast, "key", project.key)
-    ast = Map.put(ast, "m", @proj_m)
-    ast = Map.put(ast, "t", @proj_project_t)
+    ast = assign_proj_m_t(ast)
 
     project_files = from f in Fset.Fmodels.File, where: f.project_id == ^project.id
     project_sch_metas = from m in Fset.Fmodels.SchMeta, where: m.project_id == ^project.id
