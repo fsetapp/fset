@@ -131,11 +131,11 @@ export const init = (name, channel) => {
       // fileStore?.renderSchMeta()
     }
     handleSchUpdate(e) {
-      let updated_sch = Model.SchMeta.update({ store: e.detail.file, detail })
+      let { sch } = e.detail
 
       if (!window.userToken) return
-      if (updated_sch)
-        channel.push("push_sch_meta", { $a: updated_sch.$a, metadata: updated_sch.metadata })
+      if (sch)
+        channel.push("push_sch_meta", { $a: sch.$a, metadata: sch.metadata })
           .receive("ok", (updated_metadata) => {
           })
     }

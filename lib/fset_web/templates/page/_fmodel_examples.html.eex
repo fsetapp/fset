@@ -1,52 +1,44 @@
-<ul class="tree0 md:grid md:grid-cols-3">
+<ul class="md:grid md:grid-cols-3" data-ext="fmodel">
 
       <li class="">
-        <def-fmodel class="block" style="" data-name="Record" data-sch="">
-  <ul role="tree" aria-multiselectable="true" class="setnu text-sm" aria-labelledby="Record_tree">
-
-  <li class="root-item" role="treeitem" aria-selected="false" tabindex="-1" id="" data-tag="Record" aria-posinset="1" aria-level="1" aria-expanded="true">
-    <dfn class="h" id="Record_tree">
-
-    </dfn>
-    <ul role="group" tabindex="-1" data-group="keyed">
-
-  <li class="folder" role="treeitem" aria-selected="false" tabindex="-1" id="[Record]" aria-posinset="1" aria-level="2" aria-expanded="true">
-    <dfn class="h" data-diff="" data-group-size="2">
-
+        <def-fmodel class="block font-normal" style="" data-name="Record" data-sch="" data-ext="fmodel"><!----><ol role="tree" aria-multiselectable="true" class="setnu text-sm" aria-label="undefined body"><!--?lit$7402337203$--><li role="treeitem" aria-selected="false" tabindex="-1" id="" class="root-item" data-diff="" aria-level="1" aria-posinset="1"><!--?lit$7402337203$-->
+  <dfn class="h" id="_tree">
+    <!--?lit$7402337203$-->
+  </dfn>
+  <ol role="group" tabindex="-1" data-group="keyed">
+    <!--?lit$7402337203$--><!----><li role="treeitem" aria-selected="false" tabindex="-1" id="[Record]" class="node" data-diff="" data-tag="top_lv" aria-level="2" aria-posinset="1" aria-expanded="true"><!--?lit$7402337203$-->
+  <dfn class="h" data-diff="" data-group-size="2">
+    <!--?lit$7402337203$-->
   <span class="def" style="padding-left: 6ch">
-    type
+    <!--?lit$7402337203$-->type
   </span>
-  <span class="k">Record</span>
+  <span class="k"><!--?lit$7402337203$--><!--?lit$7402337203$-->Record<!--?--></span>
   <span class="s">=</span>
 
-      <span class="t">{ &nbsp; }</span>
-    </dfn>
-    <ul role="group" data-group="keyed">
-
-  <li class="file" role="treeitem" aria-selected="false" tabindex="-1" id="[Record][field_a]" data-diff="" aria-posinset="1" aria-level="3">
-
-      <span class="k" style="padding-left: 9ch" data-required="true" data-is-pattern="false">
-        field_a
-      </span>
-      <span class="s">:</span>
-
-    <span class="t">string</span>
-  </li>
-  <li class="file" role="treeitem" aria-selected="false" tabindex="-1" id="[Record][field_b]" data-diff="" aria-posinset="2" aria-level="3">
-
+    <!--?lit$7402337203$--><span class="t"><!--?lit$7402337203$--><!--?lit$7402337203$-->{ &nbsp; }<!--?--></span>
+  </dfn>
+  <ol role="group" data-group="keyed">
+    <!--?lit$7402337203$--><!----><li role="treeitem" aria-selected="false" tabindex="-1" id="[Record][field_a]" class="leaf" data-diff="" aria-level="3" aria-posinset="1"><!--?lit$7402337203$-->
+  <!--?lit$7402337203$-->
       <span class="k" style="padding-left: 9ch" data-required="false" data-is-pattern="false">
-        field_b
+        <!--?lit$7402337203$--><!--?lit$7402337203$-->field_a<!--?-->
       </span>
       <span class="s">:</span>
 
-    <span class="t">int_32</span>
-  </li>
-    </ul>
-  </li>
-    </ul>
-  </li>
-  </ul>
-  </def-fmodel>
+  <!--?lit$7402337203$--><span class="t"><!--?lit$7402337203$--><!--?lit$7402337203$-->string<!--?--></span>
+  </li><!----><!----><li role="treeitem" aria-selected="false" tabindex="-1" id="[Record][field_b]" class="leaf" data-diff="" aria-level="3" aria-posinset="2"><!--?lit$7402337203$-->
+  <!--?lit$7402337203$-->
+      <span class="k" style="padding-left: 9ch" data-required="false" data-is-pattern="false">
+        <!--?lit$7402337203$--><!--?lit$7402337203$-->field_b<!--?-->
+      </span>
+      <span class="s">:</span>
+
+  <!--?lit$7402337203$--><span class="t"><!--?lit$7402337203$--><!--?lit$7402337203$-->int_32<!--?--></span>
+  </li><!---->
+  </ol>
+  </li><!---->
+  </ol>
+  </li></ol></def-fmodel>
         <code class="flex">
           <pre class="p-2 text-xs text-left w-full bg-matte-black rounded-lg whitespace-pre-wrap overflow-x-scroll">{
   "properties": {
@@ -59,81 +51,222 @@
       "type": "integer"
     }
   },
-  "required": [
-    "field_a"
-  ],
   "type": "object"
 }</pre>
         </code>
       </li>
 
-
-
-
-
-
-
       <li class="">
-        <def-fmodel class="block" style="" data-name="Tuple" data-sch="">
-  <ul role="tree" aria-multiselectable="true" class="setnu text-sm" aria-labelledby="Tuple_tree">
-
-  <li class="root-item" role="treeitem" aria-selected="false" tabindex="-1" id="" data-tag="Tuple" aria-posinset="1" aria-level="1" aria-expanded="true">
-    <dfn class="h" id="Tuple_tree">
-
-    </dfn>
-    <ul role="group" tabindex="-1" data-group="keyed">
-
-  <li class="folder" role="treeitem" aria-selected="false" tabindex="-1" id="[Tuple]" aria-posinset="1" aria-level="2" aria-expanded="true">
-    <dfn class="h" data-diff="" data-group-size="3">
-
+        <def-fmodel class="block font-normal" style="" data-name="ExtenderRecord" data-sch="" data-ext="fmodel"><!----><ol role="tree" aria-multiselectable="true" class="setnu text-sm" aria-label="undefined body"><!--?lit$7402337203$--><li role="treeitem" aria-selected="false" tabindex="-1" id="" class="root-item" data-diff="" aria-level="1" aria-posinset="1"><!--?lit$7402337203$-->
+  <dfn class="h" id="_tree">
+    <!--?lit$7402337203$-->
+  </dfn>
+  <ol role="group" tabindex="-1" data-group="keyed">
+    <!--?lit$7402337203$--><!----><li role="treeitem" aria-selected="false" tabindex="-1" id="[ExtenderRecord]" class="node" data-diff="" data-tag="top_lv" aria-level="2" aria-posinset="1" aria-expanded="true"><!--?lit$7402337203$-->
+  <dfn class="h" data-diff="" data-group-size="2">
+    <!--?lit$7402337203$-->
   <span class="def" style="padding-left: 6ch">
-    type
+    <!--?lit$7402337203$-->type
   </span>
-  <span class="k">Tuple</span>
+  <span class="k"><!--?lit$7402337203$--><!--?lit$7402337203$-->ExtenderRecord<!--?--></span>
   <span class="s">=</span>
 
-      <span class="t">( &nbsp; )</span>
-    </dfn>
-    <ul role="group" data-group="indexed">
+    <!--?lit$7402337203$--><span class="t"><!--?lit$7402337203$--><!--?lit$7402337203$-->{ e | r }<!--?--></span>
+  </dfn>
+  <ol role="group" data-group="indexed">
+    <!--?lit$7402337203$--><!----><li role="treeitem" aria-selected="false" tabindex="-1" id="[ExtenderRecord][][0]" class="leaf" data-diff="" aria-level="3" aria-posinset="1"><!--?lit$7402337203$-->
+  <!--?lit$7402337203$-->
+      <span class="s" style="padding-left: 8ch">e</span>
 
-  <li class="file" role="treeitem" aria-selected="false" tabindex="-1" id="[Tuple][][0]" data-diff="" aria-posinset="1" aria-level="3">
+  <!--?lit$7402337203$--><span class="t"><!--?lit$7402337203$--><!--?lit$7402337203$--><span class="ref"><!--?lit$7402337203$-->ExportDocs::Record</span><!--?--></span>
+  </li><!----><!----><li role="treeitem" aria-selected="false" tabindex="-1" id="[ExtenderRecord][][1]" class="node" data-diff="" aria-level="3" aria-posinset="2" aria-expanded="true"><!--?lit$7402337203$-->
+  <dfn class="h" data-diff="" data-group-size="1">
+    <!--?lit$7402337203$-->
+      <span class="s" style="padding-left: 8ch">r</span>
 
-      <span class="k" style="padding-left: 9ch">
-        0
+    <!--?lit$7402337203$--><span class="t"><!--?lit$7402337203$--><!--?lit$7402337203$-->{ &nbsp; }<!--?--></span>
+  </dfn>
+  <ol role="group" data-group="keyed">
+    <!--?lit$7402337203$--><!----><li role="treeitem" aria-selected="false" tabindex="-1" id="[ExtenderRecord][][1][field_c]" class="leaf" data-diff="" aria-level="4" aria-posinset="1"><!--?lit$7402337203$-->
+  <!--?lit$7402337203$-->
+      <span class="k" style="padding-left: 11ch" data-required="false" data-is-pattern="false">
+        <!--?lit$7402337203$--><!--?lit$7402337203$-->field_c<!--?-->
       </span>
       <span class="s">:</span>
 
-    <span class="t"><span class="value" title="Value type">"ok"</span></span>
-  </li>
-  <li class="file" role="treeitem" aria-selected="false" tabindex="-1" id="[Tuple][][1]" data-diff="" aria-posinset="2" aria-level="3">
+  <!--?lit$7402337203$--><span class="t"><!--?lit$7402337203$--><!--?lit$7402337203$-->bool<!--?--></span>
+  </li><!---->
+  </ol>
+  </li><!---->
+  </ol>
+  </li><!---->
+  </ol>
+  </li></ol></def-fmodel>
+        <code class="flex">
+          <pre class="p-2 text-xs text-left w-full bg-matte-black rounded-lg whitespace-pre-wrap overflow-x-scroll">{
+  "$ref": "https://localhost/ExportDocs#/$defs/Record",
+  "properties": {
+    "field_c": {
+      "type": "boolean"
+    }
+  },
+  "type": "object"
+}</pre>
+        </code>
+      </li>
 
+      <li class="">
+        <def-fmodel class="block font-normal" style="" data-name="StrictRecord" data-sch="" data-ext="fmodel"><!----><ol role="tree" aria-multiselectable="true" class="setnu text-sm" aria-label="undefined body"><!--?lit$7402337203$--><li role="treeitem" aria-selected="false" tabindex="-1" id="" class="root-item" data-diff="" aria-level="1" aria-posinset="1"><!--?lit$7402337203$-->
+  <dfn class="h" id="_tree">
+    <!--?lit$7402337203$-->
+  </dfn>
+  <ol role="group" tabindex="-1" data-group="keyed">
+    <!--?lit$7402337203$--><!----><li role="treeitem" aria-selected="false" tabindex="-1" id="[StrictRecord]" class="node" data-diff="" data-tag="top_lv" aria-level="2" aria-posinset="1" aria-expanded="true"><!--?lit$7402337203$-->
+  <dfn class="h" data-diff="" data-group-size="0">
+    <!--?lit$7402337203$-->
+  <span class="def" style="padding-left: 6ch">
+    <!--?lit$7402337203$-->type
+  </span>
+  <span class="k"><!--?lit$7402337203$--><!--?lit$7402337203$-->StrictRecord<!--?--></span>
+  <span class="s">=</span>
+
+    <!--?lit$7402337203$--><span class="t"><!--?lit$7402337203$--><!--?lit$7402337203$-->{ any }<!--?--></span>
+  </dfn>
+  <ol role="group" data-group="keyed">
+    <!--?lit$7402337203$-->
+  </ol>
+  </li><!---->
+  </ol>
+  </li></ol></def-fmodel>
+        <code class="flex">
+          <pre class="p-2 text-xs text-left w-full bg-matte-black rounded-lg whitespace-pre-wrap overflow-x-scroll">{
+  "properties": {},
+  "type": "object"
+}</pre>
+        </code>
+      </li>
+
+      <li class="">
+        <def-fmodel class="block font-normal" style="" data-name="LaxRecord" data-sch="" data-ext="fmodel"><!----><ol role="tree" aria-multiselectable="true" class="setnu text-sm" aria-label="undefined body"><!--?lit$7402337203$--><li role="treeitem" aria-selected="false" tabindex="-1" id="" class="root-item" data-diff="" aria-level="1" aria-posinset="1"><!--?lit$7402337203$-->
+  <dfn class="h" id="_tree">
+    <!--?lit$7402337203$-->
+  </dfn>
+  <ol role="group" tabindex="-1" data-group="keyed">
+    <!--?lit$7402337203$--><!----><li role="treeitem" aria-selected="false" tabindex="-1" id="[LaxRecord]" class="node" data-diff="" data-tag="top_lv" aria-level="2" aria-posinset="1" aria-expanded="true"><!--?lit$7402337203$-->
+  <dfn class="h" data-diff="" data-group-size="0">
+    <!--?lit$7402337203$-->
+  <span class="def" style="padding-left: 6ch">
+    <!--?lit$7402337203$-->type
+  </span>
+  <span class="k"><!--?lit$7402337203$--><!--?lit$7402337203$-->LaxRecord<!--?--></span>
+  <span class="s">=</span>
+
+    <!--?lit$7402337203$--><span class="t"><!--?lit$7402337203$--><!--?lit$7402337203$-->{ any }<!--?--></span>
+  </dfn>
+  <ol role="group" data-group="keyed">
+    <!--?lit$7402337203$-->
+  </ol>
+  </li><!---->
+  </ol>
+  </li></ol></def-fmodel>
+        <code class="flex">
+          <pre class="p-2 text-xs text-left w-full bg-matte-black rounded-lg whitespace-pre-wrap overflow-x-scroll">{
+  "properties": {},
+  "type": "object"
+}</pre>
+        </code>
+      </li>
+
+      <li class="">
+        <def-fmodel class="block font-normal" style="" data-name="List" data-sch="" data-ext="fmodel"><!----><ol role="tree" aria-multiselectable="true" class="setnu text-sm" aria-label="undefined body"><!--?lit$7402337203$--><li role="treeitem" aria-selected="false" tabindex="-1" id="" class="root-item" data-diff="" aria-level="1" aria-posinset="1"><!--?lit$7402337203$-->
+  <dfn class="h" id="_tree">
+    <!--?lit$7402337203$-->
+  </dfn>
+  <ol role="group" tabindex="-1" data-group="keyed">
+    <!--?lit$7402337203$--><!----><li role="treeitem" aria-selected="false" tabindex="-1" id="[List]" class="node" data-diff="" data-tag="top_lv" aria-level="2" aria-posinset="1" aria-expanded="false"><!--?lit$7402337203$-->
+  <dfn class="h" data-diff="" data-group-size="1">
+    <!--?lit$7402337203$-->
+  <span class="def" style="padding-left: 6ch">
+    <!--?lit$7402337203$-->type
+  </span>
+  <span class="k"><!--?lit$7402337203$--><!--?lit$7402337203$-->List<!--?--></span>
+  <span class="s">=</span>
+
+    <!--?lit$7402337203$--><span class="t"><!--?lit$7402337203$--><!--?lit$7402337203$-->[&nbsp; <!--?lit$7402337203$--><span class="ref"><!--?lit$7402337203$-->ExportDocs::Record</span> &nbsp;]<!--?--></span>
+  </dfn>
+  <ol role="group" data-group="none">
+    <!--?lit$7402337203$--><!----><li role="treeitem" aria-selected="false" tabindex="-1" id="[List][][0]" class="leaf" data-diff="" aria-level="3" aria-posinset="1"><!--?lit$7402337203$-->
+  <!--?lit$7402337203$-->
+      <span class="s" style="padding-left: 8ch">└</span>
+
+  <!--?lit$7402337203$--><span class="t"><!--?lit$7402337203$--><!--?lit$7402337203$--><span class="ref"><!--?lit$7402337203$-->ExportDocs::Record</span><!--?--></span>
+  </li><!---->
+  </ol>
+  </li><!---->
+  </ol>
+  </li></ol></def-fmodel>
+        <code class="flex">
+          <pre class="p-2 text-xs text-left w-full bg-matte-black rounded-lg whitespace-pre-wrap overflow-x-scroll">{
+  "items": {
+    "$ref": "https://localhost/ExportDocs#/$defs/Record"
+  },
+  "type": "array"
+}</pre>
+        </code>
+      </li>
+
+      <li class="">
+        <def-fmodel class="block font-normal" style="" data-name="Tuple" data-sch="" data-ext="fmodel"><!----><ol role="tree" aria-multiselectable="true" class="setnu text-sm" aria-label="undefined body"><!--?lit$7402337203$--><li role="treeitem" aria-selected="false" tabindex="-1" id="" class="root-item" data-diff="" aria-level="1" aria-posinset="1"><!--?lit$7402337203$-->
+  <dfn class="h" id="_tree">
+    <!--?lit$7402337203$-->
+  </dfn>
+  <ol role="group" tabindex="-1" data-group="keyed">
+    <!--?lit$7402337203$--><!----><li role="treeitem" aria-selected="false" tabindex="-1" id="[Tuple]" class="node" data-diff="" data-tag="top_lv" aria-level="2" aria-posinset="1" aria-expanded="true"><!--?lit$7402337203$-->
+  <dfn class="h" data-diff="" data-group-size="3">
+    <!--?lit$7402337203$-->
+  <span class="def" style="padding-left: 6ch">
+    <!--?lit$7402337203$-->type
+  </span>
+  <span class="k"><!--?lit$7402337203$--><!--?lit$7402337203$-->Tuple<!--?--></span>
+  <span class="s">=</span>
+
+    <!--?lit$7402337203$--><span class="t"><!--?lit$7402337203$--><!--?lit$7402337203$-->( &nbsp; )<!--?--></span>
+  </dfn>
+  <ol role="group" data-group="indexed">
+    <!--?lit$7402337203$--><!----><li role="treeitem" aria-selected="false" tabindex="-1" id="[Tuple][][0]" class="leaf" data-diff="" aria-level="3" aria-posinset="1"><!--?lit$7402337203$-->
+  <!--?lit$7402337203$-->
       <span class="k" style="padding-left: 9ch">
-        1
+        <!--?lit$7402337203$--><!--?lit$7402337203$-->0<!--?-->
       </span>
       <span class="s">:</span>
 
-    <span class="t"><span class="ref">ExportDocs::Record</span></span>
-  </li>
-  <li class="folder" role="treeitem" aria-selected="false" tabindex="-1" id="[Tuple][][2]" aria-posinset="3" aria-level="3" aria-expanded="true">
-    <dfn class="h" data-diff="" data-group-size="0">
-
+  <!--?lit$7402337203$--><span class="t"><!--?lit$7402337203$--><!--?lit$7402337203$--><span class="value"><!--?lit$7402337203$-->"ok"</span><!--?--></span>
+  </li><!----><!----><li role="treeitem" aria-selected="false" tabindex="-1" id="[Tuple][][1]" class="leaf" data-diff="" aria-level="3" aria-posinset="2"><!--?lit$7402337203$-->
+  <!--?lit$7402337203$-->
       <span class="k" style="padding-left: 9ch">
-        2
+        <!--?lit$7402337203$--><!--?lit$7402337203$-->1<!--?-->
       </span>
       <span class="s">:</span>
 
-      <span class="t">{ any }</span>
-    </dfn>
-    <ul role="group" data-group="keyed">
+  <!--?lit$7402337203$--><span class="t"><!--?lit$7402337203$--><!--?lit$7402337203$--><span class="ref"><!--?lit$7402337203$-->ExportDocs::Record</span><!--?--></span>
+  </li><!----><!----><li role="treeitem" aria-selected="false" tabindex="-1" id="[Tuple][][2]" class="node" data-diff="" aria-level="3" aria-posinset="3" aria-expanded="true"><!--?lit$7402337203$-->
+  <dfn class="h" data-diff="" data-group-size="0">
+    <!--?lit$7402337203$-->
+      <span class="k" style="padding-left: 9ch">
+        <!--?lit$7402337203$--><!--?lit$7402337203$-->2<!--?-->
+      </span>
+      <span class="s">:</span>
 
-    </ul>
-  </li>
-    </ul>
-  </li>
-    </ul>
-  </li>
-  </ul>
-  </def-fmodel>
+    <!--?lit$7402337203$--><span class="t"><!--?lit$7402337203$--><!--?lit$7402337203$-->{ any }<!--?--></span>
+  </dfn>
+  <ol role="group" data-group="keyed">
+    <!--?lit$7402337203$-->
+  </ol>
+  </li><!---->
+  </ol>
+  </li><!---->
+  </ol>
+  </li></ol></def-fmodel>
         <code class="flex">
           <pre class="p-2 text-xs text-left w-full bg-matte-black rounded-lg whitespace-pre-wrap overflow-x-scroll">{
   "maxItems": 3,
@@ -153,283 +286,328 @@
   "type": "array"
 }</pre>
         </code>
-      </li><li class="">
-        <def-fmodel class="block" style="" data-name="Dict" data-sch="">
-  <ul role="tree" aria-multiselectable="true" class="setnu text-sm" aria-labelledby="Dict_tree">
+      </li>
 
-  <li class="root-item" role="treeitem" aria-selected="false" tabindex="-1" id="" data-tag="Dict" aria-posinset="1" aria-level="1" aria-expanded="true">
-    <dfn class="h" id="Dict_tree">
-
-    </dfn>
-    <ul role="group" tabindex="-1" data-group="keyed">
-
-  <li class="folder" role="treeitem" aria-selected="false" tabindex="-1" id="[Dict]" aria-posinset="1" aria-level="2" aria-expanded="true">
-    <dfn class="h" data-diff="" data-group-size="0">
-
+      <li class="">
+        <def-fmodel class="block font-normal" style="" data-name="Dict" data-sch="" data-ext="fmodel"><!----><ol role="tree" aria-multiselectable="true" class="setnu text-sm" aria-label="undefined body"><!--?lit$7402337203$--><li role="treeitem" aria-selected="false" tabindex="-1" id="" class="root-item" data-diff="" aria-level="1" aria-posinset="1"><!--?lit$7402337203$-->
+  <dfn class="h" id="_tree">
+    <!--?lit$7402337203$-->
+  </dfn>
+  <ol role="group" tabindex="-1" data-group="keyed">
+    <!--?lit$7402337203$--><!----><li role="treeitem" aria-selected="false" tabindex="-1" id="[Dict]" class="node" data-diff="" data-tag="top_lv" aria-level="2" aria-posinset="1" aria-expanded="true"><!--?lit$7402337203$-->
+  <dfn class="h" data-diff="" data-group-size="2">
+    <!--?lit$7402337203$-->
   <span class="def" style="padding-left: 6ch">
-    type
+    <!--?lit$7402337203$-->type
   </span>
-  <span class="k">Dict</span>
+  <span class="k"><!--?lit$7402337203$--><!--?lit$7402337203$-->Dict<!--?--></span>
   <span class="s">=</span>
 
-      <span class="t">dict</span>
-    </dfn>
-    <ul role="group" data-group="none">
-
-  <li class="file" role="treeitem" aria-selected="false" tabindex="-1" id="[Dict][][0]" data-diff="" aria-posinset="1" aria-level="3">
-
+    <!--?lit$7402337203$--><span class="t"><!--?lit$7402337203$--><!--?lit$7402337203$-->dict<!--?--></span>
+  </dfn>
+  <ol role="group" data-group="indexed">
+    <!--?lit$7402337203$--><!----><li role="treeitem" aria-selected="false" tabindex="-1" id="[Dict][][0]" class="leaf" data-diff="" aria-level="3" aria-posinset="1"><!--?lit$7402337203$-->
+  <!--?lit$7402337203$-->
       <span class="s" style="padding-left: 8ch">k</span>
 
-    <span class="t">string</span>
-  </li>
-  <li class="file" role="treeitem" aria-selected="false" tabindex="-1" id="[Dict][][1]" data-diff="" aria-posinset="2" aria-level="3">
-
+  <!--?lit$7402337203$--><span class="t"><!--?lit$7402337203$--><!--?lit$7402337203$-->string<!--?--></span>
+  </li><!----><!----><li role="treeitem" aria-selected="false" tabindex="-1" id="[Dict][][1]" class="leaf" data-diff="" aria-level="3" aria-posinset="2"><!--?lit$7402337203$-->
+  <!--?lit$7402337203$-->
       <span class="s" style="padding-left: 8ch">v</span>
 
-    <span class="t"><span class="ref">ExportDocs::Record</span></span>
-  </li>
-    </ul>
-  </li>
-    </ul>
-  </li>
-  </ul>
-  </def-fmodel>
+  <!--?lit$7402337203$--><span class="t"><!--?lit$7402337203$--><!--?lit$7402337203$--><span class="ref"><!--?lit$7402337203$-->ExportDocs::Record</span><!--?--></span>
+  </li><!---->
+  </ol>
+  </li><!---->
+  </ol>
+  </li></ol></def-fmodel>
         <code class="flex">
           <pre class="p-2 text-xs text-left w-full bg-matte-black rounded-lg whitespace-pre-wrap overflow-x-scroll">{
   "additionalProperties": {
     "$ref": "https://localhost/ExportDocs#/$defs/Record"
   },
-  "minProperties": 4,
   "propertyNames": {
-    "pattern": "^x-",
     "type": "string"
   },
   "type": "object"
 }</pre>
         </code>
-      </li><li class="">
-        <def-fmodel class="block" style="" data-name="List" data-sch="">
-  <ul role="tree" aria-multiselectable="true" class="setnu text-sm" aria-labelledby="List_tree">
-
-  <li class="root-item" role="treeitem" aria-selected="false" tabindex="-1" id="" data-tag="List" aria-posinset="1" aria-level="1" aria-expanded="true">
-    <dfn class="h" id="List_tree">
-
-    </dfn>
-    <ul role="group" tabindex="-1" data-group="keyed">
-
-  <li class="folder" role="treeitem" aria-selected="false" tabindex="-1" id="[List]" aria-posinset="1" aria-level="2" aria-expanded="false">
-    <dfn class="h" data-diff="" data-group-size="1">
-
-  <span class="def" style="padding-left: 6ch">
-    type
-  </span>
-  <span class="k">List</span>
-  <span class="s">=</span>
-
-      <span class="t">[&nbsp; <span class="ref">ExportDocs::Record</span> &nbsp;]</span>
-    </dfn>
-    <ul role="group" data-group="none">
-
-  <li class="file" role="treeitem" aria-selected="false" tabindex="-1" id="[List][][0]" data-diff="" aria-posinset="1" aria-level="3">
-
-      <span class="s" style="padding-left: 8ch">└</span>
-
-    <span class="t"><span class="ref">ExportDocs::Record</span></span>
-  </li>
-    </ul>
-  </li>
-    </ul>
-  </li>
-  </ul>
-  </def-fmodel>
-        <code class="flex">
-          <pre class="p-2 text-xs text-left w-full bg-matte-black rounded-lg whitespace-pre-wrap overflow-x-scroll">{
-  "items": {
-    "$ref": "https://localhost/ExportDocs#/$defs/Record"
-  },
-  "type": "array"
-}</pre>
-        </code>
       </li>
 
-
-
-
-
       <li class="">
-        <def-fmodel class="block" style="" data-name="TaggedUnion1" data-sch="">
-  <ul role="tree" aria-multiselectable="true" class="setnu text-sm" aria-labelledby="TaggedUnion1_tree">
-
-  <li class="root-item" role="treeitem" aria-selected="false" tabindex="-1" id="" data-tag="TaggedUnion1" aria-posinset="1" aria-level="1" aria-expanded="true">
-    <dfn class="h" id="TaggedUnion1_tree">
-
-    </dfn>
-    <ul role="group" tabindex="-1" data-group="keyed">
-
-  <li class="folder" role="treeitem" aria-selected="false" tabindex="-1" id="[TaggedUnion1]" aria-posinset="1" aria-level="2" aria-expanded="true">
-    <dfn class="h" data-diff="" data-group-size="2">
-
+        <def-fmodel class="block font-normal" style="" data-name="TaggedUnion1" data-sch="" data-ext="fmodel"><!----><ol role="tree" aria-multiselectable="true" class="setnu text-sm" aria-label="undefined body"><!--?lit$7402337203$--><li role="treeitem" aria-selected="false" tabindex="-1" id="" class="root-item" data-diff="" aria-level="1" aria-posinset="1"><!--?lit$7402337203$-->
+  <dfn class="h" id="_tree">
+    <!--?lit$7402337203$-->
+  </dfn>
+  <ol role="group" tabindex="-1" data-group="keyed">
+    <!--?lit$7402337203$--><!----><li role="treeitem" aria-selected="false" tabindex="-1" id="[TaggedUnion1]" class="node" data-diff="" data-tag="top_lv" aria-level="2" aria-posinset="1" aria-expanded="true"><!--?lit$7402337203$-->
+  <dfn class="h" data-diff="" data-group-size="2">
+    <!--?lit$7402337203$-->
   <span class="def" style="padding-left: 6ch">
-    type
+    <!--?lit$7402337203$-->type
   </span>
-  <span class="k">TaggedUnion</span>
+  <span class="k"><!--?lit$7402337203$--><!--?lit$7402337203$-->TaggedUnion1<!--?--></span>
   <span class="s">=</span>
 
-      <span class="t">|| _mytag</span>
-    </dfn>
-    <ul role="group" data-group="keyed">
-
-  <li class="folder" role="treeitem" aria-selected="false" tabindex="-1" id="[TaggedUnion1][tag_a]" aria-posinset="1" aria-level="3" aria-expanded="true">
-    <dfn class="h" data-diff="" data-group-size="1">
-
+    <!--?lit$7402337203$--><span class="t"><!--?lit$7402337203$--><!--?lit$7402337203$-->|| tag<!--?--></span>
+  </dfn>
+  <ol role="group" data-group="keyed">
+    <!--?lit$7402337203$--><!----><li role="treeitem" aria-selected="false" tabindex="-1" id="[TaggedUnion1][tag_a]" class="node" data-diff="" aria-level="3" aria-posinset="1" aria-expanded="true"><!--?lit$7402337203$-->
+  <dfn class="h" data-diff="" data-group-size="1">
+    <!--?lit$7402337203$-->
       <span class="s" style="padding-left: 8.5ch">|</span>
       <span class="k tag">
-        tag_a
+        <!--?lit$7402337203$--><!--?lit$7402337203$-->tag_a<!--?-->
       </span>
       <span class="s">·</span>
 
-      <span class="t">{ &nbsp; }</span>
-    </dfn>
-    <ul role="group" data-group="keyed">
-
-  <li class="file" role="treeitem" aria-selected="false" tabindex="-1" id="[TaggedUnion1][tag_a][field_x]" data-diff="" aria-posinset="1" aria-level="4">
-
-      <span class="k" style="padding-left: 11ch" data-required="true" data-is-pattern="false">
-        field_x
-      </span>
-      <span class="s">:</span>
-
-    <span class="t">uint_8</span>
-  </li>
-    </ul>
-  </li>
-  <li class="folder" role="treeitem" aria-selected="false" tabindex="-1" id="[TaggedUnion1][tag_b]" aria-posinset="2" aria-level="3" aria-expanded="true">
-    <dfn class="h" data-diff="" data-group-size="1">
-
-      <span class="s" style="padding-left: 8.5ch">|</span>
-      <span class="k tag">
-        tag_b
-      </span>
-      <span class="s">·</span>
-
-      <span class="t">{ &nbsp; }</span>
-    </dfn>
-    <ul role="group" data-group="keyed">
-
-  <li class="file" role="treeitem" aria-selected="false" tabindex="-1" id="[TaggedUnion1][tag_b][field_z]" data-diff="" aria-posinset="1" aria-level="4">
-
+    <!--?lit$7402337203$--><span class="t"><!--?lit$7402337203$--><!--?lit$7402337203$-->{ &nbsp; }<!--?--></span>
+  </dfn>
+  <ol role="group" data-group="keyed">
+    <!--?lit$7402337203$--><!----><li role="treeitem" aria-selected="false" tabindex="-1" id="[TaggedUnion1][tag_a][field_x]" class="leaf" data-diff="" aria-level="4" aria-posinset="1"><!--?lit$7402337203$-->
+  <!--?lit$7402337203$-->
       <span class="k" style="padding-left: 11ch" data-required="false" data-is-pattern="false">
-        field_z
+        <!--?lit$7402337203$--><!--?lit$7402337203$-->field_x<!--?-->
       </span>
       <span class="s">:</span>
 
-    <span class="t">string</span>
-  </li>
-    </ul>
-  </li>
-    </ul>
-  </li>
-    </ul>
-  </li>
-  </ul>
-  </def-fmodel>
+  <!--?lit$7402337203$--><span class="t"><!--?lit$7402337203$--><!--?lit$7402337203$-->uint_8<!--?--></span>
+  </li><!---->
+  </ol>
+  </li><!----><!----><li role="treeitem" aria-selected="false" tabindex="-1" id="[TaggedUnion1][tag_b]" class="node" data-diff="" aria-level="3" aria-posinset="2" aria-expanded="true"><!--?lit$7402337203$-->
+  <dfn class="h" data-diff="" data-group-size="1">
+    <!--?lit$7402337203$-->
+      <span class="s" style="padding-left: 8.5ch">|</span>
+      <span class="k tag">
+        <!--?lit$7402337203$--><!--?lit$7402337203$-->tag_b<!--?-->
+      </span>
+      <span class="s">·</span>
+
+    <!--?lit$7402337203$--><span class="t"><!--?lit$7402337203$--><!--?lit$7402337203$-->{ &nbsp; }<!--?--></span>
+  </dfn>
+  <ol role="group" data-group="keyed">
+    <!--?lit$7402337203$--><!----><li role="treeitem" aria-selected="false" tabindex="-1" id="[TaggedUnion1][tag_b][field_z]" class="leaf" data-diff="" aria-level="4" aria-posinset="1"><!--?lit$7402337203$-->
+  <!--?lit$7402337203$-->
+      <span class="k" style="padding-left: 11ch" data-required="false" data-is-pattern="false">
+        <!--?lit$7402337203$--><!--?lit$7402337203$-->field_z<!--?-->
+      </span>
+      <span class="s">:</span>
+
+  <!--?lit$7402337203$--><span class="t"><!--?lit$7402337203$--><!--?lit$7402337203$-->string<!--?--></span>
+  </li><!---->
+  </ol>
+  </li><!---->
+  </ol>
+  </li><!---->
+  </ol>
+  </li></ol></def-fmodel>
         <code class="flex">
           <pre class="p-2 text-xs text-left w-full bg-matte-black rounded-lg whitespace-pre-wrap overflow-x-scroll">{
-  "oneOf": [
-    {
+  "properties": {
+    "tag_a": {
       "properties": {
-        "_mytag": {
-          "const": "tag_a"
-        },
         "field_x": {
           "maximum": 255,
           "minimum": 0,
           "type": "integer"
         }
       },
-      "required": [
-        "_mytag",
-        "field_x"
-      ],
       "type": "object"
     },
-    {
+    "tag_b": {
       "properties": {
-        "_mytag": {
-          "const": "tag_b"
-        },
         "field_z": {
           "type": "string"
         }
       },
-      "required": [
-        "_mytag"
-      ],
       "type": "object"
     }
-  ],
-  "unevaluatedProperties": false
+  },
+  "type": "object"
 }</pre>
         </code>
       </li>
 
-
-
-
-
       <li class="">
-        <def-fmodel class="block" style="" data-name="UnionOfVal" data-sch="">
-  <ul role="tree" aria-multiselectable="true" class="setnu text-sm" aria-labelledby="UnionOfVal_tree">
-
-  <li class="root-item" role="treeitem" aria-selected="false" tabindex="-1" id="" data-tag="UnionOfVal" aria-posinset="1" aria-level="1" aria-expanded="true">
-    <dfn class="h" id="UnionOfVal_tree">
-
-    </dfn>
-    <ul role="group" tabindex="-1" data-group="keyed">
-
-  <li class="folder" role="treeitem" aria-selected="false" tabindex="-1" id="[UnionOfVal]" aria-posinset="1" aria-level="2" aria-expanded="true">
-    <dfn class="h" data-diff="" data-group-size="4">
-
+        <def-fmodel class="block font-normal" style="" data-name="TaggedUnion2" data-sch="" data-ext="fmodel"><!----><ol role="tree" aria-multiselectable="true" class="setnu text-sm" aria-label="undefined body"><!--?lit$7402337203$--><li role="treeitem" aria-selected="false" tabindex="-1" id="" class="root-item" data-diff="" aria-level="1" aria-posinset="1"><!--?lit$7402337203$-->
+  <dfn class="h" id="_tree">
+    <!--?lit$7402337203$-->
+  </dfn>
+  <ol role="group" tabindex="-1" data-group="keyed">
+    <!--?lit$7402337203$--><!----><li role="treeitem" aria-selected="false" tabindex="-1" id="[TaggedUnion2]" class="node" data-diff="" data-tag="top_lv" aria-level="2" aria-posinset="1" aria-expanded="true"><!--?lit$7402337203$-->
+  <dfn class="h" data-diff="" data-group-size="2">
+    <!--?lit$7402337203$-->
   <span class="def" style="padding-left: 6ch">
-    type
+    <!--?lit$7402337203$-->type
   </span>
-  <span class="k">UnionOfVal</span>
+  <span class="k"><!--?lit$7402337203$--><!--?lit$7402337203$-->TaggedUnion2<!--?--></span>
   <span class="s">=</span>
 
-      <span class="t">||</span>
-    </dfn>
-    <ul role="group" data-group="indexed">
+    <!--?lit$7402337203$--><span class="t"><!--?lit$7402337203$--><!--?lit$7402337203$-->|| tag<!--?--></span>
+  </dfn>
+  <ol role="group" data-group="keyed">
+    <!--?lit$7402337203$--><!----><li role="treeitem" aria-selected="false" tabindex="-1" id="[TaggedUnion2][tag_a]" class="leaf" data-diff="" aria-level="3" aria-posinset="1"><!--?lit$7402337203$-->
+  <!--?lit$7402337203$-->
+      <span class="s" style="padding-left: 8.5ch">|</span>
+      <span class="k tag">
+        <!--?lit$7402337203$--><!--?lit$7402337203$-->tag_a<!--?-->
+      </span>
+      <span class="s">·</span>
 
-  <li class="file" role="treeitem" aria-selected="false" tabindex="-1" id="[UnionOfVal][][0]" data-diff="" aria-posinset="1" aria-level="3">
+  <!--?lit$7402337203$--><span class="t"><!--?lit$7402337203$--><!--?lit$7402337203$--><span class="ref"><!--?lit$7402337203$-->ExportDocs::LaxRecord</span><!--?--></span>
+  </li><!----><!----><li role="treeitem" aria-selected="false" tabindex="-1" id="[TaggedUnion2][tag_b]" class="node" data-diff="" aria-level="3" aria-posinset="2" aria-expanded="true"><!--?lit$7402337203$-->
+  <dfn class="h" data-diff="" data-group-size="1">
+    <!--?lit$7402337203$-->
+      <span class="s" style="padding-left: 8.5ch">|</span>
+      <span class="k tag">
+        <!--?lit$7402337203$--><!--?lit$7402337203$-->tag_b<!--?-->
+      </span>
+      <span class="s">·</span>
 
+    <!--?lit$7402337203$--><span class="t"><!--?lit$7402337203$--><!--?lit$7402337203$-->{ &nbsp; }<!--?--></span>
+  </dfn>
+  <ol role="group" data-group="keyed">
+    <!--?lit$7402337203$--><!----><li role="treeitem" aria-selected="false" tabindex="-1" id="[TaggedUnion2][tag_b][field_z]" class="leaf" data-diff="" aria-level="4" aria-posinset="1"><!--?lit$7402337203$-->
+  <!--?lit$7402337203$-->
+      <span class="k" style="padding-left: 11ch" data-required="false" data-is-pattern="false">
+        <!--?lit$7402337203$--><!--?lit$7402337203$-->field_z<!--?-->
+      </span>
+      <span class="s">:</span>
+
+  <!--?lit$7402337203$--><span class="t"><!--?lit$7402337203$--><!--?lit$7402337203$-->string<!--?--></span>
+  </li><!---->
+  </ol>
+  </li><!---->
+  </ol>
+  </li><!---->
+  </ol>
+  </li></ol></def-fmodel>
+        <code class="flex">
+          <pre class="p-2 text-xs text-left w-full bg-matte-black rounded-lg whitespace-pre-wrap overflow-x-scroll">{
+  "properties": {
+    "tag_a": {
+      "$ref": "https://localhost/ExportDocs#/$defs/LaxRecord"
+    },
+    "tag_b": {
+      "properties": {
+        "field_z": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    }
+  },
+  "type": "object"
+}</pre>
+        </code>
+      </li>
+
+      <li class="">
+        <def-fmodel class="block font-normal" style="" data-name="UntaggedUnion" data-sch="" data-ext="fmodel"><!----><ol role="tree" aria-multiselectable="true" class="setnu text-sm" aria-label="undefined body"><!--?lit$7402337203$--><li role="treeitem" aria-selected="false" tabindex="-1" id="" class="root-item" data-diff="" aria-level="1" aria-posinset="1"><!--?lit$7402337203$-->
+  <dfn class="h" id="_tree">
+    <!--?lit$7402337203$-->
+  </dfn>
+  <ol role="group" tabindex="-1" data-group="keyed">
+    <!--?lit$7402337203$--><!----><li role="treeitem" aria-selected="false" tabindex="-1" id="[UntaggedUnion]" class="node" data-diff="" data-tag="top_lv" aria-level="2" aria-posinset="1" aria-expanded="true"><!--?lit$7402337203$-->
+  <dfn class="h" data-diff="" data-group-size="4">
+    <!--?lit$7402337203$-->
+  <span class="def" style="padding-left: 6ch">
+    <!--?lit$7402337203$-->type
+  </span>
+  <span class="k"><!--?lit$7402337203$--><!--?lit$7402337203$-->UntaggedUnion<!--?--></span>
+  <span class="s">=</span>
+
+    <!--?lit$7402337203$--><span class="t"><!--?lit$7402337203$--><!--?lit$7402337203$-->||<!--?--></span>
+  </dfn>
+  <ol role="group" data-group="indexed">
+    <!--?lit$7402337203$--><!----><li role="treeitem" aria-selected="false" tabindex="-1" id="[UntaggedUnion][][0]" class="leaf" data-diff="" aria-level="3" aria-posinset="1"><!--?lit$7402337203$-->
+  <!--?lit$7402337203$-->
       <span class="s" style="padding-left: 9ch">|</span>
 
-    <span class="t"><span class="value" title="Value type">"a"</span></span>
-  </li>
-  <li class="file" role="treeitem" aria-selected="false" tabindex="-1" id="[UnionOfVal][][1]" data-diff="" aria-posinset="2" aria-level="3">
-
+  <!--?lit$7402337203$--><span class="t"><!--?lit$7402337203$--><!--?lit$7402337203$--><span class="ref"><!--?lit$7402337203$-->ExportDocs::Record</span><!--?--></span>
+  </li><!----><!----><li role="treeitem" aria-selected="false" tabindex="-1" id="[UntaggedUnion][][1]" class="leaf" data-diff="" aria-level="3" aria-posinset="2"><!--?lit$7402337203$-->
+  <!--?lit$7402337203$-->
       <span class="s" style="padding-left: 9ch">|</span>
 
-    <span class="t"><span class="value" title="Value type">10</span></span>
-  </li>
-  <li class="file" role="treeitem" aria-selected="false" tabindex="-1" id="[UnionOfVal][][2]" data-diff="" aria-posinset="3" aria-level="3">
-
+  <!--?lit$7402337203$--><span class="t"><!--?lit$7402337203$--><!--?lit$7402337203$--><span class="ref"><!--?lit$7402337203$-->ExportDocs::Dict</span><!--?--></span>
+  </li><!----><!----><li role="treeitem" aria-selected="false" tabindex="-1" id="[UntaggedUnion][][2]" class="leaf" data-diff="" aria-level="3" aria-posinset="3"><!--?lit$7402337203$-->
+  <!--?lit$7402337203$-->
       <span class="s" style="padding-left: 9ch">|</span>
 
-    <span class="t"><span class="value" title="Value type">true</span></span>
-  </li>
-  <li class="file" role="treeitem" aria-selected="false" tabindex="-1" id="[UnionOfVal][][3]" data-diff="" aria-posinset="4" aria-level="3">
-
+  <!--?lit$7402337203$--><span class="t"><!--?lit$7402337203$--><!--?lit$7402337203$-->string<!--?--></span>
+  </li><!----><!----><li role="treeitem" aria-selected="false" tabindex="-1" id="[UntaggedUnion][][3]" class="leaf" data-diff="" aria-level="3" aria-posinset="4"><!--?lit$7402337203$-->
+  <!--?lit$7402337203$-->
       <span class="s" style="padding-left: 9ch">|</span>
 
-    <span class="t"><span class="value" title="Value type">null</span></span>
-  </li>
-    </ul>
-  </li>
-    </ul>
-  </li>
-  </ul>
-  </def-fmodel>
+  <!--?lit$7402337203$--><span class="t"><!--?lit$7402337203$--><!--?lit$7402337203$--><span class="ref" title="Ref type">{ }</span><!--?--></span>
+  </li><!---->
+  </ol>
+  </li><!---->
+  </ol>
+  </li></ol></def-fmodel>
+        <code class="flex">
+          <pre class="p-2 text-xs text-left w-full bg-matte-black rounded-lg whitespace-pre-wrap overflow-x-scroll">{
+  "anyOf": [
+    {
+      "$ref": "https://localhost/ExportDocs#/$defs/Record"
+    },
+    {
+      "$ref": "https://localhost/ExportDocs#/$defs/Dict"
+    },
+    {
+      "type": "string"
+    },
+    {
+      "type": "null"
+    }
+  ]
+}</pre>
+        </code>
+      </li>
+
+      <li class="">
+        <def-fmodel class="block font-normal" style="" data-name="UnionOfVal" data-sch="" data-ext="fmodel"><!----><ol role="tree" aria-multiselectable="true" class="setnu text-sm" aria-label="undefined body"><!--?lit$7402337203$--><li role="treeitem" aria-selected="false" tabindex="-1" id="" class="root-item" data-diff="" aria-level="1" aria-posinset="1"><!--?lit$7402337203$-->
+  <dfn class="h" id="_tree">
+    <!--?lit$7402337203$-->
+  </dfn>
+  <ol role="group" tabindex="-1" data-group="keyed">
+    <!--?lit$7402337203$--><!----><li role="treeitem" aria-selected="false" tabindex="-1" id="[UnionOfVal]" class="node" data-diff="" data-tag="top_lv" aria-level="2" aria-posinset="1" aria-expanded="true"><!--?lit$7402337203$-->
+  <dfn class="h" data-diff="" data-group-size="4">
+    <!--?lit$7402337203$-->
+  <span class="def" style="padding-left: 6ch">
+    <!--?lit$7402337203$-->type
+  </span>
+  <span class="k"><!--?lit$7402337203$--><!--?lit$7402337203$-->UnionOfVal<!--?--></span>
+  <span class="s">=</span>
+
+    <!--?lit$7402337203$--><span class="t"><!--?lit$7402337203$--><!--?lit$7402337203$-->||<!--?--></span>
+  </dfn>
+  <ol role="group" data-group="indexed">
+    <!--?lit$7402337203$--><!----><li role="treeitem" aria-selected="false" tabindex="-1" id="[UnionOfVal][][0]" class="leaf" data-diff="" aria-level="3" aria-posinset="1"><!--?lit$7402337203$-->
+  <!--?lit$7402337203$-->
+      <span class="s" style="padding-left: 9ch">|</span>
+
+  <!--?lit$7402337203$--><span class="t"><!--?lit$7402337203$--><!--?lit$7402337203$--><span class="value"><!--?lit$7402337203$-->"a"</span><!--?--></span>
+  </li><!----><!----><li role="treeitem" aria-selected="false" tabindex="-1" id="[UnionOfVal][][1]" class="leaf" data-diff="" aria-level="3" aria-posinset="2"><!--?lit$7402337203$-->
+  <!--?lit$7402337203$-->
+      <span class="s" style="padding-left: 9ch">|</span>
+
+  <!--?lit$7402337203$--><span class="t"><!--?lit$7402337203$--><!--?lit$7402337203$--><span class="value"><!--?lit$7402337203$-->10</span><!--?--></span>
+  </li><!----><!----><li role="treeitem" aria-selected="false" tabindex="-1" id="[UnionOfVal][][2]" class="leaf" data-diff="" aria-level="3" aria-posinset="3"><!--?lit$7402337203$-->
+  <!--?lit$7402337203$-->
+      <span class="s" style="padding-left: 9ch">|</span>
+
+  <!--?lit$7402337203$--><span class="t"><!--?lit$7402337203$--><!--?lit$7402337203$--><span class="value"><!--?lit$7402337203$-->true</span><!--?--></span>
+  </li><!----><!----><li role="treeitem" aria-selected="false" tabindex="-1" id="[UnionOfVal][][3]" class="leaf" data-diff="" aria-level="3" aria-posinset="4"><!--?lit$7402337203$-->
+  <!--?lit$7402337203$-->
+      <span class="s" style="padding-left: 9ch">|</span>
+
+  <!--?lit$7402337203$--><span class="t"><!--?lit$7402337203$--><!--?lit$7402337203$--><span class="value"><!--?lit$7402337203$-->null</span><!--?--></span>
+  </li><!---->
+  </ol>
+  </li><!---->
+  </ol>
+  </li></ol></def-fmodel>
         <code class="flex">
           <pre class="p-2 text-xs text-left w-full bg-matte-black rounded-lg whitespace-pre-wrap overflow-x-scroll">{
   "enum": [
@@ -442,40 +620,464 @@
         </code>
       </li>
 
+      <li class="">
+        <def-fmodel class="block font-normal" style="" data-name="String" data-sch="" data-ext="fmodel"><!----><ol role="tree" aria-multiselectable="true" class="setnu text-sm" aria-label="undefined body"><!--?lit$7402337203$--><li role="treeitem" aria-selected="false" tabindex="-1" id="" class="root-item" data-diff="" aria-level="1" aria-posinset="1"><!--?lit$7402337203$-->
+  <dfn class="h" id="_tree">
+    <!--?lit$7402337203$-->
+  </dfn>
+  <ol role="group" tabindex="-1" data-group="keyed">
+    <!--?lit$7402337203$--><!----><li role="treeitem" aria-selected="false" tabindex="-1" id="[String]" class="leaf" data-diff="" data-tag="top_lv" aria-level="2" aria-posinset="1"><!--?lit$7402337203$-->
+  <!--?lit$7402337203$-->
+  <span class="def" style="padding-left: 6ch">
+    <!--?lit$7402337203$-->type
+  </span>
+  <span class="k"><!--?lit$7402337203$--><!--?lit$7402337203$-->String<!--?--></span>
+  <span class="s">=</span>
 
+  <!--?lit$7402337203$--><span class="t"><!--?lit$7402337203$--><!--?lit$7402337203$-->string<!--?--></span>
+  </li><!---->
+  </ol>
+  </li></ol></def-fmodel>
+        <code class="flex">
+          <pre class="p-2 text-xs text-left w-full bg-matte-black rounded-lg whitespace-pre-wrap overflow-x-scroll">{
+  "type": "string"
+}</pre>
+        </code>
+      </li>
 
+      <li class="">
+        <def-fmodel class="block font-normal" style="" data-name="Bool" data-sch="" data-ext="fmodel"><!----><ol role="tree" aria-multiselectable="true" class="setnu text-sm" aria-label="undefined body"><!--?lit$7402337203$--><li role="treeitem" aria-selected="false" tabindex="-1" id="" class="root-item" data-diff="" aria-level="1" aria-posinset="1"><!--?lit$7402337203$-->
+  <dfn class="h" id="_tree">
+    <!--?lit$7402337203$-->
+  </dfn>
+  <ol role="group" tabindex="-1" data-group="keyed">
+    <!--?lit$7402337203$--><!----><li role="treeitem" aria-selected="false" tabindex="-1" id="[Bool]" class="leaf" data-diff="" data-tag="top_lv" aria-level="2" aria-posinset="1"><!--?lit$7402337203$-->
+  <!--?lit$7402337203$-->
+  <span class="def" style="padding-left: 6ch">
+    <!--?lit$7402337203$-->type
+  </span>
+  <span class="k"><!--?lit$7402337203$--><!--?lit$7402337203$-->Bool<!--?--></span>
+  <span class="s">=</span>
 
+  <!--?lit$7402337203$--><span class="t"><!--?lit$7402337203$--><!--?lit$7402337203$-->bool<!--?--></span>
+  </li><!---->
+  </ol>
+  </li></ol></def-fmodel>
+        <code class="flex">
+          <pre class="p-2 text-xs text-left w-full bg-matte-black rounded-lg whitespace-pre-wrap overflow-x-scroll">{
+  "type": "boolean"
+}</pre>
+        </code>
+      </li>
 
+      <li class="">
+        <def-fmodel class="block font-normal" style="" data-name="Nil" data-sch="" data-ext="fmodel"><!----><ol role="tree" aria-multiselectable="true" class="setnu text-sm" aria-label="undefined body"><!--?lit$7402337203$--><li role="treeitem" aria-selected="false" tabindex="-1" id="" class="root-item" data-diff="" aria-level="1" aria-posinset="1"><!--?lit$7402337203$-->
+  <dfn class="h" id="_tree">
+    <!--?lit$7402337203$-->
+  </dfn>
+  <ol role="group" tabindex="-1" data-group="keyed">
+    <!--?lit$7402337203$--><!----><li role="treeitem" aria-selected="false" tabindex="-1" id="[Nil]" class="leaf" data-diff="" data-tag="top_lv" aria-level="2" aria-posinset="1"><!--?lit$7402337203$-->
+  <!--?lit$7402337203$-->
+  <span class="def" style="padding-left: 6ch">
+    <!--?lit$7402337203$-->type
+  </span>
+  <span class="k"><!--?lit$7402337203$--><!--?lit$7402337203$-->Nil<!--?--></span>
+  <span class="s">=</span>
 
+  <!--?lit$7402337203$--><span class="t"><!--?lit$7402337203$--><!--?lit$7402337203$--><span class="ref" title="Ref type">{ }</span><!--?--></span>
+  </li><!---->
+  </ol>
+  </li></ol></def-fmodel>
+        <code class="flex">
+          <pre class="p-2 text-xs text-left w-full bg-matte-black rounded-lg whitespace-pre-wrap overflow-x-scroll">{
+  "type": "null"
+}</pre>
+        </code>
+      </li>
 
+      <li class="">
+        <def-fmodel class="block font-normal" style="" data-name="Integer" data-sch="" data-ext="fmodel"><!----><ol role="tree" aria-multiselectable="true" class="setnu text-sm" aria-label="undefined body"><!--?lit$7402337203$--><li role="treeitem" aria-selected="false" tabindex="-1" id="" class="root-item" data-diff="" aria-level="1" aria-posinset="1"><!--?lit$7402337203$-->
+  <dfn class="h" id="_tree">
+    <!--?lit$7402337203$-->
+  </dfn>
+  <ol role="group" tabindex="-1" data-group="keyed">
+    <!--?lit$7402337203$--><!----><li role="treeitem" aria-selected="false" tabindex="-1" id="[Integer]" class="leaf" data-diff="" data-tag="top_lv" aria-level="2" aria-posinset="1"><!--?lit$7402337203$-->
+  <!--?lit$7402337203$-->
+  <span class="def" style="padding-left: 6ch">
+    <!--?lit$7402337203$-->type
+  </span>
+  <span class="k"><!--?lit$7402337203$--><!--?lit$7402337203$-->Integer<!--?--></span>
+  <span class="s">=</span>
 
+  <!--?lit$7402337203$--><span class="t"><!--?lit$7402337203$--><!--?lit$7402337203$-->integer<!--?--></span>
+  </li><!---->
+  </ol>
+  </li></ol></def-fmodel>
+        <code class="flex">
+          <pre class="p-2 text-xs text-left w-full bg-matte-black rounded-lg whitespace-pre-wrap overflow-x-scroll">{
+  "type": "integer"
+}</pre>
+        </code>
+      </li>
 
+      <li class="">
+        <def-fmodel class="block font-normal" style="" data-name="Int8" data-sch="" data-ext="fmodel"><!----><ol role="tree" aria-multiselectable="true" class="setnu text-sm" aria-label="undefined body"><!--?lit$7402337203$--><li role="treeitem" aria-selected="false" tabindex="-1" id="" class="root-item" data-diff="" aria-level="1" aria-posinset="1"><!--?lit$7402337203$-->
+  <dfn class="h" id="_tree">
+    <!--?lit$7402337203$-->
+  </dfn>
+  <ol role="group" tabindex="-1" data-group="keyed">
+    <!--?lit$7402337203$--><!----><li role="treeitem" aria-selected="false" tabindex="-1" id="[Int8]" class="leaf" data-diff="" data-tag="top_lv" aria-level="2" aria-posinset="1"><!--?lit$7402337203$-->
+  <!--?lit$7402337203$-->
+  <span class="def" style="padding-left: 6ch">
+    <!--?lit$7402337203$-->type
+  </span>
+  <span class="k"><!--?lit$7402337203$--><!--?lit$7402337203$-->Int8<!--?--></span>
+  <span class="s">=</span>
 
+  <!--?lit$7402337203$--><span class="t"><!--?lit$7402337203$--><!--?lit$7402337203$-->int_8<!--?--></span>
+  </li><!---->
+  </ol>
+  </li></ol></def-fmodel>
+        <code class="flex">
+          <pre class="p-2 text-xs text-left w-full bg-matte-black rounded-lg whitespace-pre-wrap overflow-x-scroll">{
+  "maximum": 127,
+  "minimum": -128,
+  "type": "integer"
+}</pre>
+        </code>
+      </li>
 
+      <li class="">
+        <def-fmodel class="block font-normal" style="" data-name="Int16" data-sch="" data-ext="fmodel"><!----><ol role="tree" aria-multiselectable="true" class="setnu text-sm" aria-label="undefined body"><!--?lit$7402337203$--><li role="treeitem" aria-selected="false" tabindex="-1" id="" class="root-item" data-diff="" aria-level="1" aria-posinset="1"><!--?lit$7402337203$-->
+  <dfn class="h" id="_tree">
+    <!--?lit$7402337203$-->
+  </dfn>
+  <ol role="group" tabindex="-1" data-group="keyed">
+    <!--?lit$7402337203$--><!----><li role="treeitem" aria-selected="false" tabindex="-1" id="[Int16]" class="leaf" data-diff="" data-tag="top_lv" aria-level="2" aria-posinset="1"><!--?lit$7402337203$-->
+  <!--?lit$7402337203$-->
+  <span class="def" style="padding-left: 6ch">
+    <!--?lit$7402337203$-->type
+  </span>
+  <span class="k"><!--?lit$7402337203$--><!--?lit$7402337203$-->Int16<!--?--></span>
+  <span class="s">=</span>
 
+  <!--?lit$7402337203$--><span class="t"><!--?lit$7402337203$--><!--?lit$7402337203$-->int_16<!--?--></span>
+  </li><!---->
+  </ol>
+  </li></ol></def-fmodel>
+        <code class="flex">
+          <pre class="p-2 text-xs text-left w-full bg-matte-black rounded-lg whitespace-pre-wrap overflow-x-scroll">{
+  "maximum": 32767,
+  "minimum": -32768,
+  "type": "integer"
+}</pre>
+        </code>
+      </li>
 
+      <li class="">
+        <def-fmodel class="block font-normal" style="" data-name="Int32" data-sch="" data-ext="fmodel"><!----><ol role="tree" aria-multiselectable="true" class="setnu text-sm" aria-label="undefined body"><!--?lit$7402337203$--><li role="treeitem" aria-selected="false" tabindex="-1" id="" class="root-item" data-diff="" aria-level="1" aria-posinset="1"><!--?lit$7402337203$-->
+  <dfn class="h" id="_tree">
+    <!--?lit$7402337203$-->
+  </dfn>
+  <ol role="group" tabindex="-1" data-group="keyed">
+    <!--?lit$7402337203$--><!----><li role="treeitem" aria-selected="false" tabindex="-1" id="[Int32]" class="leaf" data-diff="" data-tag="top_lv" aria-level="2" aria-posinset="1"><!--?lit$7402337203$-->
+  <!--?lit$7402337203$-->
+  <span class="def" style="padding-left: 6ch">
+    <!--?lit$7402337203$-->type
+  </span>
+  <span class="k"><!--?lit$7402337203$--><!--?lit$7402337203$-->Int32<!--?--></span>
+  <span class="s">=</span>
 
+  <!--?lit$7402337203$--><span class="t"><!--?lit$7402337203$--><!--?lit$7402337203$-->int_32<!--?--></span>
+  </li><!---->
+  </ol>
+  </li></ol></def-fmodel>
+        <code class="flex">
+          <pre class="p-2 text-xs text-left w-full bg-matte-black rounded-lg whitespace-pre-wrap overflow-x-scroll">{
+  "maximum": 2147483647,
+  "minimum": -2147483648,
+  "type": "integer"
+}</pre>
+        </code>
+      </li>
 
+      <li class="">
+        <def-fmodel class="block font-normal" style="" data-name="Uint8" data-sch="" data-ext="fmodel"><!----><ol role="tree" aria-multiselectable="true" class="setnu text-sm" aria-label="undefined body"><!--?lit$7402337203$--><li role="treeitem" aria-selected="false" tabindex="-1" id="" class="root-item" data-diff="" aria-level="1" aria-posinset="1"><!--?lit$7402337203$-->
+  <dfn class="h" id="_tree">
+    <!--?lit$7402337203$-->
+  </dfn>
+  <ol role="group" tabindex="-1" data-group="keyed">
+    <!--?lit$7402337203$--><!----><li role="treeitem" aria-selected="false" tabindex="-1" id="[Uint8]" class="leaf" data-diff="" data-tag="top_lv" aria-level="2" aria-posinset="1"><!--?lit$7402337203$-->
+  <!--?lit$7402337203$-->
+  <span class="def" style="padding-left: 6ch">
+    <!--?lit$7402337203$-->type
+  </span>
+  <span class="k"><!--?lit$7402337203$--><!--?lit$7402337203$-->Uint8<!--?--></span>
+  <span class="s">=</span>
 
+  <!--?lit$7402337203$--><span class="t"><!--?lit$7402337203$--><!--?lit$7402337203$-->uint_8<!--?--></span>
+  </li><!---->
+  </ol>
+  </li></ol></def-fmodel>
+        <code class="flex">
+          <pre class="p-2 text-xs text-left w-full bg-matte-black rounded-lg whitespace-pre-wrap overflow-x-scroll">{
+  "maximum": 255,
+  "minimum": 0,
+  "type": "integer"
+}</pre>
+        </code>
+      </li>
 
+      <li class="">
+        <def-fmodel class="block font-normal" style="" data-name="Uint16" data-sch="" data-ext="fmodel"><!----><ol role="tree" aria-multiselectable="true" class="setnu text-sm" aria-label="undefined body"><!--?lit$7402337203$--><li role="treeitem" aria-selected="false" tabindex="-1" id="" class="root-item" data-diff="" aria-level="1" aria-posinset="1"><!--?lit$7402337203$-->
+  <dfn class="h" id="_tree">
+    <!--?lit$7402337203$-->
+  </dfn>
+  <ol role="group" tabindex="-1" data-group="keyed">
+    <!--?lit$7402337203$--><!----><li role="treeitem" aria-selected="false" tabindex="-1" id="[Uint16]" class="leaf" data-diff="" data-tag="top_lv" aria-level="2" aria-posinset="1"><!--?lit$7402337203$-->
+  <!--?lit$7402337203$-->
+  <span class="def" style="padding-left: 6ch">
+    <!--?lit$7402337203$-->type
+  </span>
+  <span class="k"><!--?lit$7402337203$--><!--?lit$7402337203$-->Uint16<!--?--></span>
+  <span class="s">=</span>
 
+  <!--?lit$7402337203$--><span class="t"><!--?lit$7402337203$--><!--?lit$7402337203$-->uint_16<!--?--></span>
+  </li><!---->
+  </ol>
+  </li></ol></def-fmodel>
+        <code class="flex">
+          <pre class="p-2 text-xs text-left w-full bg-matte-black rounded-lg whitespace-pre-wrap overflow-x-scroll">{
+  "maximum": 65535,
+  "minimum": 0,
+  "type": "integer"
+}</pre>
+        </code>
+      </li>
 
+      <li class="">
+        <def-fmodel class="block font-normal" style="" data-name="Uint32" data-sch="" data-ext="fmodel"><!----><ol role="tree" aria-multiselectable="true" class="setnu text-sm" aria-label="undefined body"><!--?lit$7402337203$--><li role="treeitem" aria-selected="false" tabindex="-1" id="" class="root-item" data-diff="" aria-level="1" aria-posinset="1"><!--?lit$7402337203$-->
+  <dfn class="h" id="_tree">
+    <!--?lit$7402337203$-->
+  </dfn>
+  <ol role="group" tabindex="-1" data-group="keyed">
+    <!--?lit$7402337203$--><!----><li role="treeitem" aria-selected="false" tabindex="-1" id="[Uint32]" class="leaf" data-diff="" data-tag="top_lv" aria-level="2" aria-posinset="1"><!--?lit$7402337203$-->
+  <!--?lit$7402337203$-->
+  <span class="def" style="padding-left: 6ch">
+    <!--?lit$7402337203$-->type
+  </span>
+  <span class="k"><!--?lit$7402337203$--><!--?lit$7402337203$-->Uint32<!--?--></span>
+  <span class="s">=</span>
 
+  <!--?lit$7402337203$--><span class="t"><!--?lit$7402337203$--><!--?lit$7402337203$-->uint_32<!--?--></span>
+  </li><!---->
+  </ol>
+  </li></ol></def-fmodel>
+        <code class="flex">
+          <pre class="p-2 text-xs text-left w-full bg-matte-black rounded-lg whitespace-pre-wrap overflow-x-scroll">{
+  "maximum": 4294967295,
+  "minimum": 0,
+  "type": "integer"
+}</pre>
+        </code>
+      </li>
 
+      <li class="">
+        <def-fmodel class="block font-normal" style="" data-name="Float32" data-sch="" data-ext="fmodel"><!----><ol role="tree" aria-multiselectable="true" class="setnu text-sm" aria-label="undefined body"><!--?lit$7402337203$--><li role="treeitem" aria-selected="false" tabindex="-1" id="" class="root-item" data-diff="" aria-level="1" aria-posinset="1"><!--?lit$7402337203$-->
+  <dfn class="h" id="_tree">
+    <!--?lit$7402337203$-->
+  </dfn>
+  <ol role="group" tabindex="-1" data-group="keyed">
+    <!--?lit$7402337203$--><!----><li role="treeitem" aria-selected="false" tabindex="-1" id="[Float32]" class="leaf" data-diff="" data-tag="top_lv" aria-level="2" aria-posinset="1"><!--?lit$7402337203$-->
+  <!--?lit$7402337203$-->
+  <span class="def" style="padding-left: 6ch">
+    <!--?lit$7402337203$-->type
+  </span>
+  <span class="k"><!--?lit$7402337203$--><!--?lit$7402337203$-->Float32<!--?--></span>
+  <span class="s">=</span>
 
+  <!--?lit$7402337203$--><span class="t"><!--?lit$7402337203$--><!--?lit$7402337203$-->float_32<!--?--></span>
+  </li><!---->
+  </ol>
+  </li></ol></def-fmodel>
+        <code class="flex">
+          <pre class="p-2 text-xs text-left w-full bg-matte-black rounded-lg whitespace-pre-wrap overflow-x-scroll">{
+  "type": "number"
+}</pre>
+        </code>
+      </li>
 
+      <li class="">
+        <def-fmodel class="block font-normal" style="" data-name="Float64" data-sch="" data-ext="fmodel"><!----><ol role="tree" aria-multiselectable="true" class="setnu text-sm" aria-label="undefined body"><!--?lit$7402337203$--><li role="treeitem" aria-selected="false" tabindex="-1" id="" class="root-item" data-diff="" aria-level="1" aria-posinset="1"><!--?lit$7402337203$-->
+  <dfn class="h" id="_tree">
+    <!--?lit$7402337203$-->
+  </dfn>
+  <ol role="group" tabindex="-1" data-group="keyed">
+    <!--?lit$7402337203$--><!----><li role="treeitem" aria-selected="false" tabindex="-1" id="[Float64]" class="leaf" data-diff="" data-tag="top_lv" aria-level="2" aria-posinset="1"><!--?lit$7402337203$-->
+  <!--?lit$7402337203$-->
+  <span class="def" style="padding-left: 6ch">
+    <!--?lit$7402337203$-->type
+  </span>
+  <span class="k"><!--?lit$7402337203$--><!--?lit$7402337203$-->Float64<!--?--></span>
+  <span class="s">=</span>
 
+  <!--?lit$7402337203$--><span class="t"><!--?lit$7402337203$--><!--?lit$7402337203$-->float_64<!--?--></span>
+  </li><!---->
+  </ol>
+  </li></ol></def-fmodel>
+        <code class="flex">
+          <pre class="p-2 text-xs text-left w-full bg-matte-black rounded-lg whitespace-pre-wrap overflow-x-scroll">{
+  "type": "number"
+}</pre>
+        </code>
+      </li>
 
+      <li class="">
+        <def-fmodel class="block font-normal" style="" data-name="StringVal" data-sch="" data-ext="fmodel"><!----><ol role="tree" aria-multiselectable="true" class="setnu text-sm" aria-label="undefined body"><!--?lit$7402337203$--><li role="treeitem" aria-selected="false" tabindex="-1" id="" class="root-item" data-diff="" aria-level="1" aria-posinset="1"><!--?lit$7402337203$-->
+  <dfn class="h" id="_tree">
+    <!--?lit$7402337203$-->
+  </dfn>
+  <ol role="group" tabindex="-1" data-group="keyed">
+    <!--?lit$7402337203$--><!----><li role="treeitem" aria-selected="false" tabindex="-1" id="[StringVal]" class="leaf" data-diff="" data-tag="top_lv" aria-level="2" aria-posinset="1"><!--?lit$7402337203$-->
+  <!--?lit$7402337203$-->
+  <span class="def" style="padding-left: 6ch">
+    <!--?lit$7402337203$-->type
+  </span>
+  <span class="k"><!--?lit$7402337203$--><!--?lit$7402337203$-->StringVal<!--?--></span>
+  <span class="s">=</span>
 
+  <!--?lit$7402337203$--><span class="t"><!--?lit$7402337203$--><!--?lit$7402337203$--><span class="value"><!--?lit$7402337203$-->"a"</span><!--?--></span>
+  </li><!---->
+  </ol>
+  </li></ol></def-fmodel>
+        <code class="flex">
+          <pre class="p-2 text-xs text-left w-full bg-matte-black rounded-lg whitespace-pre-wrap overflow-x-scroll">{
+  "const": "a"
+}</pre>
+        </code>
+      </li>
 
+      <li class="">
+        <def-fmodel class="block font-normal" style="" data-name="BoolVal" data-sch="" data-ext="fmodel"><!----><ol role="tree" aria-multiselectable="true" class="setnu text-sm" aria-label="undefined body"><!--?lit$7402337203$--><li role="treeitem" aria-selected="false" tabindex="-1" id="" class="root-item" data-diff="" aria-level="1" aria-posinset="1"><!--?lit$7402337203$-->
+  <dfn class="h" id="_tree">
+    <!--?lit$7402337203$-->
+  </dfn>
+  <ol role="group" tabindex="-1" data-group="keyed">
+    <!--?lit$7402337203$--><!----><li role="treeitem" aria-selected="false" tabindex="-1" id="[BoolVal]" class="leaf" data-diff="" data-tag="top_lv" aria-level="2" aria-posinset="1"><!--?lit$7402337203$-->
+  <!--?lit$7402337203$-->
+  <span class="def" style="padding-left: 6ch">
+    <!--?lit$7402337203$-->type
+  </span>
+  <span class="k"><!--?lit$7402337203$--><!--?lit$7402337203$-->BoolVal<!--?--></span>
+  <span class="s">=</span>
 
+  <!--?lit$7402337203$--><span class="t"><!--?lit$7402337203$--><!--?lit$7402337203$--><span class="value"><!--?lit$7402337203$-->false</span><!--?--></span>
+  </li><!---->
+  </ol>
+  </li></ol></def-fmodel>
+        <code class="flex">
+          <pre class="p-2 text-xs text-left w-full bg-matte-black rounded-lg whitespace-pre-wrap overflow-x-scroll">{
+  "const": false
+}</pre>
+        </code>
+      </li>
 
+      <li class="">
+        <def-fmodel class="block font-normal" style="" data-name="NullVal" data-sch="" data-ext="fmodel"><!----><ol role="tree" aria-multiselectable="true" class="setnu text-sm" aria-label="undefined body"><!--?lit$7402337203$--><li role="treeitem" aria-selected="false" tabindex="-1" id="" class="root-item" data-diff="" aria-level="1" aria-posinset="1"><!--?lit$7402337203$-->
+  <dfn class="h" id="_tree">
+    <!--?lit$7402337203$-->
+  </dfn>
+  <ol role="group" tabindex="-1" data-group="keyed">
+    <!--?lit$7402337203$--><!----><li role="treeitem" aria-selected="false" tabindex="-1" id="[NullVal]" class="leaf" data-diff="" data-tag="top_lv" aria-level="2" aria-posinset="1"><!--?lit$7402337203$-->
+  <!--?lit$7402337203$-->
+  <span class="def" style="padding-left: 6ch">
+    <!--?lit$7402337203$-->type
+  </span>
+  <span class="k"><!--?lit$7402337203$--><!--?lit$7402337203$-->NullVal<!--?--></span>
+  <span class="s">=</span>
 
+  <!--?lit$7402337203$--><span class="t"><!--?lit$7402337203$--><!--?lit$7402337203$--><span class="value"><!--?lit$7402337203$-->null</span><!--?--></span>
+  </li><!---->
+  </ol>
+  </li></ol></def-fmodel>
+        <code class="flex">
+          <pre class="p-2 text-xs text-left w-full bg-matte-black rounded-lg whitespace-pre-wrap overflow-x-scroll">{
+  "const": null
+}</pre>
+        </code>
+      </li>
 
+      <li class="">
+        <def-fmodel class="block font-normal" style="" data-name="NumVal" data-sch="" data-ext="fmodel"><!----><ol role="tree" aria-multiselectable="true" class="setnu text-sm" aria-label="undefined body"><!--?lit$7402337203$--><li role="treeitem" aria-selected="false" tabindex="-1" id="" class="root-item" data-diff="" aria-level="1" aria-posinset="1"><!--?lit$7402337203$-->
+  <dfn class="h" id="_tree">
+    <!--?lit$7402337203$-->
+  </dfn>
+  <ol role="group" tabindex="-1" data-group="keyed">
+    <!--?lit$7402337203$--><!----><li role="treeitem" aria-selected="false" tabindex="-1" id="[NumVal]" class="leaf" data-diff="" data-tag="top_lv" aria-level="2" aria-posinset="1"><!--?lit$7402337203$-->
+  <!--?lit$7402337203$-->
+  <span class="def" style="padding-left: 6ch">
+    <!--?lit$7402337203$-->type
+  </span>
+  <span class="k"><!--?lit$7402337203$--><!--?lit$7402337203$-->NumVal<!--?--></span>
+  <span class="s">=</span>
 
+  <!--?lit$7402337203$--><span class="t"><!--?lit$7402337203$--><!--?lit$7402337203$--><span class="value"><!--?lit$7402337203$-->1.1</span><!--?--></span>
+  </li><!---->
+  </ol>
+  </li></ol></def-fmodel>
+        <code class="flex">
+          <pre class="p-2 text-xs text-left w-full bg-matte-black rounded-lg whitespace-pre-wrap overflow-x-scroll">{
+  "const": 1.1
+}</pre>
+        </code>
+      </li>
 
+      <li class="">
+        <def-fmodel class="block font-normal" style="" data-name="Any" data-sch="" data-ext="fmodel"><!----><ol role="tree" aria-multiselectable="true" class="setnu text-sm" aria-label="undefined body"><!--?lit$7402337203$--><li role="treeitem" aria-selected="false" tabindex="-1" id="" class="root-item" data-diff="" aria-level="1" aria-posinset="1"><!--?lit$7402337203$-->
+  <dfn class="h" id="_tree">
+    <!--?lit$7402337203$-->
+  </dfn>
+  <ol role="group" tabindex="-1" data-group="keyed">
+    <!--?lit$7402337203$--><!----><li role="treeitem" aria-selected="false" tabindex="-1" id="[Any]" class="leaf" data-diff="" data-tag="top_lv" aria-level="2" aria-posinset="1"><!--?lit$7402337203$-->
+  <!--?lit$7402337203$-->
+  <span class="def" style="padding-left: 6ch">
+    <!--?lit$7402337203$-->type
+  </span>
+  <span class="k"><!--?lit$7402337203$--><!--?lit$7402337203$-->Any<!--?--></span>
+  <span class="s">=</span>
 
+  <!--?lit$7402337203$--><span class="t"><!--?lit$7402337203$--><!--?lit$7402337203$--><span class="ref" title="Ref type">{ }</span><!--?--></span>
+  </li><!---->
+  </ol>
+  </li></ol></def-fmodel>
+        <code class="flex">
+          <pre class="p-2 text-xs text-left w-full bg-matte-black rounded-lg whitespace-pre-wrap overflow-x-scroll">{}</pre>
+        </code>
+      </li>
 
+      <li class="">
+        <def-fmodel class="block font-normal" style="" data-name="Ref" data-sch="" data-ext="fmodel"><!----><ol role="tree" aria-multiselectable="true" class="setnu text-sm" aria-label="undefined body"><!--?lit$7402337203$--><li role="treeitem" aria-selected="false" tabindex="-1" id="" class="root-item" data-diff="" aria-level="1" aria-posinset="1"><!--?lit$7402337203$-->
+  <dfn class="h" id="_tree">
+    <!--?lit$7402337203$-->
+  </dfn>
+  <ol role="group" tabindex="-1" data-group="keyed">
+    <!--?lit$7402337203$--><!----><li role="treeitem" aria-selected="false" tabindex="-1" id="[Ref]" class="leaf" data-diff="" data-tag="top_lv" aria-level="2" aria-posinset="1"><!--?lit$7402337203$-->
+  <!--?lit$7402337203$-->
+  <span class="def" style="padding-left: 6ch">
+    <!--?lit$7402337203$-->type
+  </span>
+  <span class="k"><!--?lit$7402337203$--><!--?lit$7402337203$-->Ref<!--?--></span>
+  <span class="s">=</span>
 
+  <!--?lit$7402337203$--><span class="t"><!--?lit$7402337203$--><!--?lit$7402337203$--><span class="ref"><!--?lit$7402337203$-->ExportDocs::Record</span><!--?--></span>
+  </li><!---->
+  </ol>
+  </li></ol></def-fmodel>
+        <code class="flex">
+          <pre class="p-2 text-xs text-left w-full bg-matte-black rounded-lg whitespace-pre-wrap overflow-x-scroll">{
+  "$ref": "https://localhost/ExportDocs#/$defs/Record"
+}</pre>
+        </code>
+      </li>
 
   </ul>

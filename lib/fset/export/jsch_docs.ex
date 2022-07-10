@@ -35,6 +35,7 @@ defmodule Fset.Exports.JschDocs do
 
           file = Map.put(file, "taggedLevel", %{1 => fmodelname})
           fmodel = Map.put(fmodel, "export", def)
+          fmodel = Map.put(fmodel, "tag", "top_lv")
 
           {fmodel, _} =
             Fset.Sch.walk(fmodel, %{}, fn a, _m, acc ->

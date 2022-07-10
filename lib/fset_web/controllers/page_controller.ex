@@ -12,7 +12,9 @@ defmodule FsetWeb.PageController do
         conn = put_layout(conn, {FsetWeb.LayoutView, "static.html"})
         render(conn, "landing.html")
         # For generate example of types on landing page
-        # Also put <script defer type="module" src="<%= Routes.static_path(@conn, "/js/docs_page.js") %>"></script> on static.html (layout)
+        # 1. Also put <script defer type="module" src="<%= Routes.static_path(@conn, "/assets/docs_page.js") %>"></script> on static.html (layout)
+        # 2. Inside landing.html has to have <%= render "__gen_fmodel_examples.html", assigns %>
+        # 3. copy the [data-ext="fmodel"] html on browser and paste it to _fmodel.example.html
         # render(conn, "landing.html", docs: DocsSample.types())
     end
   end

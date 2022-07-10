@@ -1,8 +1,8 @@
 <div class="my-8 space-y-4">
-  <ul class="tree0 md:grid md:grid-cols-3">
+  <ul class="md:grid md:grid-cols-3" data-ext="fmodel">
     <%= for fmodel_tree <- @docs.fmodels do %>
       <li class="">
-        <def-fmodel class="block" style="" data-name="<%= get_in(fmodel_tree, ["fields", Access.at(0), "key"]) %>" data-sch="<%= Jason.encode!(fmodel_tree) %>"></def-fmodel>
+        <def-fmodel class="block font-normal" style="" data-name="<%= get_in(fmodel_tree, ["fields", Access.at(0), "key"]) %>" data-sch="<%= Jason.encode!(fmodel_tree) %>"></def-fmodel>
         <code class="flex">
           <pre class="p-2 text-xs text-left w-full bg-matte-black rounded-lg whitespace-pre-wrap overflow-x-scroll"><%= get_in(fmodel_tree, ["fields", Access.at(0), Access.key("export", %{})]) |> Map.drop(["description", "title"]) |> Jason.encode!(pretty: true) %></pre>
         </code>

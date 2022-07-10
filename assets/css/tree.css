@@ -1,7 +1,5 @@
-[data-ext="fmodel"] [role="tree"],
-.tree0 {
+[data-ext="fmodel"] [role="tree"] {
   --tree-min-width: 374px;
-  --tree-bg-color: var(--gray-900);
   --tree-color: var(--gray-300);
 
   --item-root-bg-color: var(--matte-black);
@@ -21,11 +19,6 @@
   --diff-removed-color: rgba(255, 0, 0, .5);
   --diff-moved-color: rgba(59, 130, 246, .5);
   --diff-changed-color: rgba(255, 140, 0, .5);
-}
-
-.tree0 {
-  --tree-bg-color: transparent;
-  --tree-min-width: 0;
 }
 
 .landing-page [role="tree"] {
