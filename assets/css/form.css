@@ -35,10 +35,6 @@ sch-meta .referrers {
   @apply text-sm text-gray-400;
 }
 
-sch-meta .defs-docs {
-  margin: 1rem 0 0;
-}
-
 .defs-docs+ul {
   --docs-description: var(--gray-400);
   --docs-description-font: var(--font-sans);

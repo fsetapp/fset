@@ -1,4 +1,4 @@
-[data-ext="fmodel"] [role="tree"] {
+[data-ext="model"] [role="tree"] {
   --tree-min-width: 374px;
   --tree-color: var(--gray-300);
 
@@ -98,16 +98,16 @@
   margin-bottom: .5rem;
 }
 
-[data-ext="fmodel"] [role="tree"] {
+[data-ext="model"] [role="tree"] {
   @apply tracking-wide;
 }
 
-[data-ext="fmodel"] [role="tree"]>.root-item>.h,
+[data-ext="model"] [role="tree"]>.root-item>.h,
 #project [role="tree"]>.root-item>.h {
   padding-right: 8rem;
 }
 
-[data-ext="fmodel"] [role="tree"]>.root-item[aria-selected='true']>.h:after,
+[data-ext="model"] [role="tree"]>.root-item[aria-selected='true']>.h:after,
 #project [role="tree"]>.root-item[aria-selected='true']>.h:after {
   position: absolute;
   right: 1rem;

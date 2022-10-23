@@ -150,7 +150,7 @@
       </action-listener>
       <file-body class="flex-grow overflow-hidden h-full"></file-body>
     </section>
-    <sch-meta id ="fsch" class="overflow-auto m-px _flex-1 bg-gray-900 px-2 pb-2 focus:outline-none" tabindex="-1" style="flex: 1.5; display: var(--display, 'block');">
+    <sch-meta id ="fsch" class="overflow-auto m-px _flex-1 bg-gray-900 pb-2 focus:outline-none" tabindex="-1" style="flex: 1.5; display: var(--display, 'block');">
     </sch-meta>
   </div>
 </project-store>

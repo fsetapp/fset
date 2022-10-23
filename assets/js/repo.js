@@ -43,7 +43,7 @@ export const init = (name, channel) => {
       this.channelOff()
       let project = e.detail.project
 
-      this._store = Store.fromProject(project, { imports: [File, Model, Json, Sheet] })
+      this._store = Store.fromProject(project, { imports: [Model, Json, Sheet] })
       this._store.url = { path: window.project_path }
 
       channel.on("persisted_diff_result", (saved_diffs) => {
@@ -80,7 +80,7 @@ export const init = (name, channel) => {
       })
     }
     handleTreeCommand(e) {
-      Controller.router(this._store, e.detail)
+      Controller.router(this._store, e)
       document.activeAriaTree = e.detail.target.closest("[role='tree']")
     }
     handleRemotePush(e) {
@@ -120,14 +120,14 @@ export const init = (name, channel) => {
         if (opts.anchorsModelsUpdate)
           fileStore._models = Store.Indice.anchorsModels(this._store)
       })
-      this._store.render()
+      this._store._tree?._render(this._store)
     }
     rerenderCurrentFile(f, phase) {
       f ||= a => a
 
       let fileStore = this._store._currentFileStore
       f(fileStore)
-      fileStore?.render()
+      fileStore?._tree?._render(fileStore)
       // fileStore?.renderSchMeta()
     }
     handleSchUpdate(e) {

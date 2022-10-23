@@ -94,7 +94,7 @@ defmodule Fset.Projects do
   @proj_m 2
   @model_m 3
   @proj_project_t 1
-  @proj_model_ext_t 4
+  @proj_model_ext_t 3
   @f_tref 28
 
   def replace(project, ast, acc) do

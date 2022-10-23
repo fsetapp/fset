@@ -1,20 +1,9 @@
 # Fset
 
-To start your Phoenix server:
-
-  * Install dependencies with `mix deps.get`
-  * Create and migrate your database with `mix ecto.setup`
-  * Install Node.js dependencies with `npm install` inside the `assets` directory
-  * Start Phoenix endpoint with `mix phx.server`
-
-Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
-
-Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
-
-## Learn more
-
-  * Official website: https://www.phoenixframework.org/
-  * Guides: https://hexdocs.pm/phoenix/overview.html
-  * Docs: https://hexdocs.pm/phoenix
-  * Forum: https://elixirforum.com/c/phoenix-forum
-  * Source: https://github.com/phoenixframework/phoenix
+## Development
+Internal frontend stuff is installed via yarn and normally imported from node_modules.
+For example:
+```js
+  import * as Model from "@fsetapp/fset/pkgs/model.js"
+```
+However, we don't have to develop on published package. We use `yarn link @fsetapp/fset` to link `node_modules/@fsetapp/fset` to `js/internal` which is an unpublished in-progress local code from different git repo (`cp -r ./lib/pkgs/fset ~/dev/product/fset/assets/js/internal/`)
