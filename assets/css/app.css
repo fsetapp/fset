@@ -4,7 +4,7 @@
 
 @import "./tree.css";
 @import "./tab.css";
-@import url("../node_modules/@fsetapp/fset/dist/main.css");
+@import url("../node_modules/@fsetapp/fset/dist/css/main.css");
 @import url("../node_modules/@fsetapp/fset/dist/css/model.css");
 @import url("../node_modules/@fsetapp/fset/dist/css/sch-meta.css");
 @import url("../node_modules/@fsetapp/fset/dist/css/file.css");
