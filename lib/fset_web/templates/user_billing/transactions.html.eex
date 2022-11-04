@@ -10,14 +10,14 @@
     </tr>
   </thead>
   <tbody>
-  <%= for transaction <- [final | _] = @transactions do %>
+  <%= for transaction <- @transactions do %>
     <tr>
       <td class="px-1"><%= Map.get(transaction, "status") %></td>
       <td class="px-1"><%= Map.get(transaction, "order_id") %></td>
       <td class="px-1"><%= Map.get(transaction, "created_at") %></td>
       <td class="px-1"><%= Map.get(transaction, "amount") %> <%= Map.get(transaction, "currency") %></td>
       <td class="px-1"><%= link "receipt", to: Map.get(transaction, "receipt_url"), target: "_blank", class: "text-blue-500" %></td>
-      <%= if transaction == final && Map.get(transaction, "status") in ~w(completed) do %>
+      <%= if transaction == List.first(@transactions) && Map.get(transaction, "status") in ~w(completed) do %>
        <td class="px-1"><%=# button "refund", to: Routes.user_subscription_path(@conn, :refund, Map.get(transaction, "order_id")), class: "my-2 px-2 py-1 btn-gray rounded text-sm" %></td>
       <% end %>
     </tr>
