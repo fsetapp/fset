@@ -1,5 +1,7 @@
 # Fset
 
+This is a rewritten version of LiveView as view layer https://github.com/50kudos/_fset/tree/master/lib/fset_web/live. We now use a bare Phoenix Channel + Javascript of achieve lowest latency interaction. 
+
 ## Development
 Internal frontend stuff is installed via yarn and normally imported from node_modules.
 For example:
