@@ -3,8 +3,8 @@ defmodule Fset.Exports.JschDocs do
   use Fset.JSONSchema.Vocab
   use Fset.Fmodels.Vocab
 
-  def gen(projectname) do
-    {:ok, project} = Fset.Projects.get_project(projectname)
+  def gen(_projectname) do
+    project = project_fixture()
     project_sch = Fset.Fmodels.to_project_sch(project)
     sch_metas = Fset.Projects.sch_metas_map(project)
     schema_id = "https://localhost/"
@@ -35,7 +35,7 @@ defmodule Fset.Exports.JschDocs do
 
           file = Map.put(file, "taggedLevel", %{1 => fmodelname})
           fmodel = Map.put(fmodel, "export", def)
-          fmodel = Map.put(fmodel, "tag", "top_lv")
+          fmodel = Map.put(fmodel, "tag", "top")
 
           {fmodel, _} =
             Fset.Sch.walk(fmodel, %{}, fn a, _m, acc ->
@@ -49,13 +49,60 @@ defmodule Fset.Exports.JschDocs do
       end)
 
     fmodel_trees
-    |> render_html()
-
-    # |> write_file("_export_jsch.term")
   end
 
-  def render_html(project_sch) do
-    project_sch
+  defp project_fixture do
+    path = Application.app_dir(:fset, "priv/static/fixtures/project-fixture.json")
+    fixture = File.read!(path) |> Jason.decode!()
+
+    project_anchor = fixture["$a"]
+    project_key = fixture["key"]
+
+    # Extract Fmodels and their Metas from the top-level fields
+    fmodels =
+      fixture["fields"]
+      |> Enum.filter(fn sch ->
+        if Map.get(sch, "key", "") in [
+             "Record",
+             "Tuple",
+             "Dict",
+             "List",
+             "TaggedUnion",
+             "UnionOfVal"
+           ] do
+          true
+        else
+          false
+        end
+      end)
+      |> Enum.map(fn fmodel_sch ->
+        %Fset.Fmodels.Fmodel{
+          anchor: fmodel_sch["$a"],
+          key: fmodel_sch["key"],
+          order: fmodel_sch["index"] || 0,
+          is_entry: fmodel_sch["isEntry"] || false,
+          sch: Map.drop(fmodel_sch, ["$a", "key", "index", "isEntry"])
+        }
+      end)
+
+    # Build File
+    file = %Fset.Fmodels.File{
+      anchor: project_anchor,
+      key: project_key,
+      t: fixture["t"] || 10,
+      order: 0,
+      lpath: [],
+      fmodels: fmodels
+    }
+
+    # Build Project
+    %Fset.Projects.Project{
+      id: -1,
+      anchor: project_anchor,
+      key: project_key,
+      files: [file],
+      sch_metas: []
+    }
   end
 
   def write_file(term, filename) do

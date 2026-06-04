@@ -1,5 +1,10 @@
+<div class="w-full bg-indigo-400/4 border-b border-indigo-400/30 py-4 px-4 text-center backdrop-blur-sm">
+  <p class="text-pink-500 font-medium tracking-[0.3em] uppercase">
+    This service is now sunset and no longer active
+  </p>
+</div>
 <header class="flex flex-col items-center pt-12 overflow-hidden">
-  <h1 class="leading-10 text-5xl font-thin font-mono tracking-widest text-pink-500">FSET</h1>
+  <h1 class="leading-10 text-5xl font-thin font-mono tracking-widest text-gray-500">FSET</h1>
   <h2 class="leading-loose text-3xl font-thin tracking-widest">Structure Editor Series</h2>
 
   <div class="my-4 container mx-auto font-thin tracking-wide flex flex-col justify-between items-baseline px-2 md:px-0">
@@ -17,12 +22,11 @@
     <div class="flex flex-col">
       <%= img_tag Routes.static_path(@conn, "/images/landing.png"), alt: "editor overview", class: "min-w-full" %>
       <div class="flex justify-between 2xl:relative">
-        <ul class="flex flex-col flex-shrink-0 xl:ml- py-2 my-0.5 mx-1">
+        <ul class="flex flex-col shrink-0 xl:ml- py-2 my-0.5 mx-1">
           <li class="my-1">
             <%=# link "Register", to: Routes.user_registration_path(@conn, :new) %>
-            <span class="border-l-4 border-gray-500 px-3 py-2">Currently in closed beta</span>
           </li>
-          <li><%= link "Log in", to: Routes.user_session_path(@conn, :new) %></li>
+          <%!-- <li><%= link "Log in", to: Routes.user_session_path(@conn, :new) %></li> --%>
         </ul>
         <p class="mb-4 px-4 py-3 text-sm right-0 absolute">
           <span class="mr-2 text-gray-400">Example data from</span>
@@ -35,10 +39,9 @@
   <div class="flex justify-between">
     <div class="hidden md:block"></div>
     <div class="flex flex-col items-center">
-      <ul class="flex space-x-4 flex-shrink-0 xl:ml- py-2 my-0.5 mx-1 sm:hidden">
+      <ul class="flex space-x-4 shrink-0 xl:ml- py-2 my-0.5 mx-1 sm:hidden">
         <li>
           <%=# link "Register", to: Routes.user_registration_path(@conn, :new) %>
-          <span class="border-l-4 border-gray-500 px-3 py-2">Currently in closed beta</span>
         </li>
         <li><%= link "Log in", to: Routes.user_session_path(@conn, :new) %></li>
       </ul>
@@ -57,7 +60,7 @@
   <div class="flex flex-wrap font-thin">
     <p class="my-4 w-full px-2 text-3xl tracking-wide text-gray-100">Algebraic Data Type to JSON Schema</p>
     <p class="my-2 px-2 text-lg">Think in terms of algebraic data type, export sane subset of json schema <span class="text-base">( see <a href="<%= Routes.page_path(@conn, :docs) <> "#fmodel_to_json_schema" %>" class="text-blue-500" target="_blank">all types</a> )</span></p>
-    <%= render "_fmodel_examples.html", assigns %>
+    <%= render "__gen_fmodel_examples.html", assigns %>
   </div>
 
 </section>

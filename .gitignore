@@ -12,6 +12,7 @@ fset-*.tar
 # Building assets from assets/
 /priv/static/assets
 *.map
+.kamal/
 
 ## Dev related
 

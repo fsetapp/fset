@@ -1,0 +1,402 @@
+{
+  "$a": "382d8e59-fceb-475e-9500-20af7c1e89ac",
+  "fields": [
+    {
+      "$a": "922b2e89-6323-451a-8994-aba88069ba26",
+      "_halt": true,
+      "fields": [
+        {
+          "$a": "53806684-1e79-475b-9ac3-ea88dd93749f",
+          "changes": {
+            "description": "",
+            "pattern": "",
+            "required": true,
+            "rw": "rw",
+            "title": ""
+          },
+          "errors": {},
+          "key": "field_a",
+          "t": 17
+        },
+        {
+          "$a": "22c3f905-faea-4b77-a0b5-3dc1938c6b49",
+          "key": "field_b",
+          "t": 22
+        }
+      ],
+      "index": 0,
+      "key": "Record",
+      "t": 10
+    },
+    {
+      "$a": "0560f7e3-6472-49bf-b8db-6a08ecc7a1e7",
+      "_halt": true,
+      "index": 5,
+      "key": "Tuple",
+      "schs": [
+        {
+          "$a": "7e31fcb6-7e85-4dbb-be5e-355fee663c2a",
+          "t": 29,
+          "v": "ok"
+        },
+        {
+          "$a": "afde000c-a900-4667-ad8c-0df6b4c79f47",
+          "$r": "922b2e89-6323-451a-8994-aba88069ba26",
+          "t": 28
+        },
+        {
+          "$a": "2edd17b9-a76f-4f38-bef9-8c0eb81a00fd",
+          "fields": [],
+          "t": 10
+        }
+      ],
+      "t": 14
+    },
+    {
+      "$a": "22c2fd35-6266-4407-b862-2e37e98db677",
+      "index": 6,
+      "key": "Dict",
+      "schs": [
+        {
+          "$a": "9bf0dfad-2966-404e-bb83-9c4d66285f2e",
+          "changes": {
+            "description": "",
+            "pattern": "^x-",
+            "rw": "rw",
+            "title": ""
+          },
+          "errors": {},
+          "t": 17
+        },
+        {
+          "$a": "5a8cc9cc-e32d-4fd4-bd32-e5a2bde25a94",
+          "$r": "922b2e89-6323-451a-8994-aba88069ba26",
+          "t": 28
+        }
+      ],
+      "t": 12
+    },
+
+    {
+      "$a": "0b7f12dd-2e65-4b72-9fdb-fe14416aafd7",
+      "_halt": true,
+      "index": 4,
+      "key": "List",
+      "sch": {
+        "$a": "8289794b-cece-4deb-8f04-bd3ca36dd35d",
+        "$r": "922b2e89-6323-451a-8994-aba88069ba26",
+        "t": 28
+      },
+      "t": 13
+    },
+    {
+      "$a": "51665981-e4ec-4553-980b-9688eb90f275",
+      "allowedSchs": [
+        {
+          "fields": [],
+          "t": 10
+        }
+      ],
+      "changes": {
+        "description": "Tagged Union only allow elements to be record or ref-to-record type. With configurable tag name, the tag name is a property merged into every tagged element.\n<br>\nThis type is also known as \"Sum type\", it is for high certainty in data modeling, so we make it always strict. Even if each tagged element is lax record, when composed into this type, extra fields will fail a validation.",
+        "rw": "rw",
+        "tagname": "_mytag",
+        "title": ""
+      },
+      "errors": {},
+      "fields": [
+        {
+          "$a": "533a0667-2d9a-4f9f-8379-badec8f1a4b9",
+          "fields": [
+            {
+              "$a": "682cb990-cc8d-4953-8e6a-e98dc1ee92cb",
+              "key": "field_x",
+              "t": 19
+            }
+          ],
+          "key": "tag_a",
+          "t": 10
+        },
+        {
+          "$a": "79e7e949-168e-4562-a85e-233033dfa64f",
+          "fields": [
+            {
+              "$a": "8c4758d9-ede4-4c68-a362-414e116735b0",
+              "key": "field_z",
+              "t": 17
+            }
+          ],
+          "key": "tag_b",
+          "t": 10
+        }
+      ],
+      "index": 7,
+      "key": "TaggedUnion",
+      "keyPrefix": "tag",
+      "t": 16,
+      "tagname": "tag"
+    },
+    {
+      "$a": "385a8a2e-a176-4b35-8774-3aa4c0c3d697",
+      "_halt": true,
+      "index": 10,
+      "key": "UnionOfVal",
+      "schs": [
+        {
+          "$a": "c3cd6e44-f47a-4f59-8779-b77ade223f8f",
+          "t": 29,
+          "v": "a"
+        },
+        {
+          "$a": "5ea98f12-fbff-449b-8ccf-dcfea97a3bb2",
+          "t": 29,
+          "v": 10
+        },
+        {
+          "$a": "b20fc276-b0cb-4245-bf3a-f73dfdce9dca",
+          "t": 29,
+          "v": true
+        },
+        {
+          "$a": "99640e70-9279-4377-be91-b11b05826095",
+          "t": 29,
+          "v": null
+        }
+      ],
+      "t": 15
+    },
+    {
+      "$a": "e4f1bff6-8612-4b9d-8c6a-195e454df24a",
+      "fields": [],
+      "index": 3,
+      "key": "StrictRecord",
+      "t": 10
+    },
+    {
+      "$a": "5e919f45-9e71-4284-9d92-1fd9893eab12",
+      "_halt": true,
+      "index": 1,
+      "key": "ExtenderRecord",
+      "schs": [
+        {
+          "$a": "43788b0a-7a6a-4053-9525-d825d3c14e1f",
+          "$r": "922b2e89-6323-451a-8994-aba88069ba26",
+          "t": 28
+        },
+        {
+          "$a": "df8d408f-1c28-4650-8254-c746b7f9ba44",
+          "_halt": true,
+          "fields": [
+            {
+              "$a": "a015728d-f153-43f1-acdb-b61f4b4edf6b",
+              "key": "field_c",
+              "t": 26
+            }
+          ],
+          "t": 10
+        }
+      ],
+      "t": 11
+    },
+    {
+      "$a": "854929d8-dfdd-480e-b48e-e94b35f794aa",
+      "changes": {
+        "description": "",
+        "rw": "rw",
+        "title": ""
+      },
+      "errors": {},
+      "fields": [],
+      "index": 2,
+      "key": "LaxRecord",
+      "t": 10
+    },
+
+    {
+      "$a": "a101edb3-a69b-4471-ab64-bbc98747be77",
+      "_halt": true,
+      "allowedSchs": [
+        {
+          "fields": [],
+          "t": 10
+        }
+      ],
+      "changes": {
+        "description": "",
+        "rw": "rw",
+        "tagname": "_mytag",
+        "title": ""
+      },
+      "errors": {},
+      "fields": [
+        {
+          "$a": "b31eed00-0a35-4f5d-bfef-0af12fad0be7",
+          "$r": "854929d8-dfdd-480e-b48e-e94b35f794aa",
+          "key": "tag_a",
+          "t": 28
+        },
+        {
+          "$a": "4cd28be9-56cb-4a26-a541-ecccd058befc",
+          "fields": [
+            {
+              "$a": "2c3a4f79-b191-4eea-b2d5-39ee8861bb91",
+              "key": "field_z",
+              "t": 17
+            }
+          ],
+          "key": "tag_b",
+          "t": 10
+        }
+      ],
+      "index": 8,
+      "key": "TaggedUnion2",
+      "keyPrefix": "tag",
+      "t": 16,
+      "tagname": "tag"
+    },
+    {
+      "$a": "ff733ebb-a942-4377-9c33-db8aa63604e4",
+      "_halt": true,
+      "index": 9,
+      "key": "UntaggedUnion",
+      "schs": [
+        {
+          "$a": "4445b4d9-93b8-4d63-b443-41e7cfb29225",
+          "$r": "922b2e89-6323-451a-8994-aba88069ba26",
+          "t": 28
+        },
+        {
+          "$a": "bfdeade1-b7ef-4499-b348-7c5e5b7d9389",
+          "$r": "22c2fd35-6266-4407-b862-2e37e98db677",
+          "t": 28
+        },
+        {
+          "$a": "58b4078d-5384-417a-b30b-c56c2cc3b037",
+          "t": 17
+        },
+        {
+          "$a": "0fadb813-9dea-48bb-8ee8-0bf52310effc",
+          "t": 27
+        }
+      ],
+      "t": 15
+    },
+
+    {
+      "$a": "30401470-eccc-4e5c-b13d-c0c166ee8191",
+      "index": 11,
+      "key": "String",
+      "t": 17
+    },
+    {
+      "$a": "b9b572e5-253d-4f43-9199-acc84685ea0e",
+      "index": 12,
+      "key": "Bool",
+      "t": 26
+    },
+    {
+      "$a": "6815d7ab-945c-47e6-9914-d54381ebace4",
+      "index": 13,
+      "key": "Nil",
+      "t": 27
+    },
+    {
+      "$a": "b6413eba-1a4e-452c-882f-439f930ad649",
+      "index": 14,
+      "key": "Integer",
+      "t": 31
+    },
+    {
+      "$a": "6d69f764-09b3-40d4-99ae-a47d3909cd7f",
+      "index": 15,
+      "key": "Int8",
+      "t": 18
+    },
+    {
+      "$a": "a6fc81dd-faa3-4869-abe3-0af55083e29c",
+      "index": 16,
+      "key": "Int16",
+      "t": 20
+    },
+    {
+      "$a": "e0223702-2a92-42d8-81cc-eef518ee8379",
+      "index": 17,
+      "key": "Int32",
+      "t": 22
+    },
+    {
+      "$a": "d32fb4b3-a07c-4ae0-9b11-a03eb538ef4f",
+      "index": 18,
+      "key": "UInt8",
+      "t": 19
+    },
+    {
+      "$a": "4a86d43c-ecac-46d2-b9d6-5f1ee6eeb997",
+      "index": 19,
+      "key": "Float32",
+      "t": 24
+    },
+    {
+      "$a": "919ea3c9-fac5-4646-bb7c-4979936b7f6b",
+      "index": 20,
+      "key": "Float64",
+      "t": 25
+    },
+    {
+      "$a": "00791648-39ec-43c7-9a0d-9d212d5e3dab",
+      "$r": "922b2e89-6323-451a-8994-aba88069ba26",
+      "index": 21,
+      "key": "Ref",
+      "t": 28
+    },
+    {
+      "$a": "87f98bae-dfc4-4e09-acec-7fcda9d98a93",
+      "index": 22,
+      "key": "StringVal",
+      "t": 29,
+      "v": "a"
+    },
+    {
+      "$a": "fecacebe-c017-4109-a6a0-2a4a83000231",
+      "index": 23,
+      "key": "BoolVal",
+      "t": 29,
+      "v": false
+    },
+    {
+      "$a": "236fa398-ec82-4c78-a68c-0c666f68584d",
+      "index": 24,
+      "key": "NullVal",
+      "t": 29,
+      "v": null
+    },
+    {
+      "$a": "92e2dd9b-9634-498a-aeee-40d68f3dd3de",
+      "index": 25,
+      "key": "UInt16",
+      "t": 21
+    },
+    {
+      "$a": "0ab4e7ff-6829-4855-b17c-63b96d3d75b6",
+      "index": 26,
+      "key": "UInt32",
+      "t": 23
+    },
+    {
+      "$a": "8a4d7dcf-d205-4779-92f9-23e91893b319",
+      "index": 27,
+      "key": "NumVal",
+      "t": 29,
+      "v": 1.1
+    },
+    {
+      "$a": "14d56be5-a3e8-4949-9ad8-3e17c427e95a",
+      "index": 28,
+      "key": "Any",
+      "t": 30
+    }
+  ],
+  "index": 0,
+  "key": "ExportDocs",
+  "t": 10
+}

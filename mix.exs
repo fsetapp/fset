@@ -7,7 +7,7 @@ defmodule Fset.MixProject do
       version: "0.1.0",
       elixir: "~> 1.14",
       elixirc_paths: elixirc_paths(Mix.env()),
-      compilers: [:phoenix] ++ Mix.compilers(),
+      compilers: Mix.compilers(),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
       deps: deps()
@@ -34,8 +34,9 @@ defmodule Fset.MixProject do
   defp deps do
     [
       {:bcrypt_elixir, "~> 3.0"},
-      {:phoenix, "~> 1.6"},
-      {:phoenix_ecto, "~> 4.1"},
+      {:phoenix, "~> 1.7.0"},
+      {:phoenix_view, "~> 2.0"},
+      {:phoenix_ecto, "~> 4.4"},
       {:ecto_sql, "~> 3.4"},
       {:postgrex, ">= 0.0.0"},
       {:phoenix_html, "~> 3.2"},
@@ -55,7 +56,7 @@ defmodule Fset.MixProject do
       {:swoosh, "~> 1.4"},
       {:sentry, "~> 8.0"},
       {:esbuild, "~> 0.4", runtime: Mix.env() == :dev},
-      {:tailwind, "~> 0.1", runtime: Mix.env() == :dev}
+      {:tailwind, "~> 0.3", runtime: Mix.env() == :dev}
     ]
   end
 
@@ -67,12 +68,12 @@ defmodule Fset.MixProject do
   # See the documentation for `Mix` for more info on aliases.
   defp aliases do
     [
-      setup: ["deps.get", "ecto.setup", "cmd npm install --prefix assets"],
+      setup: ["deps.get", "ecto.setup", "cmd pnpm install --prefix assets"],
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
       "assets.deploy": [
-        "tailwind default --minify",
+        "cmd pnpm --dir assets run deploy",
         "esbuild default --minify --analyze=verbose",
         "phx.digest"
       ]

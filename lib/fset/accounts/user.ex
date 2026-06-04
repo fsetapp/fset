@@ -55,7 +55,7 @@ defmodule Fset.Accounts.User do
     changeset
     |> validate_required([:username])
     |> validate_exclusion(:username, @reserved_username)
-    |> validate_format(:username, ~r/^[[:alnum:]-_]+$/,
+    |> validate_format(:username, ~r/^[[:alnum:]_-]+$/,
       message: "must be a mix of A-Z, a-z, 0-9, dash (-), or underscore (_)"
     )
     |> validate_length(:username, max: 160)

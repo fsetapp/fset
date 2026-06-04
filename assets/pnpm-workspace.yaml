@@ -1,0 +1,4 @@
+packages:
+  - "js/local-fset"
+allowBuilds:
+  '@parcel/watcher': false

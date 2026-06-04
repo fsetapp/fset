@@ -16,6 +16,7 @@
 
     <%= csrf_meta_tag() %>
     <%= title(assigns) %>
+    <script defer type="module" src="<%= Routes.static_path(@conn, "/assets/docs_page.js") %>"></script>
     <link rel="stylesheet" href="<%= Routes.static_path(@conn, "/assets/app.css") %>"/>
   </head>
   <body>
