@@ -8,8 +8,8 @@ MIX_ENV=prod mix compile
 
 # Compile assets
 cd assets
-yarn install
-yarn run deploy
+pnpm install
+pnpm run deploy
 cd ..
 mix phx.digest
 

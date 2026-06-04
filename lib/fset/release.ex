@@ -6,7 +6,6 @@ defmodule Fset.Release do
   @app :fset
 
   def migrate do
-    ensure_started()
     load_app()
 
     for repo <- repos() do
@@ -25,9 +24,5 @@ defmodule Fset.Release do
 
   defp load_app do
     Application.load(@app)
-  end
-
-  defp ensure_started do
-    Application.ensure_all_started(:ssl)
   end
 end

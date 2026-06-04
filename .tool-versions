@@ -1,2 +1,5 @@
-elixir 1.14.1-otp-25
-erlang 25.1.2
+elixir   1.19.5-otp-28
+erlang   28.5
+postgres 17.0
+ruby     3.3.0
+nodejs   22

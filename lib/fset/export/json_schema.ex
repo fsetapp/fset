@@ -208,7 +208,7 @@ defmodule Fset.Exports.JSONSchema do
 
       %{@f_type => @f_tagged_union} = a, _m, acc ->
         tagged_things = Map.fetch!(a, @f_fields)
-        sch_meta = get_meta.(a)
+        _sch_meta = get_meta.(a)
 
         all_record =
           Enum.all?(tagged_things, fn

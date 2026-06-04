@@ -5,6 +5,8 @@ defmodule Fset.DocsSample do
   @ex_1_models "{\"3d1bd53b-2384-44ee-8122-51d22ec431d9\":{\"display\":\"D :: Data\"},\"80326a68-f911-447e-8864-893835cb74cc\":{\"display\":\"R :: Resolve\"},\"058073c3-5dce-4e48-807e-953bb92bb8df\":{\"display\":\"T :: Text\"},\"b1312d5f-96ce-4ebb-8db5-23b6c25b487c\":{\"display\":\"T :: TitleParams\"},\"02d5de0d-c2e9-4c2e-bf8c-8ba57de18518\":{\"display\":\"T :: Transform\"},\"d7a009c5-f0f7-45d0-b413-13fd99b275f2\":{\"display\":\"S :: Spec\"}}"
 
   defmacrop file_store(fmodels, models) do
+    # Refer to fbox:lib/pkgs/model/sss.json for `t` value (e.g. t:10 is Record)
+
     fmodels = Macro.expand(fmodels, __CALLER__) |> List.wrap()
     models = Macro.expand(models, __CALLER__)
 

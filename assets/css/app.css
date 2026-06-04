@@ -1,20 +1,26 @@
-@import "./tailwind.css";
+@import "tailwindcss";
 @import "./theme-vars.css";
 @import "./_normalize.css";
-
+@import "../node_modules/@fsetapp/fset/dist/main.css";
 @import "./tree.css";
 @import "./tab.css";
-@import url("../node_modules/@fsetapp/fset/dist/css/main.css");
-@import url("../node_modules/@fsetapp/fset/dist/css/model.css");
-@import url("../node_modules/@fsetapp/fset/dist/css/sch-meta.css");
-@import url("../node_modules/@fsetapp/fset/dist/css/file.css");
-@import url("../node_modules/@fsetapp/fset/dist/css/json.css");
-@import url("../node_modules/@fsetapp/fset/dist/css/sheet.css");
 @import "./kbd.css";
 @import "./form.css";
+@import "./fbox.css";
 @import "./billing.css";
 @import "./docs.css";
 @import "./landing.css";
+
+@theme {
+  --background-matte-black: var(--matte-black);
+  --background-gray-meta: var(--gray-meta);
+}
+
+@source "../../lib/fset_web/templates/**/*.{leex,eex}";
+@source "../../lib/fset_web/views/*.ex";
+@source "../js/**/*.js";
+
+@plugin "@tailwindcss/typography";
 
 .bg-matte-black {
   background-color: var(--matte-black) !important;
@@ -30,8 +36,16 @@
     linear-gradient(90deg, var(--grid-color) 2px, transparent 2px),
     linear-gradient(var(--subgrid-color), 1px, transparent 1px),
     linear-gradient(90deg, var(--subgrid-color), 1px, transparent 1px);
-  background-size: 200px 200px, 200px 200px, 20px 20px, 20px 20px;
-  background-position: -2px -2px, -2px -2px, -1px -1px, -1px -1px;
+  background-size:
+    200px 200px,
+    200px 200px,
+    20px 20px,
+    20px 20px;
+  background-position:
+    -2px -2px,
+    -2px -2px,
+    -1px -1px,
+    -1px -1px;
 }
 
 details-menu {
@@ -39,7 +53,7 @@ details-menu {
   z-index: 1;
 }
 
-sch-meta>form {
+sch-meta > form {
   @apply text-xs;
 }
 

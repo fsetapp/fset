@@ -22,7 +22,7 @@ defmodule FsetWeb do
       use Phoenix.Controller, namespace: FsetWeb
 
       import Plug.Conn
-      import FsetWeb.Gettext
+      use Gettext, backend: FsetWeb.Gettext
       alias FsetWeb.Router.Helpers, as: Routes
     end
   end
@@ -56,7 +56,7 @@ defmodule FsetWeb do
   def channel do
     quote do
       use Phoenix.Channel
-      import FsetWeb.Gettext
+      use Gettext, backend: FsetWeb.Gettext
     end
   end
 
@@ -70,7 +70,7 @@ defmodule FsetWeb do
       import Phoenix.LiveView.Helpers
 
       import FsetWeb.ErrorHelpers
-      import FsetWeb.Gettext
+      use Gettext, backend: FsetWeb.Gettext
       alias FsetWeb.Router.Helpers, as: Routes
     end
   end

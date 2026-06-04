@@ -1,0 +1,60 @@
+# Name of your application. Used to uniquely configure containers.
+service: fset
+
+# Name of the container image.
+image: fsetapp/fset
+# Credentials for your image host.
+registry:
+  # Using GitHub Container Registry since this seems to be a GitHub project
+  server: ghcr.io
+  username: fsetapp # PLACEHOLDER: Replace with your GitHub username or organization
+  # Always use an access token rather than real password (pulled from .kamal/secrets).
+  password:
+    - KAMAL_REGISTRY_PASSWORD
+
+builder:
+  arch: amd64
+  context: .
+  local: true
+  secrets:
+    - GITHUB_NPM_TOKEN
+
+# Deploy to these servers.
+servers:
+  web:
+    - <%= ENV["WEB_IP"] %>
+
+
+# Enable SSL auto certification via Let's Encrypt and allow for multiple apps on a single web server.
+proxy:
+  ssl: true
+  host: model.fset.app # PLACEHOLDER: Replace with your actual domain
+  app_port: 4000 # Uncomment if your app doesn't listen on port 80 inside the container
+  healthcheck:
+    interval: 2
+    path: /status/ping
+    timeout: 7
+
+# Inject ENV variables into containers (secrets come from .kamal/secrets).
+env:
+  clear:
+    FSET_HOST_URL: model.fset.app
+  secret:
+    - SECRET_KEY_BASE # Update to match your framework's secret key variable
+    - DATABASE_URL
+
+
+# Use accessory services (secrets come from .kamal/secrets).
+accessories:
+  db:
+    image: postgres:18
+    host: ENV["WEB_IP"] %>
+    port: 5432
+    env:
+      clear:
+        POSTGRES_USER: fset
+        POSTGRES_DB: fset_production
+      secret:
+        - POSTGRES_PASSWORD
+    directories:
+      - data:/var/lib/postgresql

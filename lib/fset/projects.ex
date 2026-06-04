@@ -53,6 +53,7 @@ defmodule Fset.Projects do
     project_query =
       from p in Project,
         join: r in Role,
+        on: true,
         where: p.id == r.project_id and r.user_id == ^user_id,
         where: p.key == ^name,
         preload: [:users, :sch_metas, files: :fmodels]
@@ -146,7 +147,7 @@ defmodule Fset.Projects do
     _project = %{project | files: Enum.map(project.files, map_file)}
   end
 
-  defp to_diff(ast, acc, f \\ fn _, a -> a end) do
+  defp to_diff(ast, acc, f) do
     {files, project} = Map.pop!(ast, "fields")
 
     diff = %{
@@ -215,7 +216,7 @@ defmodule Fset.Projects do
 
   def import(%{"json_schema_file" => json} = params, opts) do
     %{"projectname" => _projectname, "username" => _username} = params
-    schema = Imports.json_schema(:draft7, json, opts)
+    _schema = Imports.json_schema(:draft7, json, opts)
     # replace(project, schema, %{})
   end
 

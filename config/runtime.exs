@@ -31,7 +31,7 @@ if config_env() == :prod do
 
   config :fset, Fset.Repo,
     url: database_url,
-    ssl: true,
+    # ssl: true,
     pool_size: String.to_integer(System.get_env("POOL_SIZE") || "10"),
     prepare: :unnamed
 
