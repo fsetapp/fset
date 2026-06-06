@@ -68,7 +68,7 @@ export const init = (name, channel) => {
           Store.buildFolderTree(this._store);
 
           ProjectURL.replaceWith({ url, currentFile });
-
+          document.querySelector("#project").replaceChildren();
           File.FileTree(
             {
               target: "[id='project']",
@@ -107,7 +107,9 @@ export const init = (name, channel) => {
         this.cmdQueue.push(e);
 
         this.push = buffer(() => {
-          let diffableActs = Object.values(this._store.diffableActs).flat();
+          let diffableActs = Object.values(
+            this._store.diffableActs ?? {},
+          ).flat();
           if (diffableActs.includes(e.detail.command.name)) {
             this.pushToRemote(e);
             this.cmdQueue = [];

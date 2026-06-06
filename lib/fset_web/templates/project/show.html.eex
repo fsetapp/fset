@@ -22,7 +22,7 @@
     </div>
   </header>
 
-  <div class="flex overflow-hidden flex-grow">
+  <div class="flex overflow-hidden grow">
     <section class="overflow-hidden m-px flex-1 text-sm flex bg-gray-900">
       <tab-container class="flex flex-col w-full">
         <div class="flex flex-shrink-0 px-2 space-x-2 py-1 bg-gray-meta border border-gray-800 mb-px w-full overflow-x-scroll" role="tablist">
@@ -42,7 +42,7 @@
             <button type="button" role="tab" tabindex="-1" class="flex items-center"><%= FsetWeb.IconView.settings(class: "w-5 h-5") %></button>
           <% end %>
         </div>
-        <nav-tree role="tabpanel" id="project" class="flex-grow overflow-hidden h-full" tabindex="-1" >
+        <nav-tree role="tabpanel" id="project" class="grow overflow-hidden h-full" tabindex="-1" >
           <p class="p-2">project is loading ...</p>
         </nav-tree>
         <%= if @is_project_unclaimed && !@current_user do %>
@@ -148,7 +148,7 @@
           Mark as Entrypoint
         </button>
       </action-listener>
-      <file-body class="flex-grow overflow-hidden h-full"></file-body>
+      <file-body class="grow overflow-hidden h-full"></file-body>
     </section>
     <sch-meta id ="fsch" class="overflow-auto m-px _flex-1 bg-gray-900 pb-2 focus:outline-none" tabindex="-1" style="flex: 1.5; display: var(--display, 'block');">
     </sch-meta>
