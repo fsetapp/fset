@@ -616,13 +616,18 @@ defmodule Fset.Fmodels do
     %{project | files: new_files}
   end
 
+  @doc """
+    Refer to fbox/lib/pkgs/registry.js
+    this t = module number `m`
+    core: { t: 1 },
+    proj: { t: 2 },
+    model: { t: 3 },
+  """
   def to_project_sch(%Project{} = project, params \\ %{}) do
     %{}
     |> Map.put(@f_anchor, project.anchor)
     |> Map.put(@f_key, project.key)
     |> Map.put("schMetas", [])
-    # @proj_m 2
-    # @proj_project_t 1
     |> Map.put("m", 2)
     |> Map.put(@f_type, 1)
     |> Map.put("fields", Enum.map(project.files, &to_file_sch/1))

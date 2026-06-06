@@ -1,12 +1,12 @@
 @import "tailwindcss";
 @import "./theme-vars.css";
 @import "./_normalize.css";
-@import "../node_modules/@fsetapp/fset/dist/main.css";
+@import "../node_modules/@fsetapp/fset/dist/css/main.css";
+@import "../node_modules/@fsetapp/fset/dist/css/sch-meta.css";
 @import "./tree.css";
 @import "./tab.css";
 @import "./kbd.css";
 @import "./form.css";
-@import "./fbox.css";
 @import "./billing.css";
 @import "./docs.css";
 @import "./landing.css";

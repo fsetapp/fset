@@ -1,6 +1,6 @@
 import "phoenix_html";
 import { elements } from "@fsetapp/fset/pkgs/model.js";
-const { ReadOnlyFmodelTree } = elements;
+const { ReadOnlyModelTree } = elements;
 
 window.addEventListener("hashchange", (e) => {
   for (let a of document.body.querySelectorAll(`[data-current]`))
@@ -14,7 +14,7 @@ customElements.define(
   "def-fmodel",
   class extends HTMLElement {
     connectedCallback() {
-      ReadOnlyFmodelTree(
+      ReadOnlyModelTree(
         { target: `[data-name=${this.dataset.name}]`, select: false },
         JSON.parse(this.dataset.sch),
       );

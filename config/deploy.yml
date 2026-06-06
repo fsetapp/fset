@@ -22,13 +22,13 @@ builder:
 # Deploy to these servers.
 servers:
   web:
-    - <%= ENV["WEB_IP"] %>
+    - "<%= ENV['WEB_IP'] %>"
 
 
 # Enable SSL auto certification via Let's Encrypt and allow for multiple apps on a single web server.
 proxy:
   ssl: true
-  host: model.fset.app # PLACEHOLDER: Replace with your actual domain
+  host: fset.app # PLACEHOLDER: Replace with your actual domain
   app_port: 4000 # Uncomment if your app doesn't listen on port 80 inside the container
   healthcheck:
     interval: 2
@@ -38,7 +38,7 @@ proxy:
 # Inject ENV variables into containers (secrets come from .kamal/secrets).
 env:
   clear:
-    FSET_HOST_URL: model.fset.app
+    FSET_HOST_URL: fset.app
   secret:
     - SECRET_KEY_BASE # Update to match your framework's secret key variable
     - DATABASE_URL
@@ -48,7 +48,7 @@ env:
 accessories:
   db:
     image: postgres:18
-    host: ENV["WEB_IP"] %>
+    host: "<%= ENV['WEB_IP'] %>"
     port: 5432
     env:
       clear:

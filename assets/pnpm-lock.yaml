@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@fsetapp/fset':
-        specifier: ^0.5.1
-        version: 0.5.1
+        specifier: ^0.6.0
+        version: 0.6.0
       '@github/details-menu-element':
         specifier: ^1.0.12
         version: 1.0.13
@@ -45,8 +45,8 @@ packages:
     resolution: {integrity: sha512-UrcABB+4bUrFABwbluTIBErXwvbsU/V7TZWfmbgJfbkwiBuziS9gxdODUyuiecfdGQ85jglMW6juS3+z5TsKLw==}
     engines: {node: '>=10'}
 
-  '@fsetapp/fset@0.5.1':
-    resolution: {integrity: sha512-Vfvcx3eRWUuRaZhj0jksnbOI7tw984by5pv1c4mDMXwGT5Bcxg0EHmGQderYmvIcoeS1cOw6ov1aeSCzAIlmnA==, tarball: https://npm.pkg.github.com/download/@fsetapp/fset/0.5.1/bd2d5c6fc34876462f07fde7018dc3d541f0dded}
+  '@fsetapp/fset@0.6.0':
+    resolution: {integrity: sha512-T1N1vTyVa50e6I6lwL7tk42ytZcMDr2TBVWMj6QZ1yKBiUcoduhxeWgN5Tf0y4yA+GXdi2grT+SjM22Uy/zmKQ==, tarball: https://npm.pkg.github.com/download/@fsetapp/fset/0.6.0/9857939c0d2d952bde4f288ec832a64071761d99}
 
   '@github/details-menu-element@1.0.13':
     resolution: {integrity: sha512-gMkii86w/oUP5dq8yOWZn1sgbgtFj3AYETxxtpsqRggZktgd8te4+npAn4Hm+936c/lxmEzXqfjARL/CzGR4+w==}
@@ -274,8 +274,8 @@ packages:
     resolution: {integrity: sha512-Btj2BOOO83o3WyH59e8MgXsxEQVcarkUOpEYrubB0urwnN10yQ364rsiByU11nZlqWYZm05i/of7io4mzihBtQ==}
     engines: {node: '>=8'}
 
-  enhanced-resolve@5.22.2:
-    resolution: {integrity: sha512-0rxICaFZ7NQho/sHely2bvOPRP0Eu2B0NZ9zM54YvRvWMn7jfz3DmnOZDR9LlXDdDcqntAVc6Hfy4gr/tdH/Ag==}
+  enhanced-resolve@5.23.0:
+    resolution: {integrity: sha512-yJN/BOOLxcOW2aQgeif9mSnaUB8KtvmMMp56oA1kx1CRfBKbhZm2pJ+NBY+3eOboHxix8lfjWpHE0Ei5U8RbSA==}
     engines: {node: '>=10.13.0'}
 
   graceful-fs@4.2.11:
@@ -415,7 +415,7 @@ snapshots:
 
   '@alloc/quick-lru@5.2.0': {}
 
-  '@fsetapp/fset@0.5.1': {}
+  '@fsetapp/fset@0.6.0': {}
 
   '@github/details-menu-element@1.0.13': {}
 
@@ -507,7 +507,7 @@ snapshots:
       '@parcel/watcher': 2.5.6
       '@tailwindcss/node': 4.3.0
       '@tailwindcss/oxide': 4.3.0
-      enhanced-resolve: 5.22.2
+      enhanced-resolve: 5.23.0
       mri: 1.2.0
       picocolors: 1.1.1
       tailwindcss: 4.3.0
@@ -515,7 +515,7 @@ snapshots:
   '@tailwindcss/node@4.3.0':
     dependencies:
       '@jridgewell/remapping': 2.3.5
-      enhanced-resolve: 5.22.2
+      enhanced-resolve: 5.23.0
       jiti: 2.7.0
       lightningcss: 1.32.0
       magic-string: 0.30.21
@@ -592,7 +592,7 @@ snapshots:
 
   detect-libc@2.1.2: {}
 
-  enhanced-resolve@5.22.2:
+  enhanced-resolve@5.23.0:
     dependencies:
       graceful-fs: 4.2.11
       tapable: 2.3.3

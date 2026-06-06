@@ -97,6 +97,7 @@ defmodule Fset.Imports.JSONSchema do
         a
         |> cast_type(defs)
         |> T.put_anchor(Map.get(a_og, @anchor))
+        |> map_put("m", 3)
         |> map_put("index", Map.get(a_og, "order"))
         |> map_put("key", Map.get(a_og, "key"))
         |> map_put("isEntry", Map.get(a_og, "isEntry"))
