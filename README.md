@@ -2,6 +2,12 @@
 
 This is a rewritten version of LiveView as view layer https://github.com/50kudos/_fset/tree/master/lib/fset_web/live. We now use a bare Phoenix Channel + Javascript of achieve lowest latency interaction.
 
+## Status
+
+> [!NOTE]
+> Project is sunset and no longer active
+
+
 ## Development
 
 ```bash
